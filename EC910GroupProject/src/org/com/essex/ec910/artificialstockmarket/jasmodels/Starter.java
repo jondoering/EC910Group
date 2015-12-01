@@ -1,4 +1,4 @@
-package org.com.essex.ec910.artificialstockmarket;
+package org.com.essex.ec910.artificialstockmarket.jasmodels;
 
 public class Starter {
 
