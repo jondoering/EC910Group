@@ -40,9 +40,49 @@ public class AbstractTrader {
 //	run trading strategy
 	public void runStrategy(){
 		// ???
+		
+		// Get Price (10)
+		// SMA
+		// SMA1 > SMA2
+		//	Buy
+		//	 	Check Portfolio how many many is in? (1000)
+		/*		How many shares I can buy?
+					Can buy 100 Shares.
+					Decide new price? (11/ Market)
+					
+					this.artificialMarket.reciveOrder(new Order(Buy, Market, 100, 0, this);
+					
+					//Wait 
+					 * 
+		// Make a decision
+		*/ 
+		//    	
+		//		decide Shares for Price
+		//    
+		//this.artificialMarket.reciveOrder()
+		// Send order
+		
 	}
 
-
-	
+//
+//	public void giveOneShare(money)
+//	{
+//		//
+//		Portfolio.money += money;
+//		Porfolio.Share -= 1;		
+//	}
+//	
+//	public moeny takeOneShare(price)
+//	{
+//		Portfolio.money -= price;
+//		Portfolio.Share =+ 1;
+//	}
+//	
+//	public int setIfOrderGetsFullfied()
+//	{
+//		gotsFullfied = true;
+//	
+//	}
+//	
 	
 }

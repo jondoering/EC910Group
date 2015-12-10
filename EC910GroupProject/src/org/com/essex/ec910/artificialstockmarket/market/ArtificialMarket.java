@@ -37,6 +37,28 @@ public class ArtificialMarket {
 	private void clearMarket()
 	{
 		//
+		/*
+		 * Sort orderbook buy & sell by price
+		 * Make cumulatet Voluyme
+		 * Set price where max volium
+		 * 
+		 * Know:
+		 * 	new price
+		 *  number of shares we have to sell
+		 * 
+		 *Make a list of all buyers that wantet to buy for price
+		 *Make a list of all seller that wantet to sell for price
+		 * 
+		 * While(volume is not full)
+		 * 	Buy from random seller 1 share
+		 * 	volume +1;
+		 * 
+		 * While(volume is not empty)
+		 * 	Sell 1 Stock to random buyer;
+		 *  volume -1;
+		 *  
+		 *  
+		 */
 	}
 	
 	
