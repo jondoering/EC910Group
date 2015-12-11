@@ -8,10 +8,19 @@ import jas.engine.gui.JAS;
 
 public class Starter extends SimModel {
 
-@Override
+
+public int numberOfTrader;
+	public double initialPrice;
+	public ArtificialMarket market, market2;
+	private ArrayList<AbstractTrader> AT_list;
+	private ArrayList<ArtificialMarket> AM_list;
+	
+	@Override
 	public void setParameters() {
 		// TODO Auto-generated method stub
-		
+		// set up default values for model parameters
+				numberOfTrader = 20;
+				initialPrice = 50;
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
 	}
@@ -20,7 +29,9 @@ public class Starter extends SimModel {
 	@Override
 	public void buildModel() {
 		// TODO Auto-generated method stub
-
+		AM_list = new ArrayList<ArtificialMarket>();
+		
+		
 		
 		scheduleEvents();
 	}
