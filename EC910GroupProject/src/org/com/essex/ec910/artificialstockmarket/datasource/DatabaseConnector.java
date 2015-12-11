@@ -1,9 +1,6 @@
 package org.com.essex.ec910.artificialstockmarket.datasource;
 
-/**
- * @author Jonathan
- *
- */
+
 public class DatabaseConnector {//input order table
 create table[Order Drived Market]([limitB]numeric,[volumnB]numeric,[cumvolB]numeric,[ABSB]numeric,
 [price]int,[ABSS]numeric,[cumvolS]numeric,[volumeS]numeric,[limitS]numeric)
@@ -37,4 +34,9 @@ group by cumvolB
 else select comvolS
 group by cumvolS
 
+select ...
+volumnB*price
+when price>
+money？...
+ :(
 }
