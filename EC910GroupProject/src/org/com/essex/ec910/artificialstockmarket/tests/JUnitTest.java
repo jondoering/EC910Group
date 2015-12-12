@@ -33,7 +33,7 @@ public class JUnitTest {
 		
 		ArtificialMarket m = new ArtificialMarket(null);
 		
-		AbstractTrader a = new AbstractTrader("A", m, new Portfolio(1000, 0));
+		AbstractTrader a = new AbstractTrader("A", m, new Portfolio(1000, 0), 0, 0);
 		
 		int num =50;
 		Order[] o = new Order[num];

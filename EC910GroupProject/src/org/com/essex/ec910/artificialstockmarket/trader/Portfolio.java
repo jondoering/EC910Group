@@ -8,8 +8,8 @@ package org.com.essex.ec910.artificialstockmarket.trader;
 public class Portfolio {
 
 
-	int shares;   // number of shares in trader's portfolio 	
-	int money;    // trader's capital
+	private int shares;   // number of shares in trader's portfolio 	
+	private int money;    // trader's capital
 		
 	/**
 	 * Constructor
