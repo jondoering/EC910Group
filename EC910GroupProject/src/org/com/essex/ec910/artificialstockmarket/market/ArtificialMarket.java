@@ -1,7 +1,6 @@
 package org.com.essex.ec910.artificialstockmarket.market;
 
 import org.com.essex.ec910.artificialstockmarket.datasource.DatabaseConnector;
-import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 
 import java.util.ArrayList;
 import java.util.Collections;
