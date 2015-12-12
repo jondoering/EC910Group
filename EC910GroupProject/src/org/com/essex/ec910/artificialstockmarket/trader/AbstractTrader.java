@@ -9,7 +9,7 @@ import org.com.essex.ec910.artificialstockmarket.market.Order;
  *
  */
 
-public class AbstractTrader {
+public abstract class AbstractTrader {
 
 	//	general parameters of trader
 	public String name;                         // trader's name eg: pouyan, Jonathan, randomTrader and ...
@@ -47,7 +47,9 @@ public class AbstractTrader {
 	//  if you want to send order to market, you should not directly send your order, 
 	//  because it should be double checked by sendFinalOrderToMarket() 
 	//  if you do not want to send order to market, make sure your order volume is 0    
-	public Order runStrategy(){
+	abstract public Order runStrategy();
+	
+	/*{
 
 		Order order; 
 
@@ -55,7 +57,7 @@ public class AbstractTrader {
 
 		order = new Order(0, 0, 0, 0, this);// default order which will not be sent to the market (because volume = 0)
 		return order;
-	}
+	}*/
 
 	//  Final check to make sure that trader sends correct order to market 
 	//	also this function, updates the performance results of trader (???) 

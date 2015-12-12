@@ -56,30 +56,29 @@ public class Model extends SimModel{
 
 	public void scheduleEvents() {
 
-
-
+			
 	}
 
 	public static void main(String[] args)
 	{
 
-//		SimEngine eng = new SimEngine();
-//		JAS jas = new JAS(eng);
-//		jas.setVisible(true);
-//
-//		Model m = new Model();
-//		eng.addModel(m);
-//		m.setParameters();
-//
-//		Observer o = new Observer();
-//		eng.addModel(o);
-//		o.setParameters();
-//
-//
-//
-//
-//		//	    eng.buildModels();
-//		//	    eng.start();
+		SimEngine eng = new SimEngine();
+		JAS jas = new JAS(eng);
+		jas.setVisible(true);
+
+		Model m = new Model();
+		eng.addModel(m);
+		m.setParameters();
+
+		//Observer o = new Observer();
+		//eng.addModel(o);
+		//o.setParameters();
+
+
+
+
+		    eng.buildModels();
+		    eng.start();
 	}
 
 }
