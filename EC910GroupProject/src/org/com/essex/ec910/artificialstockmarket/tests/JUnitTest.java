@@ -35,7 +35,7 @@ public class JUnitTest {
 		
 		AbstractTrader a = new AbstractTrader("A", m, new Portfolio(1000, 0), 0, 0);
 		
-		int num =50;
+		int num =100;
 		Order[] o = new Order[num];
 		
 		
@@ -58,7 +58,7 @@ public class JUnitTest {
 			{
 				 type2 = Order.LIMIT;
 			}
-			int price = randInt(10,20);
+			int price = randInt(10,50);
 			int volume = randInt(100,1000);
 			o[i] = new Order(type1, type2, volume, price, a);
 			m.reciveOrder(o[i]);

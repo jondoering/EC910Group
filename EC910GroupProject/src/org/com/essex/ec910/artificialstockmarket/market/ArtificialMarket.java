@@ -35,6 +35,7 @@ public class ArtificialMarket {
 		this.db = db;
 		bidOrderBook = new ArrayList<Order>();
 		askOrderBook = new ArrayList<Order>();
+		lastPrice = new ArrayList<Integer>();
 	}
 	
 	
@@ -118,8 +119,6 @@ public class ArtificialMarket {
 				sameBidOrders.add(curLevelList);
 				bidVolumePerLevelList.add(bidVolumePerLevel);										
 			}	
-
-
 		
 		
 		Collections.sort(askOrderBook);
@@ -187,7 +186,7 @@ public class ArtificialMarket {
 		
 		double maxAskLimitPrice = lastLevel;
 		
-		//Step 2: Find new Price if there are limit order
+//Step 2: Find new Price if there are limit order
 		
 		int newPrice = 0;
 		int transition = 0;
@@ -323,39 +322,69 @@ public class ArtificialMarket {
 		ArrayList<Integer> orderSize = new ArrayList<Integer>();
 		
 		
-		//
-		int i=0;
-		for(i=0;i<bidOrderBook.size();i++)
+		//Execute Sell Orders
+		
+		for(int i=0;i<bidOrderBook.size();i++)
 		{
 		
+			int shares = 0;
 			if(bidOrderBook.get(i).getVolume() < leftShares)
 			{
-				bidOrderBook.get(i).getOwner();
+				 shares = bidOrderBook.get(i).getVolume();			
 			}
-		
-			if(bidOrderBook.get(i).getType2() == Order.LIMIT && bidOrderBook.get(i).getLimitprice() > newPrice)
+			else
+			{
+				//transitions
+				 shares = leftShares;				
+			}
+			
+			int money =  shares * newPrice; 
+			bidOrderBook.get(i).getOwner().buyShareFromTrader(money, shares);
+			leftShares -= shares;
+			
+			if(leftShares == 0)
 			{ break;}
 		}
-		 
-		while(leftShares < nShares)
-		{		
-			//Choose a Seller Randomly
-						
-		}
+		
+		
+		//if there are market orders, exdcute first
+		if(askPriceLevels.get(0) == 0.0)
+		{
+			Iterator<Order> orders = sameAskOrders.get(0).iterator();
+			while(orders.hasNext())
+			{
+				//Execute Order
+				Order o = orders.next();
 				
-		
-		if(bidPriceLevels.get(0) == 0)
-		{
-			//Market Orders
-			
+				int shares = o.getVolume();
+				int money = shares * newPrice;
+				
+				o.getOwner().sellShareToTrader(money, shares);
+			}
 		}
-		else
+		 
+		//Execute Buy Orders Level by Level
+		for(int i=askPriceLevels.size()-1; i > 0; i--)
 		{
+			Iterator<Order> orders = sameAskOrders.get(i).iterator();
+			while(orders.hasNext())
+			{
+				//Execute Order
+				Order o = orders.next();
+				
+				int shares = o.getVolume();
+				int money = shares * newPrice;
+				
+				o.getOwner().sellShareToTrader(money, shares);
+			}
 			
+			if(newPrice == askPriceLevels.get(i))
+			{
+				break;
+			}
 		}
-		
-		
-		
+		//
+		lastPrice.add(newPrice);
 	
 		
 	}

@@ -87,6 +87,7 @@ public class AbstractTrader {
 	public void buyShareFromTrader(int money, int shares){
 		this.portfolio.setMoney(this.portfolio.getMoney() + money);
 		this.portfolio.setShares(this.portfolio.getShares() - shares);
+		
 	}
 
 	//  reduce money from portfolio of trader and increase the shares
@@ -94,6 +95,7 @@ public class AbstractTrader {
 	public void sellShareToTrader(int money, int shares){
 		this.portfolio.setMoney(this.portfolio.getMoney() - money);
 		this.portfolio.setShares(this.portfolio.getShares() + shares);
+		
 	}
 
 }
