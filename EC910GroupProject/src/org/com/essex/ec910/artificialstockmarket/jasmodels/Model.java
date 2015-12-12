@@ -1,11 +1,11 @@
 package org.com.essex.ec910.artificialstockmarket.jasmodels;
 
+
 import org.com.essex.ec910.artificialstockmarket.datasource.DatabaseConnector;
 import org.com.essex.ec910.artificialstockmarket.datasource.YQLConnector;
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
-
 import jas.engine.Sim;
 import jas.engine.SimEngine;
 import jas.engine.SimModel;
@@ -58,7 +58,8 @@ public class Model extends SimModel{
 		
         this.artificialMarket = new ArtificialMarket(null);// creating AM
 		randomTraderList = new ArrayList<RandomTrader>();// creating random traders list 
-		
+		System.out.println("test");
+
         // setup random traders		
 		for(int i = 0; i < numRandomTrader; i++){
 			randomTraderList.add(new RandomTrader("R"+ i, this.artificialMarket, 
@@ -72,7 +73,7 @@ public class Model extends SimModel{
 	public void scheduleEvents() {
      
 		eventList.scheduleSimple(0, 1, this.artificialMarket, "clearMarket");
-		eventList.scheduleCollection(0, 1, this.randomTraderList, getObjectClass("RandomTrader"), "sendFinalOrderToMarket");
+		//eventList.scheduleCollection(0, 1, this.randomTraderList, getObjectClass("RandomTrader"), "sendFinalOrderToMarket");
 
 
 	}
@@ -93,7 +94,6 @@ public class Model extends SimModel{
 		Observer o = new Observer();
 		eng.addModel(o);
 		o.setParameters();
-		System.out.println("test");
 		//	    eng.buildModels();
 		//	    eng.start();
 	}
