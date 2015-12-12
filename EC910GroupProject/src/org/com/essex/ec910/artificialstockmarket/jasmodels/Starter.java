@@ -1,6 +1,11 @@
 package org.com.essex.ec910.artificialstockmarket.jasmodels;
 
+import java.util.ArrayList;
+
 import org.com.essex.ec910.artificialstockmarket.datasource.YQLConnector;
+import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
+import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
+
 import jas.engine.Sim;
 import jas.engine.SimEngine;
 import jas.engine.SimModel;

@@ -1,7 +1,11 @@
 package org.com.essex.ec910.artificialstockmarket.datasource;
 
 
-public class DatabaseConnector {//input order table
+public class DatabaseConnector 
+{
+	/*
+	 * //input order table
+	 
 create table[Order Drived Market]([limitB]numeric,[volumnB]numeric,[cumvolB]numeric,[ABSB]numeric,
 [price]int,[ABSS]numeric,[cumvolS]numeric,[volumeS]numeric,[limitS]numeric)
 
@@ -39,4 +43,5 @@ volumnB*price
 when price>
 money？...
  :(
+		 */
 }
