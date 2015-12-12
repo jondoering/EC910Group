@@ -10,18 +10,32 @@ import jas.engine.Sim;
 import jas.engine.SimEngine;
 import jas.engine.SimModel;
 import jas.engine.gui.JAS;
+
 import java.util.ArrayList;
 
+
+import jas.engine.Sim;
+import jas.engine.SimEngine;
+import jas.engine.SimModel;
+import jas.engine.gui.JAS;
+import java.util.ArrayList;
+
+/**
+ * @author Pouyan
+ *
+ */
 public class Model extends SimModel{
 	
 	public int numRandomTrader;                         // number of random traders
 	public int initialMoney;                            // money of random traders at the beginning 
 	public int initialShares;                           // shares of random traders at the beginning 
 	int max_buy, max_sell;                              // trading limits for traders 
-	public ArtificialMarket artificialMarket;           // one artificial market 
+
+	//	simple random market for backtesting model and observer
+	public ArtificialMarket  artificialMarket;                  
+
 	public ArrayList<RandomTrader> randomTraderList;    // list of random traders
     
-	public DatabaseConnector db;                        // ??? to be completed 
 	
 	@Override
 	public void setParameters() {
@@ -32,7 +46,8 @@ public class Model extends SimModel{
 		initialShares=1000;   //1000 shares for each trader 
 		max_buy = 100;        
 		max_sell = 100;
-		// put DatabaseConnector here ???????????????????? 
+		
+		// put DatabaseConnector parameters here ???????????????????? 
 		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
@@ -41,10 +56,10 @@ public class Model extends SimModel{
 	@Override
 	public void buildModel() {
 		
-		artificialMarket = new ArtificialMarket(this.db);// creating AM
+        this.artificialMarket = new ArtificialMarket(null);// creating AM
 		randomTraderList = new ArrayList<RandomTrader>();// creating random traders list 
 		
-		
+        // setup random traders		
 		for(int i = 0; i < numRandomTrader; i++){
 			randomTraderList.add(new RandomTrader("R"+ i, this.artificialMarket, 
 					new Portfolio(this.initialMoney,this.initialShares), this.max_buy,
@@ -55,7 +70,9 @@ public class Model extends SimModel{
 	}
 
 	public void scheduleEvents() {
-
+     
+		eventList.scheduleSimple(0, 1, this.artificialMarket, "clearMarket");
+		eventList.scheduleCollection(0, 1, this.randomTraderList, getObjectClass("RandomTrader"), "sendFinalOrderToMarket");
 
 
 	}
@@ -63,23 +80,22 @@ public class Model extends SimModel{
 	public static void main(String[] args)
 	{
 
-//		SimEngine eng = new SimEngine();
-//		JAS jas = new JAS(eng);
-//		jas.setVisible(true);
-//
-//		Model m = new Model();
-//		eng.addModel(m);
-//		m.setParameters();
-//
-//		Observer o = new Observer();
-//		eng.addModel(o);
-//		o.setParameters();
-//
-//
-//
-//
-//		//	    eng.buildModels();
-//		//	    eng.start();
+		
+		SimEngine eng = new SimEngine();
+		JAS jas = new JAS(eng);
+		jas.setVisible(true);
+
+		Model m = new Model();
+		eng.addModel(m);
+		m.setParameters();
+		
+		
+		Observer o = new Observer();
+		eng.addModel(o);
+		o.setParameters();
+		System.out.println("test");
+		//	    eng.buildModels();
+		//	    eng.start();
 	}
 
 }

@@ -1,15 +1,17 @@
 package org.com.essex.ec910.artificialstockmarket.trader;
 
 import java.util.ArrayList;
+
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
+
 
 /**
  * @author Pouyan
  *
  */
 
-public class AbstractTrader {
+public abstract class AbstractTrader {
 
 	//	general parameters of trader
 	public String name;                         // trader's name eg: pouyan, Jonathan, randomTrader and ...
@@ -48,6 +50,8 @@ public class AbstractTrader {
 	//  because it should be double checked by sendFinalOrderToMarket() 
 	//  if you do not want to send order to market, make sure your order volume is 0    
 	public Order runStrategy(){
+	
+	
 
 		Order order; 
 
@@ -56,25 +60,28 @@ public class AbstractTrader {
 		order = new Order(0, 0, 0, 0, this);// default order which will not be sent to the market (because volume = 0)
 		return order;
 	}
-
+	
+	
 	//  Final check to make sure that trader sends correct order to market 
 	//	also this function, updates the performance results of trader (???) 
 	//	please do not change this function
 	public void sendFinalOrderToMarket(){
 		
 		Order order = runStrategy();
-		int[] spotPrice = this.artificialMarket.getLastNPrice(0);
+//		int[] spotPrice = this.artificialMarket.getLastNPrice(1); for artificial market
+		int[] spotPrice = this.artificialMarket.getLastNPrice(1);
 		
 		//check that Volume > 0, otherwise, it means that trader does not want to send order to market
 		if (order.getVolume() > 0){
-			if((order.getType1() == 0 && order.getType2() == 3 && order.getVolume() <= this.max_buy && this.portfolio.getMoney() >= order.getVolume()*order.getLimitprice()) ||     //  buy limit order --> (trader should have enough money to buy shares) trader wants to buy and volume should be < max limit for buying
-					(order.getType1() == 0 && order.getType2() == 2 && order.getVolume() <= this.max_buy && this.portfolio.getMoney() >= order.getVolume()*spotPrice[0])  ||            //  buy market order --> (trader should have enough money to buy shares)
-					(order.getType1() == 1 && order.getVolume() <= this.max_sell && order.getVolume() <= this.portfolio.getShares())) {//  sell order --> trader wants to sell and volume < max limit for selling // also trader should have enough shares in his portfolio in order to be able to sell the desired volume 
+//			checking to be completed in future
+//			if((order.getType1() == Order.BUY && order.getType2() == Order.LIMIT && order.getVolume() <= this.max_buy && this.portfolio.getMoney() >= order.getVolume()*order.getLimitprice()) ||     //  buy limit order --> (trader should have enough money to buy shares) trader wants to buy and volume should be < max limit for buying
+//					(order.getType1() == Order.BUY && order.getType2() == Order.MARKET && order.getVolume() <= this.max_buy && this.portfolio.getMoney() >= order.getVolume()*spotPrice)  ||            // ??? put [0] in front spot price when using Jonathan market ???? buy market order --> (trader should have enough money to buy shares)
+//					(order.getType1() == Order.SELL && order.getVolume() <= this.max_sell && order.getVolume() <= this.portfolio.getShares())) {//  sell order --> trader wants to sell and volume < max limit for selling // also trader should have enough shares in his portfolio in order to be able to sell the desired volume 
 
 				this.artificialMarket.reciveOrder(order);
 				this.lastOrder = order; // save final order sent to market
 				this.lastPortfolio = this.portfolio;// save the last portfolio of trader when final order sent to market
-			}
+//			}
 		}
 
 		//   	 ????????????????????????????????????????????????
