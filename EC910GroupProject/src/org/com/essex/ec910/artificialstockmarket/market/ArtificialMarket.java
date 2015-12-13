@@ -18,8 +18,8 @@ public class ArtificialMarket {
 	
 	private DatabaseConnector db;
 	
-	private ArrayList<Order> bidOrderBook;
-	private ArrayList<Order> askOrderBook;
+	private ArrayList<Order> sellOrderBook;
+	private ArrayList<Order> buyOrderBook;
 	
 	private ArrayList<Integer> priceHistory;
 	
@@ -32,45 +32,47 @@ public class ArtificialMarket {
 	public ArtificialMarket(DatabaseConnector db)
 	{
 		this.db = db;
-		bidOrderBook = new ArrayList<Order>();
-		askOrderBook = new ArrayList<Order>();
+		sellOrderBook = new ArrayList<Order>();
+		buyOrderBook = new ArrayList<Order>();
 		priceHistory = new ArrayList<Integer>();
 	}
 	
 	
 	/**
 	 * order driven clearing mechanism
-	 * clearing price maximize the execution volume (Compare XYZ)
+	 * new price is found by "largest best execution" principal 
+	 * Compare ...
 	 */
 	public void clearMarket()
 	{
 
 		//if orderbooks empty, do nothing
-		if(bidOrderBook.isEmpty() && askOrderBook.isEmpty())
+		if(sellOrderBook.isEmpty() && buyOrderBook.isEmpty())
 		{	return;}
 		
 		
 		//Otherwise: find new price by volume maximization
 		//Find Orders with same price and cumulate the Volume 
-		Collections.sort(bidOrderBook);
+		Collections.sort(sellOrderBook);
 		 
-		ArrayList<Double> bidPriceLevels = new ArrayList<Double>(); //holds Prices for each Level
-		ArrayList<Integer> bidVolumePerLevelList = new ArrayList<Integer>(); //holds cumulated volume for each price Level
-		ArrayList<ArrayList<Order>> sameBidOrders = new ArrayList<ArrayList<Order>>(); // holds list of orders for each price level
+		ArrayList<Double> sellPriceLevels = new ArrayList<Double>(); //holds Prices for each Level
+		ArrayList<Integer> sellVolumePerLevelList = new ArrayList<Integer>(); //holds cumulated volume for each price Level
+		ArrayList<ArrayList<Order>> samesellOrders = new ArrayList<ArrayList<Order>>(); // holds list of orders for each price level
 		
 
 		
 		Double lastLevel = (double) -1; 
-		int bidVolumePerLevel = 0;
+		int sellVolumePerLevel = 0;
 	
 		Order curOrder = null;
 		ArrayList<Order> curLevelList = new ArrayList<Order>();		//temporary list on each level			
 
-		double minBidLimitPrice = 0;
+		double minsellLimitPrice = 0;
+		double maxsellLimitPrice = 0;
 
-		for(int i=0;i<bidOrderBook.size();i++)
+		for(int i=0;i<sellOrderBook.size();i++)
 		{			
-			curOrder = bidOrderBook.get(i);
+			curOrder = sellOrderBook.get(i);
 			//System.out.println(curOrder.toString());
 			//If Market Order, by definition at the beginning of the list
 			if(curOrder.getType2()==Order.MARKET)
@@ -78,13 +80,13 @@ public class ArtificialMarket {
 				if(lastLevel < 0 )
 				{
 					//Create new Market Level first Time 
-					bidPriceLevels.add(0.0);
+					sellPriceLevels.add(0.0);
 					lastLevel = 0.0;
-					bidVolumePerLevel = 0;
+					sellVolumePerLevel = 0;
 				}
 				//Add Order and Volume to acutely Level
 				curLevelList.add(curOrder);
-				bidVolumePerLevel += curOrder.getVolume();
+				sellVolumePerLevel += curOrder.getVolume();
 			}
 			else
 			//Limit Orders
@@ -95,65 +97,73 @@ public class ArtificialMarket {
 					if(curLevelList.size() > 0)
 					//Add only if they were Orders at last Level
 					{	
-						sameBidOrders.add(curLevelList);
-						bidVolumePerLevelList.add(bidVolumePerLevel);												
+						samesellOrders.add(curLevelList);
+						sellVolumePerLevelList.add(sellVolumePerLevel);												
 					}	
 					
 					//add new Price Level
-					if(lastLevel>0)
-					{	minBidLimitPrice = Math.min(minBidLimitPrice, curOrder.getLimitprice());}
+					if(minsellLimitPrice>0)
+					{	minsellLimitPrice = Math.min(minsellLimitPrice, curOrder.getLimitprice());}
 					else
-					{	minBidLimitPrice = curOrder.getLimitprice();}
-					bidPriceLevels.add((double) curOrder.getLimitprice());
+					{	minsellLimitPrice = curOrder.getLimitprice();}
+					
+					sellPriceLevels.add((double) curOrder.getLimitprice());
 					lastLevel = (double) curOrder.getLimitprice();
-					minBidLimitPrice = Math.min(minBidLimitPrice, lastLevel);
+					minsellLimitPrice = Math.min(minsellLimitPrice, lastLevel);
 					//Reset parameter
 					curLevelList = new ArrayList<Order>();			
-					bidVolumePerLevel = 0;
+					sellVolumePerLevel = 0;
 				}
 				
 				curLevelList.add(curOrder);
-				bidVolumePerLevel += curOrder.getVolume();
+				sellVolumePerLevel += curOrder.getVolume();
 			}			
 		}
-		//Add
+		
+		
+		//Add last level
 		if(curLevelList.size() > 0)
 			//Add only if they were Orders at last Level
 			{	
-				sameBidOrders.add(curLevelList);
-				bidVolumePerLevelList.add(bidVolumePerLevel);										
+				samesellOrders.add(curLevelList);
+				sellVolumePerLevelList.add(sellVolumePerLevel);										
 			}	
 		
-		
-		Collections.sort(askOrderBook);
+		maxsellLimitPrice = lastLevel;
 
-		ArrayList<Double> askPriceLevels = new ArrayList<Double>();
-		ArrayList<Integer> askVolumePerLevelList = new ArrayList<Integer>();	
-		ArrayList<ArrayList<Order>> sameAskOrders = new ArrayList<ArrayList<Order>>();
+		
+		Collections.sort(buyOrderBook);
+
+		ArrayList<Double> buyPriceLevels = new ArrayList<Double>();
+		ArrayList<Integer> buyVolumePerLevelList = new ArrayList<Integer>();	
+		ArrayList<ArrayList<Order>> samebuyOrders = new ArrayList<ArrayList<Order>>();
 		
 		lastLevel = (double) -1; 
-		int askVolumePerLevel = 0;
+		int buyVolumePerLevel = 0;
 		
 		curOrder = null;
 		curLevelList = new ArrayList<Order>();					
 
+		double maxbuyLimitPrice = 0;
+		int minbuyLimitPrice = 0;
 		
-		for(int i=0;i<askOrderBook.size();i++)
+		for(int i=0;i<buyOrderBook.size();i++)
 		{			
-			curOrder = askOrderBook.get(i);
+			curOrder = buyOrderBook.get(i);
+			//System.out.println(curOrder.toString());
 			//If Market Order, by definition at the beginning of the list
 			if(curOrder.getType2()==Order.MARKET)
 			{
 				if(lastLevel < 0 ) //Initiation
 				{
 					//Create new Market Level first Time 
-					askPriceLevels.add(0.0);
+					buyPriceLevels.add(0.0);
 					lastLevel = 0.0;
-					askVolumePerLevel = 0;
+					buyVolumePerLevel = 0;
 				}
 				//Add Order and Volume to acutely Level
 				curLevelList.add(curOrder);
-				askVolumePerLevel += curOrder.getVolume();
+				buyVolumePerLevel += curOrder.getVolume();
 				
 			}
 			else
@@ -165,32 +175,38 @@ public class ArtificialMarket {
 					if(curLevelList.size() > 0)
 					//Add only if they were Orders at last Level
 					{	
-						sameAskOrders.add(curLevelList);
-						askVolumePerLevelList.add(askVolumePerLevel);
+						samebuyOrders.add(curLevelList);
+						buyVolumePerLevelList.add(buyVolumePerLevel);
 					}	
+					//add new Price Level
+					if(minbuyLimitPrice>0)
+					{	minbuyLimitPrice = Math.min(minbuyLimitPrice, curOrder.getLimitprice());}
+					else
+					{	minbuyLimitPrice = curOrder.getLimitprice();}
+					
 					
 					//Create new Market Level first Time 
-					askPriceLevels.add((double) curOrder.getLimitprice());
+					buyPriceLevels.add((double) curOrder.getLimitprice());
 					lastLevel = (double) curOrder.getLimitprice();
 					//Reset parameter
 					curLevelList = new ArrayList<Order>();			
-					askVolumePerLevel = 0;
+					buyVolumePerLevel = 0;
 				}
 				
 				curLevelList.add(curOrder);
-				askVolumePerLevel += curOrder.getVolume();
+				buyVolumePerLevel += curOrder.getVolume();
 			}			
 		}
 		
 		if(curLevelList.size() > 0)
 		//Add only if they were Orders at last Level
-		{	sameAskOrders.add(curLevelList);
-				askVolumePerLevelList.add(askVolumePerLevel);
+		{	samebuyOrders.add(curLevelList);
+				buyVolumePerLevelList.add(buyVolumePerLevel);
 		}	
 		
-		double maxAskLimitPrice = lastLevel;
+		 maxbuyLimitPrice =  lastLevel;
 		
-//Step 2: Find new Price if there are limit order
+//Step 2: Find new Price 
 		
 		int newPrice = 0;
 		int transition = 0;
@@ -199,107 +215,129 @@ public class ArtificialMarket {
 		if(true)
 		{
 			// Price is where execution volume gets maximized			
-			//Match Price Levels of bid and ask		
+			//Match Price Levels of sell and buy		
 			
 			//Cumulatet Voulmes
-			int[] bidCumVolPerLevelList = new int[bidVolumePerLevelList.size()];
-			int[]  askCumVolPerLevelList = new int[askVolumePerLevelList.size()];
+			int[] sellCumVolPerLevelList = new int[sellVolumePerLevelList.size()];
+			int[]  buyCumVolPerLevelList = new int[buyVolumePerLevelList.size()];
 			
 			int vol = 0;
-		//Easy for Bid Orders
-			for(int i=0;i<bidVolumePerLevelList.size();i++)
+		//Easy for sell Orders
+			for(int i=0;i<sellVolumePerLevelList.size();i++)
 			{
-				vol += bidVolumePerLevelList.get(i);
-				bidCumVolPerLevelList[i] = vol;				
+				vol += sellVolumePerLevelList.get(i);
+				sellCumVolPerLevelList[i] = vol;				
 			}
-		//More Complex for Ask Orders
+		//More Complex for buy Orders
 		
 			//Exception for Market Orders
-			if(askPriceLevels.get(0) == 0.0)
+			if(buyPriceLevels.get(0) == 0.0)
 			{	//there Are Market Orders
 				
-				//Cumulate over all 
-				int oaAskVolume =0;
-				for(int i=0;i<askVolumePerLevelList.size();i++)
-				{	oaAskVolume += askVolumePerLevelList.get(i);}
+				//Cumulate over all volume
+				int oabuyVolume =0;
+				for(int i=0;i<buyVolumePerLevelList.size();i++)
+				{	oabuyVolume += buyVolumePerLevelList.get(i);}
 					
-				vol = oaAskVolume;
-				for(int i=1;i<askVolumePerLevelList.size();i++)
-				{
-					askCumVolPerLevelList[i] = vol;
-					vol -= askVolumePerLevelList.get(i);				
+				vol = oabuyVolume;
+				buyCumVolPerLevelList[0] = vol;
+
+				for(int i=1;i<buyVolumePerLevelList.size();i++)
+				{					
+					vol -= buyVolumePerLevelList.get(i);
+					buyCumVolPerLevelList[i] = vol;
 				}
 			}
 			
 			else 
 			//No Market Orders
 			{
-				//there Are Market Orders
+				//there are not Market Orders
 			
 				//Cumulate over all 
-				int oaAskVolume =0;
-				for(int i=0;i<askVolumePerLevelList.size();i++)
-				{	oaAskVolume += askVolumePerLevelList.get(i);}
+				int oabuyVolume =0;
+				for(int i=0;i<buyVolumePerLevelList.size();i++)
+				{	oabuyVolume += buyVolumePerLevelList.get(i);}
 					
-				vol = oaAskVolume;
-				for(int i=0;i<askVolumePerLevelList.size();i++)
+				vol = oabuyVolume;
+				for(int i=0;i<buyVolumePerLevelList.size();i++)
 				{
-					askCumVolPerLevelList[i] = vol;
-					vol -= askVolumePerLevelList.get(i);				
+					vol -= buyVolumePerLevelList.get(i);
+					buyCumVolPerLevelList[i] = vol;									
 				}
 				
 			}
 			
 		//Matching price Vectors and find new Price			
-			int maxPrice = (int) maxAskLimitPrice;
-			int minPrice = (int) minBidLimitPrice;
+			int maxPrice = Math.max((int) maxbuyLimitPrice, (int) maxsellLimitPrice);
+			int minPrice = Math.min((int) minbuyLimitPrice, (int) minsellLimitPrice);
 			
 			//
-			int countAsk = 0;
-			if(askPriceLevels.get(0) == 0.0)
+			int countbuy = 0;
+
+			if(buyPriceLevels.get(0) == 0.0)
 			{	//there Are Market Orders			
-				 countAsk = 1;}
+				 countbuy = 1;
+			}
 			
-			int countBid = 0;
-			if(bidPriceLevels.get(0) == 0.0)
+            int buyLevelCumVol = buyCumVolPerLevelList[countbuy];;
+
+			int countsell = 0;
+			int sellLevelCumVol = 0;
+			if(sellPriceLevels.get(0) == 0.0)
 			{	//there Are Market Orders			
-				countBid = 1;}
+				sellLevelCumVol = sellCumVolPerLevelList[0];
+				countsell = 1;}
 							
 			
-			int bidLevelCumVol = 0;
-			int askLevelCumVol = askCumVolPerLevelList[countAsk];;
-			int maxVolume = askLevelCumVol;
+			int sellVol = 0, buyVol = 0;
+			
+			int maxVolume = buyLevelCumVol;
 
+			
+			System.out.printf("Price \t sellVol \t buyVol \t sellCum \t buyCum \t Transition\n---------------------------------------------------------------\n");
+			
+			//go over whole order book (level by level) and set price there where transition is minimized
 			for(int i = minPrice; i<=maxPrice; i++)
 			{
 				
-				
-				if(askPriceLevels.get(countAsk) == i)
+				if(buyPriceLevels.get(countbuy) == i)
 				{
-					askLevelCumVol = askCumVolPerLevelList[countAsk];
-					if(countAsk<askCumVolPerLevelList.length-1){countAsk++;};
+					buyVol = buyVolumePerLevelList.get(countbuy);
+					buyLevelCumVol = buyCumVolPerLevelList[countbuy];
+					if(countbuy<buyCumVolPerLevelList.length-1)
+					{countbuy++;};
 				}				
-				if(bidPriceLevels.get(countBid) == i)
+				else
 				{
-					bidLevelCumVol = bidCumVolPerLevelList[countBid];
-					if(countBid<bidCumVolPerLevelList.length-1){countBid++;};
+					buyVol = 0;
 				}
+				if(sellPriceLevels.get(countsell) == i)
+				{
+					sellVol = sellVolumePerLevelList.get(countsell);
+					sellLevelCumVol = sellCumVolPerLevelList[countsell];
+					if(countsell<sellCumVolPerLevelList.length-1)
+					{countsell++;};
+				}
+				else
+				{
+					sellVol = 0;
+				}
+
+				int h = Math.abs(sellLevelCumVol - buyLevelCumVol);
 				
-				//Calc  cumulatedVolume Match
-				int h = Math.abs(bidLevelCumVol - askLevelCumVol);
-				
-				//System.out.println("Price: " + i + " Transition: " + h);
-				//Maximise execution volume
+				//Maximise execution volume (-> minimize transition)
 				if(maxVolume > h)
 				{	
 					maxVolume = h;
 					transition = h;
 					newPrice = i;
-					nShares = askLevelCumVol;
+					nShares = buyLevelCumVol;
 				}
 				
-				
-				
+				//Print Orderbook
+				System.out.printf("%d \t\t %d \t\t %d \t\t %d \t\t %d \t\t %d \n  ", i, sellVol, buyVol,  sellLevelCumVol, buyLevelCumVol, h);
+								
 			}
 		
 		}
@@ -312,7 +350,7 @@ public class ArtificialMarket {
 			
 			newPrice = getSpotPrice();
 		}
-		
+		System.out.println();
 		System.out.println("Match: Price: " + newPrice + " Transition: " + transition + " Need Shares: " + nShares);
 		
 		
@@ -322,19 +360,19 @@ public class ArtificialMarket {
 	//List of all Orders for price p
 		int leftShares = nShares;
 		
-		int bidIndex = 0;
+		int sellIndex = 0;
 		ArrayList<Order> sellOrders = new ArrayList<Order>();
 		ArrayList<Integer> orderSize = new ArrayList<Integer>();
 		
 		
 		//Execute Sell Orders		
-		for(int i=0;i<bidOrderBook.size();i++)
+		for(int i=0;i<sellOrderBook.size();i++)
 		{
 		
 			int shares = 0;
-			if(bidOrderBook.get(i).getVolume() < leftShares)
+			if(sellOrderBook.get(i).getVolume() < leftShares)
 			{
-				 shares = bidOrderBook.get(i).getVolume();			
+				 shares = sellOrderBook.get(i).getVolume();			
 			}
 			else
 			{
@@ -343,7 +381,7 @@ public class ArtificialMarket {
 			}
 			
 			int money =  shares * newPrice; 
-			bidOrderBook.get(i).getOwner().buyShareFromTrader(money, shares);
+			sellOrderBook.get(i).getOwner().buyShareFromTrader(money, shares);
 			leftShares -= shares;
 			
 			if(leftShares == 0)
@@ -353,9 +391,9 @@ public class ArtificialMarket {
 
 //Execute Buy Orders
 		//if there are market orders, execute first
-		if(askPriceLevels.get(0) == 0.0)
+		if(buyPriceLevels.get(0) == 0.0)
 		{
-			Iterator<Order> orders = sameAskOrders.get(0).iterator();
+			Iterator<Order> orders = samebuyOrders.get(0).iterator();
 			while(orders.hasNext())
 			{
 				//Execute Order
@@ -369,9 +407,9 @@ public class ArtificialMarket {
 		}
 		 
 		//Execute Buy Orders Level by Level
-		for(int i=askPriceLevels.size()-1; i > 0; i--)
+		for(int i=buyPriceLevels.size()-1; i > 0; i--)
 		{
-			Iterator<Order> orders = sameAskOrders.get(i).iterator();
+			Iterator<Order> orders = samebuyOrders.get(i).iterator();
 			while(orders.hasNext())
 			{
 				//Execute Order
@@ -383,7 +421,7 @@ public class ArtificialMarket {
 				o.getOwner().sellShareToTrader(money, shares);
 			}
 			
-			if(newPrice == askPriceLevels.get(i))
+			if(newPrice == buyPriceLevels.get(i))
 			{
 				break;
 			}
@@ -392,8 +430,8 @@ public class ArtificialMarket {
 		
 		//Store Price and clear order books
 		priceHistory.add(newPrice);
-		askOrderBook.clear();
-		bidOrderBook.clear();
+		buyOrderBook.clear();
+		sellOrderBook.clear();
 		
 	}
 	
@@ -405,10 +443,10 @@ public class ArtificialMarket {
 	public void reciveOrder(Order order)
 	{
 		if(order.getType1() == Order.BUY)
-		{	askOrderBook.add(order);}
+		{	buyOrderBook.add(order);}
 		
 		else if(order.getType1() == Order.SELL)
-		{	bidOrderBook.add(order);}
+		{	sellOrderBook.add(order);}
 		
 		else
 		{	}//do nothing, Order isn't allowed 
@@ -422,12 +460,15 @@ public class ArtificialMarket {
 	 * @param n - number of prices to show
 	 * @return array of integer with last n prices
 	 */
-	public int[] getLastNPrice(int n)
+	public Integer[] getLastNPrice(int n)
 	{
+		if( priceHistory.isEmpty())
+		{	return null;}
+		
 		if(n>priceHistory.size())
 		{	n = priceHistory.size();}
 		
-		int[] lastPrices = new int[n];
+		Integer[] lastPrices = new Integer[n];
 		
 		for(int i=0; i<n; i++)
 		{
@@ -437,7 +478,20 @@ public class ArtificialMarket {
 		return lastPrices;
 		
 	}
-	
+
+	/** returns current spot price 
+	 * @return spot Price
+	 */
+	public int getSpotPrice()
+	{
+		Integer[] lastPrice = getLastNPrice(1);
+		
+		if(lastPrice == null)
+		{	return -1;}
+		else
+		{	return lastPrice[0];}
+	}
+
 	/**
 	 * @param min
 	 * @param max
@@ -455,11 +509,6 @@ public class ArtificialMarket {
 	    return randomNum;
 	}
 	
-	public int getSpotPrice()
-	{
-		int[] lastPrice = getLastNPrice(1);
-		return lastPrice[0];
-	}
 
 
 }

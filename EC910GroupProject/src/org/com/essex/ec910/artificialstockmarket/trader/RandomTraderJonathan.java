@@ -15,9 +15,12 @@ import jas.engine.Sim;
 // Random trader sends random order buy/sell to market and exits randomly 
 // Random trader is a source of liquidity for market
 
-public class RandomTrader extends AbstractTrader {
+public class RandomTraderJonathan extends AbstractTrader {
 
 
+	private Random rnd;
+	private double volFactorBuy;
+	private double volFactorSell;
 	/**
 	 * Constructor
 	 * @param name 
@@ -27,10 +30,14 @@ public class RandomTrader extends AbstractTrader {
 	 * @param max_sell
 	 * 
 	 */
-	public RandomTrader(String name, ArtificialMarket artificialMarket, Portfolio portfolio, int max_buy,
-			int max_sell) {
+	public RandomTraderJonathan(String name, ArtificialMarket artificialMarket, Portfolio portfolio, int max_buy,
+			int max_sell, double volFactorBuy, double volFactorSell) {
 
+		
 		super(name, artificialMarket, portfolio, max_buy, max_sell);
+		rnd = new Random();
+		this.volFactorBuy = volFactorBuy;
+		this.volFactorSell = volFactorSell;
 
 	}
 
@@ -42,20 +49,69 @@ public class RandomTrader extends AbstractTrader {
 		int price;
 		int buyOrSell; //0= buy/ 1= sell
 		int type2;
+		int initialPrice = 30;
 
-		if(Math.random()>0.5)
-		{	buyOrSell = Order.BUY;}
-		else
-		{	buyOrSell = Order.SELL;}
+		Integer lastPrice =artificialMarket.getSpotPrice();
+
+		int h;
 		
-		if(Math.random()>0.5)
+		if(rnd.nextBoolean())
+		{	
+				buyOrSell = Order.BUY;
+				double factor;
+				
+				volume = (int) (Sim.getRnd().getIntFromTo(1, this.max_buy)*volFactorBuy); 
+				
+				if(Math.random()>0.2)
+				{
+					factor = -1;
+				}
+				else
+				{
+					factor = 1;
+				}
+				
+				h = (int) (factor*Math.abs((rnd.nextGaussian()*10)));
+				if(lastPrice == -1)
+				{	price =  initialPrice + h;}
+				else
+				{	price =  lastPrice + h;}
+		}
+		else
+		{
+				volume = Sim.getRnd().getIntFromTo(1, this.max_buy); 
+
+				buyOrSell = Order.SELL;
+				double factor;
+				
+				if(Math.random()>0.2)
+				{
+					factor = 1;
+				}
+				else
+				{
+					factor =  -1;
+				}
+				
+				h = (int) (factor*Math.abs((Math.round(rnd.nextGaussian()*10))*volFactorSell));
+				if(lastPrice == -1)
+				{	price =  initialPrice + h;}
+				else
+				{	price =  lastPrice + h;}
+		}
+		
+		if(Math.random()>0.05)
 		{	type2 = Order.LIMIT;}
 		else
 		{	type2 = Order.MARKET;}
 		 
 		
-		volume = Sim.getRnd().getIntFromTo(1, this.max_buy);  // volume of trading is limited to 10 ?????????
-		price = Sim.getRnd().getIntFromTo(10, 50);
+		
+		
+		
+		
+		
+		
 		
 		order = new Order(buyOrSell, type2, volume, price, this);// default order which will not be sent to the market (because volume = 0)
 

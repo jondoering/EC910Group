@@ -9,7 +9,7 @@ import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
-import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
+import org.com.essex.ec910.artificialstockmarket.trader.RandomTraderJonathan;
 import org.junit.Test;
 
 public class JUnitTest {
@@ -34,7 +34,7 @@ public class JUnitTest {
 		
 		ArtificialMarket m = new ArtificialMarket(null);
 		
-		RandomTrader a = new RandomTrader("A", m, new Portfolio(1000, 0), 0, 0);
+		RandomTraderJonathan a = new RandomTraderJonathan("A", m, new Portfolio(1000, 0), 0, 0, 0, 0);
 		
 		int num =100;
 		Order[] o = new Order[num];

@@ -69,7 +69,7 @@ public abstract class AbstractTrader {
 		
 		Order order = runStrategy();
 //		int[] spotPrice = this.artificialMarket.getLastNPrice(1); for artificial market
-		int[] spotPrice = this.artificialMarket.getLastNPrice(1);
+		Integer[] spotPrice = this.artificialMarket.getLastNPrice(1);
 		
 		//check that Volume > 0, otherwise, it means that trader does not want to send order to market
 		if (order.getVolume() > 0){

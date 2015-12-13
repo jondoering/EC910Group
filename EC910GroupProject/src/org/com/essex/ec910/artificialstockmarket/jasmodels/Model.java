@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
-import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
+import org.com.essex.ec910.artificialstockmarket.trader.RandomTraderJonathan;
 
 /**
  * @author Pouyan
@@ -20,7 +20,8 @@ public class Model extends SimModel{
 	public int numRandomTrader;                         // number of random traders
 	public int initialMoney;                            // money of random traders at the beginning 
 	public int initialShares;                           // shares of random traders at the beginning 
-	int max_buy, max_sell;                              // trading limits for traders 
+	int max_buy, max_sell;                              // trading limits for traders
+	double volFactorBuy, volFactorSell;
 
 	//	simple random market for backtesting model and observer
 	//public RandomMarket randomMarket;                  
@@ -28,18 +29,21 @@ public class Model extends SimModel{
 	public double landa;
 	
 	private ArtificialMarket market;
-	public ArrayList<RandomTrader> randomTraderList;    // list of random traders
+	public ArrayList<RandomTraderJonathan> randomTraderList;    // list of random traders
     
 	
 	@Override
 	public void setParameters() {
 		
 		// set up default values for model parameters
-		numRandomTrader = 100;
+		numRandomTrader = 500;
 		initialMoney = 10000; //10000$ for each trader
 		initialShares=1000;   //1000 shares for each trader 
-		max_buy = 100;        
-		max_sell = 100;
+		max_buy = 1000;        
+		max_sell = 1000;
+		volFactorBuy = 1;
+		volFactorSell = 1;
+		
 		
 		// put DatabaseConnector here ???????????????????? 
 		
@@ -51,13 +55,13 @@ public class Model extends SimModel{
 	public void buildModel() {
 		
          market = new ArtificialMarket(null);// creating AM
-		randomTraderList = new ArrayList<RandomTrader>();// creating random traders list 
+		randomTraderList = new ArrayList<RandomTraderJonathan>();// creating random traders list 
 		
         // setup random traders		
 		for(int i = 0; i < numRandomTrader; i++){
-			randomTraderList.add(new RandomTrader("R"+ i, this.market, 
+			randomTraderList.add(new RandomTraderJonathan("R"+ i, this.market, 
 					new Portfolio(this.initialMoney,this.initialShares), this.max_buy,
-					this.max_sell));
+					this.max_sell, volFactorBuy, volFactorSell));
 		}
 		
 		scheduleEvents();
@@ -87,7 +91,8 @@ public class Model extends SimModel{
 		Observer o = new Observer();
 		eng.addModel(o);
 		o.setParameters();
-
+		
+		
 	}
 
 	public ArtificialMarket getMarket()
