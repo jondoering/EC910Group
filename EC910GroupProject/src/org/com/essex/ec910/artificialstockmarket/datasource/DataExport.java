@@ -1,8 +1,12 @@
 package org.com.essex.ec910.artificialstockmarket.datasource;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+/**
+ * @author MAO WEIGUANG
+ *
+ * Using SQL Query Language to  store all outcomes of the simulation data
+ *
+ */
 public class DataExport {
 
 }
