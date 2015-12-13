@@ -74,7 +74,7 @@ group by moneyB
 select volumesS
 where limitS<price
 money=price*volume
-group by moneyS
+group by moneyS/
 */
 	
 }
