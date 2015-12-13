@@ -21,20 +21,20 @@ public class ArtificialMarket {
 	private ArrayList<Order> bidOrderBook;
 	private ArrayList<Order> askOrderBook;
 	
-	private ArrayList<Integer> lastPrice;
+	private ArrayList<Integer> priceHistory;
 	
 
 
 	/**
 	 * Constructor
-	 * @param db
+	 * @param initialPrice
 	 */
 	public ArtificialMarket(DatabaseConnector db)
 	{
 		this.db = db;
 		bidOrderBook = new ArrayList<Order>();
 		askOrderBook = new ArrayList<Order>();
-		lastPrice = new ArrayList<Integer>();
+		priceHistory = new ArrayList<Integer>();
 	}
 	
 	
@@ -45,6 +45,12 @@ public class ArtificialMarket {
 	public void clearMarket()
 	{
 
+		//if orderbooks empty, do nothing
+		if(bidOrderBook.isEmpty() && askOrderBook.isEmpty())
+		{	return;}
+		
+		
+		//Otherwise: find new price by volume maximization
 		//Find Orders with same price and cumulate the Volume 
 		Collections.sort(bidOrderBook);
 		 
@@ -65,7 +71,7 @@ public class ArtificialMarket {
 		for(int i=0;i<bidOrderBook.size();i++)
 		{			
 			curOrder = bidOrderBook.get(i);
-			System.out.println(curOrder.toString());
+			//System.out.println(curOrder.toString());
 			//If Market Order, by definition at the beginning of the list
 			if(curOrder.getType2()==Order.MARKET)
 			{
@@ -90,8 +96,7 @@ public class ArtificialMarket {
 					//Add only if they were Orders at last Level
 					{	
 						sameBidOrders.add(curLevelList);
-						bidVolumePerLevelList.add(bidVolumePerLevel);
-												
+						bidVolumePerLevelList.add(bidVolumePerLevel);												
 					}	
 					
 					//add new Price Level
@@ -207,8 +212,8 @@ public class ArtificialMarket {
 				vol += bidVolumePerLevelList.get(i);
 				bidCumVolPerLevelList[i] = vol;				
 			}
-
-			int lastElement = 0;
+		//More Complex for Ask Orders
+		
 			//Exception for Market Orders
 			if(askPriceLevels.get(0) == 0.0)
 			{	//there Are Market Orders
@@ -245,9 +250,7 @@ public class ArtificialMarket {
 				
 			}
 			
-		//Matching price Vectors and find new Price
-			
-			
+		//Matching price Vectors and find new Price			
 			int maxPrice = (int) maxAskLimitPrice;
 			int minPrice = (int) minBidLimitPrice;
 			
@@ -284,7 +287,8 @@ public class ArtificialMarket {
 				
 				//Calc  cumulatedVolume Match
 				int h = Math.abs(bidLevelCumVol - askLevelCumVol);
-				System.out.println("Price: " + i + " Transition: " + h);
+				
+				//System.out.println("Price: " + i + " Transition: " + h);
 				//Maximise execution volume
 				if(maxVolume > h)
 				{	
@@ -306,12 +310,14 @@ public class ArtificialMarket {
 			//
 			// old price is new price
 			
+			newPrice = getSpotPrice();
 		}
 		
 		System.out.println("Match: Price: " + newPrice + " Transition: " + transition + " Need Shares: " + nShares);
 		
 		
-	//Step 3. Execute all Orders that fits price  
+
+//Step 3. Execute all Orders that fits price  
 		
 	//List of all Orders for price p
 		int leftShares = nShares;
@@ -321,8 +327,7 @@ public class ArtificialMarket {
 		ArrayList<Integer> orderSize = new ArrayList<Integer>();
 		
 		
-		//Execute Sell Orders
-		
+		//Execute Sell Orders		
 		for(int i=0;i<bidOrderBook.size();i++)
 		{
 		
@@ -345,8 +350,9 @@ public class ArtificialMarket {
 			{ break;}
 		}
 		
-		
-		//if there are market orders, exdcute first
+
+//Execute Buy Orders
+		//if there are market orders, execute first
 		if(askPriceLevels.get(0) == 0.0)
 		{
 			Iterator<Order> orders = sameAskOrders.get(0).iterator();
@@ -382,9 +388,12 @@ public class ArtificialMarket {
 				break;
 			}
 		}
-		//
-		lastPrice.add(newPrice);
-	
+		
+		
+		//Store Price and clear order books
+		priceHistory.add(newPrice);
+		askOrderBook.clear();
+		bidOrderBook.clear();
 		
 	}
 	
@@ -415,14 +424,14 @@ public class ArtificialMarket {
 	 */
 	public int[] getLastNPrice(int n)
 	{
-		if(n>lastPrice.size())
-		{	n = lastPrice.size();}
+		if(n>priceHistory.size())
+		{	n = priceHistory.size();}
 		
 		int[] lastPrices = new int[n];
 		
 		for(int i=0; i<n; i++)
 		{
-			lastPrices[i] = lastPrice.get(lastPrice.size()-(i+1));
+			lastPrices[i] = priceHistory.get(priceHistory.size()-(i+1));
 		}
 		
 		return lastPrices;
@@ -444,6 +453,12 @@ public class ArtificialMarket {
 	    int randomNum = rand.nextInt((max - min) + 1) + min;
 
 	    return randomNum;
+	}
+	
+	public int getSpotPrice()
+	{
+		int[] lastPrice = getLastNPrice(1);
+		return lastPrice[0];
 	}
 
 

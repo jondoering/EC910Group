@@ -1,24 +1,15 @@
 package org.com.essex.ec910.artificialstockmarket.jasmodels;
 
+import jas.engine.Sim;
+import jas.engine.SimEngine;
+import jas.engine.SimModel;
+import jas.engine.gui.JAS;
+import java.util.ArrayList;
 
-import org.com.essex.ec910.artificialstockmarket.datasource.DatabaseConnector;
-import org.com.essex.ec910.artificialstockmarket.datasource.YQLConnector;
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
+import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
-import jas.engine.Sim;
-import jas.engine.SimEngine;
-import jas.engine.SimModel;
-import jas.engine.gui.JAS;
-
-import java.util.ArrayList;
-
-
-import jas.engine.Sim;
-import jas.engine.SimEngine;
-import jas.engine.SimModel;
-import jas.engine.gui.JAS;
-import java.util.ArrayList;
 
 /**
  * @author Pouyan
@@ -32,8 +23,11 @@ public class Model extends SimModel{
 	int max_buy, max_sell;                              // trading limits for traders 
 
 	//	simple random market for backtesting model and observer
-	public ArtificialMarket  artificialMarket;                  
-
+	//public RandomMarket randomMarket;                  
+	public  int initialPrice;
+	public double landa;
+	
+	private ArtificialMarket market;
 	public ArrayList<RandomTrader> randomTraderList;    // list of random traders
     
 	
@@ -47,7 +41,7 @@ public class Model extends SimModel{
 		max_buy = 100;        
 		max_sell = 100;
 		
-		// put DatabaseConnector parameters here ???????????????????? 
+		// put DatabaseConnector here ???????????????????? 
 		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
@@ -56,13 +50,12 @@ public class Model extends SimModel{
 	@Override
 	public void buildModel() {
 		
-        this.artificialMarket = new ArtificialMarket(null);// creating AM
+         market = new ArtificialMarket(null);// creating AM
 		randomTraderList = new ArrayList<RandomTrader>();// creating random traders list 
-		System.out.println("test");
-
+		
         // setup random traders		
 		for(int i = 0; i < numRandomTrader; i++){
-			randomTraderList.add(new RandomTrader("R"+ i, this.artificialMarket, 
+			randomTraderList.add(new RandomTrader("R"+ i, this.market, 
 					new Portfolio(this.initialMoney,this.initialShares), this.max_buy,
 					this.max_sell));
 		}
@@ -72,8 +65,9 @@ public class Model extends SimModel{
 
 	public void scheduleEvents() {
      
-		eventList.scheduleSimple(0, 1, this.artificialMarket, "clearMarket");
-		//eventList.scheduleCollection(0, 1, this.randomTraderList, getObjectClass("RandomTrader"), "sendFinalOrderToMarket");
+		//Add Events
+		eventList.scheduleCollection(0, 1, this.randomTraderList, getObjectClass("org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader"), "sendFinalOrderToMarket");
+		eventList.scheduleSimple(0, 1, this.market, "clearMarket");
 
 
 	}
@@ -81,11 +75,10 @@ public class Model extends SimModel{
 	public static void main(String[] args)
 	{
 
-		
+		//Load Sim Model
 		SimEngine eng = new SimEngine();
 		JAS jas = new JAS(eng);
 		jas.setVisible(true);
-
 		Model m = new Model();
 		eng.addModel(m);
 		m.setParameters();
@@ -94,8 +87,12 @@ public class Model extends SimModel{
 		Observer o = new Observer();
 		eng.addModel(o);
 		o.setParameters();
-		//	    eng.buildModels();
-		//	    eng.start();
+
+	}
+
+	public ArtificialMarket getMarket()
+	{
+		return market;
 	}
 
 }

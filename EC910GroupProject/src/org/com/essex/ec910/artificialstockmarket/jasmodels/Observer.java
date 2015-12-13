@@ -1,6 +1,5 @@
 package org.com.essex.ec910.artificialstockmarket.jasmodels;
 
-
 import jas.engine.Sim;
 import jas.engine.SimModel;
 import jas.graphics.plot.TimeSeriesPlotter;
@@ -21,7 +20,7 @@ public class Observer extends SimModel {
 	public void setParameters() {
 		// TODO Auto-generated method stub
 
-		model = (Model) Sim.engine.getModelWithID("Model");
+		model = (Model) Sim.engine.getModelWithID("org.com.essex.ec910.artificialstockmarket.jasmodels.Model");
 
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters observer");
@@ -33,7 +32,7 @@ public class Observer extends SimModel {
 	public void buildModel() {
 		// TODO Auto-generated method stub
 		pricePlot = new TimeSeriesPlotter("Price");
-		pricePlot.addSeries("price", model.artificialMarket, "getPrice", true);
+		pricePlot.addSeries("price", model.getMarket(), "getSpotPrice", true);
 		addSimWindow(pricePlot);
 		
 //		ordersPlot = new CollectionBarPlotter("Orders");
