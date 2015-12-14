@@ -104,5 +104,10 @@ public abstract class AbstractTrader {
 		this.portfolio.setShares(this.portfolio.getShares() + shares);
 		
 	}
+	
+	public String toString()
+	{
+		return name;
+	}
 
 }

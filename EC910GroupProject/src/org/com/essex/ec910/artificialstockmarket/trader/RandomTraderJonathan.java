@@ -19,8 +19,25 @@ public class RandomTraderJonathan extends AbstractTrader {
 
 
 	private Random rnd;
-	private double volFactorBuy;
-	private double volFactorSell;
+	
+	/**
+	 * Factor that determines how big the volume should be, if agent is gonna buy
+	 * actually useless
+	 */
+	private double volFactorBuy = 1; 
+	
+	
+	/**
+	 * Factor that determines how big the volume should be, if agents is gonna sell buy
+	 * actually useless
+	 */
+	private double volFactorSell = 1;
+	
+	/**
+	 * Factor that determines how much the random price is aside from the last price
+	 * as higher as much risk is the trader willing to take 
+	 */
+	private double riskFactor;
 	/**
 	 * Constructor
 	 * @param name 
@@ -31,13 +48,13 @@ public class RandomTraderJonathan extends AbstractTrader {
 	 * 
 	 */
 	public RandomTraderJonathan(String name, ArtificialMarket artificialMarket, Portfolio portfolio, int max_buy,
-			int max_sell, double volFactorBuy, double volFactorSell) {
+			int max_sell,  double riskFactor) {
 
 		
 		super(name, artificialMarket, portfolio, max_buy, max_sell);
 		rnd = new Random();
-		this.volFactorBuy = volFactorBuy;
-		this.volFactorSell = volFactorSell;
+
+		this.riskFactor = riskFactor;
 
 	}
 
@@ -57,6 +74,7 @@ public class RandomTraderJonathan extends AbstractTrader {
 		
 		if(rnd.nextBoolean())
 		{	
+			//Buy Order
 				buyOrSell = Order.BUY;
 				double factor;
 				
@@ -71,15 +89,13 @@ public class RandomTraderJonathan extends AbstractTrader {
 					factor = 1;
 				}
 				
-				h = (int) (factor*Math.abs((rnd.nextGaussian()*10)));
-				if(lastPrice == -1)
-				{	price =  initialPrice + h;}
-				else
-				{	price =  lastPrice + h;}
+				h = (int) (factor*Math.abs((rnd.nextGaussian())*10*riskFactor));
+				
+				price =  lastPrice + h;
 		}
 		else
 		{
-				volume = Sim.getRnd().getIntFromTo(1, this.max_buy); 
+				volume = (int) (Sim.getRnd().getIntFromTo(1, this.max_sell)*volFactorSell); 
 
 				buyOrSell = Order.SELL;
 				double factor;
@@ -93,24 +109,15 @@ public class RandomTraderJonathan extends AbstractTrader {
 					factor =  -1;
 				}
 				
-				h = (int) (factor*Math.abs((Math.round(rnd.nextGaussian()*10))*volFactorSell));
-				if(lastPrice == -1)
-				{	price =  initialPrice + h;}
-				else
-				{	price =  lastPrice + h;}
+				h = (int) (factor*Math.abs((rnd.nextGaussian())*10*riskFactor));
+				
+				price =  lastPrice + h;
 		}
 		
 		if(Math.random()>0.05)
 		{	type2 = Order.LIMIT;}
 		else
 		{	type2 = Order.MARKET;}
-		 
-		
-		
-		
-		
-		
-		
 		
 		
 		order = new Order(buyOrSell, type2, volume, price, this);// default order which will not be sent to the market (because volume = 0)
@@ -118,17 +125,9 @@ public class RandomTraderJonathan extends AbstractTrader {
 		return order;
 	}
 	
+	
 	public static int randInt(int min, int max) {
-
-	    // Usually this can be a field rather than a method variable
-	    Random rand = new Random();
-
-	    // nextInt is normally exclusive of the top value,
-	    // so add 1 to make it inclusive
-	    int randomNum = rand.nextInt((max - min) + 1) + min;
-
-	    return randomNum;
+	    return Sim.getRnd().getIntFromTo(min, max);
 	}
 
-	//// order = new Order(Order.SEll, 0, 0, 0, this);
 }

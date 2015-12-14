@@ -13,7 +13,9 @@ public class Observer extends SimModel {
 
 	public Model model;
 	private TimeSeriesPlotter pricePlot;
-//	private CollectionBarPlotter ordersPlot;
+	private TimeSeriesPlotter volumePlot;
+
+	//	private CollectionBarPlotter ordersPlot;
 
 
 	@Override
@@ -32,16 +34,26 @@ public class Observer extends SimModel {
 	public void buildModel() {
 		// TODO Auto-generated method stub
 		pricePlot = new TimeSeriesPlotter("Price");
-		pricePlot.addSeries("price", model.getMarket(), "getSpotPrice", true);
+		volumePlot = new TimeSeriesPlotter("Volume");
+		
+		pricePlot.addSeries("priceArtificial", model.getArtificialMarket(), "getSpotPrice", true);
+		pricePlot.addSeries("priceLife", model.getMarketMaker(), "getLastLifePrice", true);
+
+		volumePlot.addSeries("Volume", model.getArtificialMarket(), "getSpotVolume", true);
+		
 		addSimWindow(pricePlot);
+		addSimWindow(volumePlot);
 		
 //		ordersPlot = new CollectionBarPlotter("Orders");
 //		ordersPlot.addSeries("orders", model.market.getParticipants(), getObjectClass("RandomAgent"), "getOrder", true);
 //		addSimWindow(ordersPlot);
 		
 		
+		
 		eventList.scheduleSimple(0, 1, pricePlot, Sim.EVENT_UPDATE);
-//		eventList.scheduleSimple(0, 1, ordersPlot, Sim.EVENT_UPDATE);
+		eventList.scheduleSimple(0, 1, volumePlot, Sim.EVENT_UPDATE);
+
+		//		eventList.scheduleSimple(0, 1, ordersPlot, Sim.EVENT_UPDATE);
 
 	}
 

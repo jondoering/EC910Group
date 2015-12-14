@@ -125,8 +125,28 @@ public class Order implements Comparable{
 
 	@Override
 	public String toString() {
-		return "Order [type1=" + type1 + ", type2=" + type2 + ", volume=" + volume + ", limitprice=" + limitprice
-				+ ", owner=" + owner + "]";
+		String t1,t2;
+		
+		if(type1 == Order.BUY)
+		{
+			t1 = "BUY";
+		}
+		else
+		{
+			t1 = "SELL";
+		}
+		
+		if(type2 == Order.MARKET)
+		{
+			t2 = "MARKET";
+		}
+		else
+		{
+			t2 = "LIMIT";
+		}
+		
+		return "Order [type1=" + t1 + ", type2=" + t2 + ", volume=" + volume + ", limitprice=" + limitprice
+				+ ", owner=" + owner.toString() + "]";
 	}
 
 	

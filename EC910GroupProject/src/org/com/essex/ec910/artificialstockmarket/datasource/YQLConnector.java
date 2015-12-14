@@ -16,7 +16,7 @@ import org.w3c.dom.NodeList;
 /**
  * @author Jonathan
  *
- *Using Yahoo Query Language to get historical price data from Yahoo database
+ *Using Yahoo Query Language to get historical price data from Yahoo finance database
  *Further information see: https://developer.yahoo.com/java/, https://developer.yahoo.com/yql/guide/yql-builder.html
  */
 public class YQLConnector {
@@ -27,13 +27,20 @@ public class YQLConnector {
 	
 	private ArrayList<HistoricalPrice> histPrices;
 
-	public YQLConnector(String symbol) {
+	public YQLConnector(String yahoo_ticker) {
 				
-		this.symbol = symbol;	
+		this.symbol = yahoo_ticker;	
 		histPrices = new ArrayList<HistoricalPrice>();
 		
 	}
 	
+	/**
+	 * @return ArrayList with historical prices
+	 */
+	public ArrayList<HistoricalPrice> getAllPrices()
+	{
+		return histPrices;
+	}
 	
 	/**
 	 * @return length of ArrayList with historical prices

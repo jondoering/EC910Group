@@ -5,9 +5,10 @@ import static org.junit.Assert.*;
 import java.util.Random;
 
 import org.com.essex.ec910.artificialstockmarket.datasource.YQLConnector;
-import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
+import org.com.essex.ec910.artificialstockmarket.market.*;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
+import org.com.essex.ec910.artificialstockmarket.trader.MarketMakerJon;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 import org.com.essex.ec910.artificialstockmarket.trader.RandomTraderJonathan;
 import org.junit.Test;
@@ -17,24 +18,39 @@ public class JUnitTest {
 	@Test
 	public void test() throws Exception {
 
-		//Test Connector Class
-		//YQLConnector yql = new YQLConnector("MSFT");
-		//yql.addData("2013-02-01", "2014-2-15");
-		 //yql.addData("2014-02-01", "2015-2-15");
-//		YQLConnector yql = new YQLConnector("MSFT", "2013-02-01", "2015-2-15");
-		
-		 testClearing();
-		//fail("Not yet implemented");
+		 //testClearing();
+		testMarketMaker();
+
 	}
 	
 	
+	private void testMarketMaker() throws Exception
+	{
 	
-	private void testClearing()
+		LifeMarket lf = new LifeMarket("MSFT", "2010-02-01", "2014-2-15");
+		
+		int[] initPrices = new int[10];
+		int[] initVolumes = new int[10];
+		
+		for(int i=0;i<10;i++)
+		{
+			initPrices[i] = lf.getPrice(i).getPrice();
+			initVolumes[i] = lf.getPrice(i).getVolume();
+ 		}
+		
+		ArtificialMarket m = new ArtificialMarket( initPrices, initVolumes, false, false);
+
+		MarketMakerJon mm = new MarketMakerJon("MM", lf, m, initVolumes[2], 0.1, 10);
+		
+		
+	}
+	
+	
+	private void testClearing(ArtificialMarket m)
 	{
 		
-		ArtificialMarket m = new ArtificialMarket(null);
 		
-		RandomTraderJonathan a = new RandomTraderJonathan("A", m, new Portfolio(1000, 0), 0, 0, 0, 0);
+		RandomTraderJonathan a = new RandomTraderJonathan("A", m, new Portfolio(1000, 0), 0, 0, 0);
 		
 		int num =100;
 		Order[] o = new Order[num];

@@ -7,7 +7,9 @@ import jas.engine.gui.JAS;
 import java.util.ArrayList;
 
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
+import org.com.essex.ec910.artificialstockmarket.market.LifeMarket;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
+import org.com.essex.ec910.artificialstockmarket.trader.MarketMakerJon;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 import org.com.essex.ec910.artificialstockmarket.trader.RandomTraderJonathan;
 
@@ -21,29 +23,55 @@ public class Model extends SimModel{
 	public int initialMoney;                            // money of random traders at the beginning 
 	public int initialShares;                           // shares of random traders at the beginning 
 	int max_buy, max_sell;                              // trading limits for traders
-	double volFactorBuy, volFactorSell;
-
-	//	simple random market for backtesting model and observer
-	//public RandomMarket randomMarket;                  
-	public  int initialPrice;
-	public double landa;
 	
 	private ArtificialMarket market;
 	public ArrayList<RandomTraderJonathan> randomTraderList;    // list of random traders
+	private LifeMarket lifeMarket;
+	private MarketMakerJon marketMaker;
+	
+	public String toDate;
+	public String tickerSymbol;
+	public String fromDate;
+	public int dragVolume;
+	public double volumeFactor;
+	
+	public boolean printOrderBook; 
+	public boolean printOrders;    
     
+	public int stepsADay; //How many Steps are one day
+	private double riskFactorAverse;
+	private double riskFactorAffin;
+	private double riskDistribution;
 	
 	@Override
 	public void setParameters() {
 		
 		// set up default values for model parameters
-		numRandomTrader = 500;
+		numRandomTrader = 200; //number of Traders in Model
 		initialMoney = 10000; //10000$ for each trader
 		initialShares=1000;   //1000 shares for each trader 
-		max_buy = 1000;        
-		max_sell = 1000;
-		volFactorBuy = 1;
-		volFactorSell = 1;
 		
+		max_buy = 1000;      //maximum of shares a trader can buy per order
+		max_sell = 1000; 	//maximum of shares a trader can sell per order
+		
+		fromDate = "2014-02-01";  //First date of life data
+		toDate = "2015-02-01";		//Last Date of life data
+		tickerSymbol = "MSFT";		//Stock to get life data from (heere Microsoft)
+		
+		dragVolume = 10000; //Volume determine how much influence the Market Maker has to drag the artificial price to the life price
+							  //if high, price follows the life price, if low price is more independend
+		
+		volumeFactor = 0.1; // How many of the current market volume should be placed in the market to create volume around the current price
+						    // if low, price is more volatile and driven by randomness from trades
+		
+		stepsADay = 500; //How many Steps define a day (end of the day, Market Maker gets new price from life market) 
+		
+		printOrderBook = true;	// if true, order book is printed in each step in StdOut 
+		printOrderBook = false; // if true, orders are printed in each step in StdOut
+		
+		riskFactorAverse = 1; //Factor that represent a riskaverse trader; those set prices closer around last price
+		riskFactorAffin = 5; //Factor that represnet more agressive traders; those set prices in a bigger range about last price
+		riskDistribution = 0.7; //determines how many of the traders are risk averse (here 70%)
 		
 		// put DatabaseConnector here ???????????????????? 
 		
@@ -54,14 +82,51 @@ public class Model extends SimModel{
 	@Override
 	public void buildModel() {
 		
-         market = new ArtificialMarket(null);// creating AM
-		randomTraderList = new ArrayList<RandomTraderJonathan>();// creating random traders list 
+
+		//Initiate LifeMarket
+		try {
+			lifeMarket = new LifeMarket(tickerSymbol, fromDate, toDate);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			
+			System.out.println("Couldn load life market Data");
+			System.out.println(e.getMessage());
+		}
+		
+		
+		//Set up artificial market with first 10 values of life market
+		int initValues =10; 
+		int[] initPrices = new int[initValues];
+		int[] initVolumes = new int[initValues];
+		int c = 0;
+		for(c=0;c<initValues;c++)
+		{
+			initPrices[c] = lifeMarket.getPrice(c).getPrice();
+			initVolumes[c] = 10000; //lifeMarket.getPrice(c).getVolume();
+ 		}
+		
+		//Load Artifical Marker
+		market = new ArtificialMarket( initPrices, initVolumes, printOrderBook, printOrders);
+
+		marketMaker = new MarketMakerJon("MarketMaker", lifeMarket, market, dragVolume,  volumeFactor, c);
+		
+		// creating random traders list
+		randomTraderList = new ArrayList<RandomTraderJonathan>(); 
 		
         // setup random traders		
 		for(int i = 0; i < numRandomTrader; i++){
-			randomTraderList.add(new RandomTraderJonathan("R"+ i, this.market, 
+		
+			double riskF = riskFactorAverse; // usually the agents is risk averse
+
+			//Determine if affin or averse agent
+			if(Sim.getRnd().getDblFromTo(0, 1) > riskDistribution)
+			{
+				//in X percent the trader is risk affine and gambles more
+				riskF = riskFactorAffin;
+			}
+			randomTraderList.add(new RandomTraderJonathan("Random"+ i, this.market, 
 					new Portfolio(this.initialMoney,this.initialShares), this.max_buy,
-					this.max_sell, volFactorBuy, volFactorSell));
+					this.max_sell, riskF));
 		}
 		
 		scheduleEvents();
@@ -70,10 +135,14 @@ public class Model extends SimModel{
 	public void scheduleEvents() {
      
 		//Add Events
+		//Every Timestep
 		eventList.scheduleCollection(0, 1, this.randomTraderList, getObjectClass("org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader"), "sendFinalOrderToMarket");
+		eventList.scheduleSimple(0, 1, this.marketMaker, "runMarketMakerStrategy");
 		eventList.scheduleSimple(0, 1, this.market, "clearMarket");
 
-
+		//Just end of day
+		eventList.scheduleSimple(0, stepsADay, this.marketMaker, "nextDay");
+		
 	}
 
 	public static void main(String[] args)
@@ -85,8 +154,7 @@ public class Model extends SimModel{
 		jas.setVisible(true);
 		Model m = new Model();
 		eng.addModel(m);
-		m.setParameters();
-		
+		m.setParameters();					
 		
 		Observer o = new Observer();
 		eng.addModel(o);
@@ -94,10 +162,21 @@ public class Model extends SimModel{
 		
 		
 	}
-
-	public ArtificialMarket getMarket()
+	
+	/**returns the ArtificialMarket Object (for Observer only)
+	 * @return
+	 */
+	public ArtificialMarket getArtificialMarket()
 	{
 		return market;
+	}
+
+	/**returns the MarketMakerJon Object (for Observer only)
+	 * @return
+	 */
+	public MarketMakerJon getMarketMaker() {
+		// TODO Auto-generated method stub
+		return marketMaker;
 	}
 
 }
