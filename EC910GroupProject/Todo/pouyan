@@ -1,4 +1,1 @@
-I will develop AbstractTrader.java super class with the API provided by Janathan to connect to  the artificial market
-
-
-  -----------------
+AbstractTrader.java --> developing checking points before sending order to artificail market
