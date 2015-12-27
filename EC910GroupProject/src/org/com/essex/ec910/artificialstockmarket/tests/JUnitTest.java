@@ -2,11 +2,13 @@ package org.com.essex.ec910.artificialstockmarket.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import org.com.essex.ec910.artificialstockmarket.datasource.YQLConnector;
 import org.com.essex.ec910.artificialstockmarket.market.*;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
+import org.com.essex.ec910.artificialstockmarket.statistics.Statistics;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.MarketMakerJon;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
@@ -19,7 +21,7 @@ public class JUnitTest {
 	public void test() throws Exception {
 
 		 //testClearing();
-		testMarketMaker();
+		//testMarketMaker();
 
 	}
 	
@@ -132,5 +134,24 @@ public class JUnitTest {
 	    return randomNum;
 	}
 
+//	@Test
+//	public void testStatistic()
+//	{
+//		int[] d = new int[100];
+//		for(int i=0;i<100;i++)
+//		{	d[i] = i;}
+//		
+//		Statistics s = new Statistics(null);
+//
+//		Arrays.stream(d).forEach(n -> s.updatePrice(n));
+//	
+//		//assertEquals(String.format("%.3f",new Double(s.getVariance()).toString()), "7.500");
+//		System.out.println(s.getVariance());
+//		System.out.println(s.getSkewness());
+//		System.out.println(s.getKurtosis());
+//		System.out.println(s.getMu());
+//
+//		
+//	}
 }
 

@@ -625,6 +625,15 @@ public class ArtificialMarket {
 			return lastPrice[0];
 		}
 	}
+	
+	/**
+	 * returns last founded price in market as double (for time series in observer only)
+	 * by simple casting
+	 * @return spot Price
+	 */
+	public double getSpotPriceAsDouble() {
+		return (double) getSpotPrice();
+	}
 
 	/**
 	 * returns last executed Volume in Market
@@ -639,6 +648,15 @@ public class ArtificialMarket {
 		} else {
 			return lastVol[0];
 		}
+	}
+
+	/**
+	 * returns last executed volume in market as double (for time series in observer only)
+	 * by simple casting
+	 * @return spot Price
+	 */
+	public double getSpotVolumeAsDouble() {
+		return (double) getSpotVolume();
 	}
 
 	/**

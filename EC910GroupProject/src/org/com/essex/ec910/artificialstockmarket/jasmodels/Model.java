@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.LifeMarket;
+import org.com.essex.ec910.artificialstockmarket.statistics.Statistics;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.MarketMakerJon;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
@@ -19,16 +20,18 @@ import org.com.essex.ec910.artificialstockmarket.trader.RandomTraderJonathan;
  */
 public class Model extends SimModel{
 	
-	public int numRandomTrader;                         // number of random traders
-	public int initialMoney;                            // money of random traders at the beginning 
-	public int initialShares;                           // shares of random traders at the beginning 
-	int max_buy, max_sell;                              // trading limits for traders
-	
+	private static Observer observer;
 	private ArtificialMarket market;
 	public ArrayList<RandomTraderJonathan> randomTraderList;    // list of random traders
 	private LifeMarket lifeMarket;
 	private MarketMakerJon marketMaker;
+	private  Statistics statistics;
 	
+	public int numRandomTrader;                         // number of random traders
+	public int initialMoney;                            // money of random traders at the beginning 
+	public int initialShares;                           // shares of random traders at the beginning 
+	int max_buy, max_sell;                              // trading limits for traders	
+
 	public String toDate;
 	public String tickerSymbol;
 	public String fromDate;
@@ -38,10 +41,13 @@ public class Model extends SimModel{
 	public boolean printOrderBook; 
 	public boolean printOrders;    
     
-	public int stepsADay; //How many Steps are one day
+	private int stepsADay; //How many Steps are one day
 	private double riskFactorAverse;
 	private double riskFactorAffin;
 	private double riskDistribution;
+	
+	
+	
 	
 	@Override
 	public void setParameters() {
@@ -75,6 +81,9 @@ public class Model extends SimModel{
 		
 		// put DatabaseConnector here ???????????????????? 
 		
+		//load statistics object 
+	
+		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
 	}
@@ -82,15 +91,15 @@ public class Model extends SimModel{
 	@Override
 	public void buildModel() {
 		
-
+		
 		//Initiate LifeMarket
 		try {
 			lifeMarket = new LifeMarket(tickerSymbol, fromDate, toDate);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			
+						
 			System.out.println("Couldn load life market Data");
 			System.out.println(e.getMessage());
+			
 		}
 		
 		
@@ -105,9 +114,13 @@ public class Model extends SimModel{
 			initVolumes[c] = 10000; //lifeMarket.getPrice(c).getVolume();
  		}
 		
-		//Load Artifical Marker
+		
+		//Load artificial marker
 		market = new ArtificialMarket( initPrices, initVolumes, printOrderBook, printOrders);
-
+		statistics = new Statistics() ;
+		statistics.setMarket(market);
+		
+		//load Market maker
 		marketMaker = new MarketMakerJon("MarketMaker", lifeMarket, market, dragVolume,  volumeFactor, c);
 		
 		// creating random traders list
@@ -129,6 +142,7 @@ public class Model extends SimModel{
 					this.max_sell, riskF));
 		}
 		
+				
 		scheduleEvents();
 	}
 
@@ -139,7 +153,8 @@ public class Model extends SimModel{
 		eventList.scheduleCollection(0, 1, this.randomTraderList, getObjectClass("org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader"), "sendFinalOrderToMarket");
 		eventList.scheduleSimple(0, 1, this.marketMaker, "runMarketMakerStrategy");
 		eventList.scheduleSimple(0, 1, this.market, "clearMarket");
-
+		eventList.scheduleSimple(0, 1, this.statistics, "updatePrice");
+		
 		//Just end of day
 		eventList.scheduleSimple(0, stepsADay, this.marketMaker, "nextDay");
 		
@@ -156,12 +171,14 @@ public class Model extends SimModel{
 		eng.addModel(m);
 		m.setParameters();					
 		
-		Observer o = new Observer();
-		eng.addModel(o);
-		o.setParameters();
-		
-		
+		//load observer
+		observer = new Observer();
+		eng.addModel(observer);
+		observer.setParameters();
+				
 	}
+
+	
 	
 	/**returns the ArtificialMarket Object (for Observer only)
 	 * @return
@@ -175,8 +192,22 @@ public class Model extends SimModel{
 	 * @return
 	 */
 	public MarketMakerJon getMarketMaker() {
-		// TODO Auto-generated method stub
 		return marketMaker;
 	}
 
+	/**returns the Statistics Object (for Observer only)
+	 * @return
+	 */
+	public Statistics getStatistics() {
+		// TODO Auto-generated method stub
+		return statistics;
+	}
+
+	/**returns the stepsADay (for Observer only)
+	 * @return
+	 */	
+	public int getStepsADay()
+	{
+		return stepsADay;
+	}
 }
