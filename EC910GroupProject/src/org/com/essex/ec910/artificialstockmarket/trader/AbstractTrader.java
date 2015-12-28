@@ -109,7 +109,7 @@ public abstract class AbstractTrader {
 	public void sellShareToTrader(int money, int shares){
 		
 		//adjustment by commission fee
-		double m = this.portfolio.getMoney() - money*(1-comFee);
+		double m = this.portfolio.getMoney() - money*(1+comFee);
 
 		this.portfolio.setMoney(m);
 		this.portfolio.setShares(this.portfolio.getShares() + shares);
@@ -140,7 +140,7 @@ public abstract class AbstractTrader {
 	}
 	
 	/**
-	 * calculates money available for investment
+	 * calculates money available for investment with respect to commission fee
 	 * @return
 	 */
 	protected double getInvestableMoney()

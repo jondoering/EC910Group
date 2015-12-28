@@ -76,7 +76,7 @@ public class Model extends SimModel{
 	private int initMoneyInteligent;
 	private int initSharesInteligent;
 	
-	
+	private double comFee;
 	
 	
 	
@@ -104,6 +104,7 @@ public class Model extends SimModel{
 	//Parameters for all Traders	
 		max_buy = 1000;      //maximum of shares a trader can buy per order
 		max_sell = 1000; 	//maximum of shares a trader can sell per order
+		comFee = 0.005;		//Commission Fee of 0.5%
 		
 	// set up default values for random traders
 		numRandomTrader = 200; //number of Traders in Model
@@ -116,8 +117,8 @@ public class Model extends SimModel{
 	// set up default values for sma traders
 		initSharesInteligent = 0;
 		initMoneyInteligent = 1000000;
+		
 
-	
 		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
@@ -178,14 +179,22 @@ public class Model extends SimModel{
 				//in X percent the trader is risk affine and gambles more
 				riskF = riskFactorAffin;
 			}
-			randomTraderList.add(new RandomTraderJonathan("Random"+ i, this.market, 
+			
+			RandomTraderJonathan rt = new RandomTraderJonathan("Random"+ i, this.market, 
 					new Portfolio(this.initialSharesRandom, this.initialMoneyRandom), this.max_buy,
-					this.max_sell, riskF));
+					this.max_sell, riskF);
+			rt.setCommissionFee(comFee);
+			
+			randomTraderList.add(rt);
 		}
+		
 		
 	//set up intelligent trader
 		this.smaTrader = new SimpleSMATrader("SMA Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.max_buy, this.max_sell, 30, 15);
+		this.smaTrader.setCommissionFee(comFee);
+		
 		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.max_buy, this.max_sell, 50, 15, 10, 0.002);
+		this.bbTrader.setCommissionFee(comFee);
 		
 					
 				

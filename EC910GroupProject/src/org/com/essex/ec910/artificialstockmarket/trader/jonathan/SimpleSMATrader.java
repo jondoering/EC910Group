@@ -85,7 +85,7 @@ public class SimpleSMATrader extends AbstractTrader {
 					if((outShort[0] > outLong[0]) && portfolio.getShares() == 0)
 					{
 						//Buy as much as possible if short crosses long bottom up 
-						int vol = (int) Math.floor(this.getInvestableMoney()/spotprice); 
+						int vol = (int) Math.ceil(this.getInvestableMoney()/spotprice); 
 						order = new Order(Order.BUY, Order.MARKET, vol, (int) spotprice, this);
 						System.out.println("SMA Buy:" + order.toString());
 					}
