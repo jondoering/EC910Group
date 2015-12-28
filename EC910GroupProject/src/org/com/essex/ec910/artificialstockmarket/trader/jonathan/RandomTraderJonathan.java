@@ -1,9 +1,11 @@
-package org.com.essex.ec910.artificialstockmarket.trader;
+package org.com.essex.ec910.artificialstockmarket.trader.jonathan;
 
 import java.util.Random;
 
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
+import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
+import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 
 import jas.engine.Sim;
 import jas.engine.Sim;

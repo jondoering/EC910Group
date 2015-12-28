@@ -29,6 +29,9 @@ public abstract class AbstractTrader {
 	public int numWinTrades;                    // number of winning trades
 	public int profitFactor;                    // = numWinTrades / numTrades
 
+	
+	private double comFee;
+	
 	/**
 	 * Constructor
 	 * @param name 
@@ -92,7 +95,11 @@ public abstract class AbstractTrader {
 	//  reduce shares from portfolio of trader and increase the money 
 	//  to be used by artificial market, not by trader  
 	public void buyShareFromTrader(int money, int shares){
-		this.portfolio.setMoney(this.portfolio.getMoney() + money);
+		
+		//adjustment by commission fee
+		double m = this.portfolio.getMoney() + money*(1-comFee);
+		
+		this.portfolio.setMoney(m);
 		this.portfolio.setShares(this.portfolio.getShares() - shares);
 		
 	}
@@ -100,14 +107,48 @@ public abstract class AbstractTrader {
 	//  reduce money from portfolio of trader and increase the shares
 	//  to be used by artificial market, not by trader 
 	public void sellShareToTrader(int money, int shares){
-		this.portfolio.setMoney(this.portfolio.getMoney() - money);
+		
+		//adjustment by commission fee
+		double m = this.portfolio.getMoney() - money*(1-comFee);
+
+		this.portfolio.setMoney(m);
 		this.portfolio.setShares(this.portfolio.getShares() + shares);
 		
+	}
+	
+	/**
+	 * calculates actual value of portfolio by money and shares value
+	 * @return
+	 */
+	public double getPortfolioValue()
+	{
+		return portfolio.getMoney() + portfolio.getShares()*artificialMarket.getSpotPrice();
 	}
 	
 	public String toString()
 	{
 		return name;
 	}
+	
+	/**
+	 * 
+	 * @param comFee
+	 */
+	public void setCommissionFee(final double comFee)
+	{
+		this.comFee = comFee;
+	}
+	
+	/**
+	 * calculates money available for investment
+	 * @return
+	 */
+	protected double getInvestableMoney()
+	{
+		return portfolio.getMoney() * (1-comFee);
+	}
+	
 
+	
 }
+

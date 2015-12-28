@@ -1,19 +1,10 @@
 package org.com.essex.ec910.artificialstockmarket.market;
 
-import org.com.essex.ec910.artificialstockmarket.datasource.DatabaseConnector;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -24,7 +15,6 @@ import java.util.Random;
  */
 public class ArtificialMarket {
 
-	private DatabaseConnector db;
 
 	private ArrayList<Order> sellOrderBook;
 	private ArrayList<Order> buyOrderBook;
@@ -439,7 +429,9 @@ public class ArtificialMarket {
 			System.out.println();
 			System.out.println("Match: Price: " + newPrice + " with Volume " + nShares);
 
-		} else {
+		} 
+		else 
+		{
 
 			// Market Orders Only
 			// old price is new price
@@ -583,6 +575,33 @@ public class ArtificialMarket {
 	}
 
 	/**
+	 * Returns the last n prices as an Array of Doubles in order is [t, t-1,
+	 * t-2, .. , t-n]. If n is greater then actual price list, the whole price list
+	 * will be returned.
+	 * 
+	 * @param n - number of prices
+	 * @return array of Doubles with last n prices or null if list is empty
+	 */
+	public double[] getLastNPriceAsDoubles(int n) {
+		if (priceHistory.isEmpty()) {
+			return null;
+		}
+
+		if (n > priceHistory.size()) {
+			n = priceHistory.size();
+		}
+
+		double[] lastPrices = new double[n];
+
+		for (int i = 0; i < n; i++) {
+			lastPrices[i] = (double) priceHistory.get(priceHistory.size() - (i + 1));
+		}
+
+		return lastPrices;
+
+	}
+	
+	/**
 	 * Returns the last n volumes as an Array of integer in order is [t, t-1,
 	 * t-2, .. , t-n]. If n is grater then the price list, the whole volume list
 	 * will be returned.
@@ -592,7 +611,7 @@ public class ArtificialMarket {
 	 * @return array of integer with last n volume values or null if list is
 	 *         empty
 	 */
-	public Integer[] getLastNVolume(int n) {
+	public int[] getLastNVolume(int n) {
 		if (volumeHistory.isEmpty()) {
 			return null;
 		}
@@ -601,16 +620,16 @@ public class ArtificialMarket {
 			n = volumeHistory.size();
 		}
 
-		Integer[] lastVolume = new Integer[n];
+		int[] lastVolume = new int[n];
 
 		for (int i = 0; i < n; i++) {
 			lastVolume[i] = volumeHistory.get(volumeHistory.size() - (i + 1));
 		}
 
 		return lastVolume;
-
 	}
 
+	
 	/**
 	 * returns last founded price in market
 	 * 
@@ -641,7 +660,7 @@ public class ArtificialMarket {
 	 * @return
 	 */
 	public int getSpotVolume() {
-		Integer[] lastVol = getLastNVolume(1);
+		int[] lastVol = getLastNVolume(1);
 
 		if (lastVol == null) {
 			return -1;
@@ -659,21 +678,6 @@ public class ArtificialMarket {
 		return (double) getSpotVolume();
 	}
 
-	/**
-	 * @param min
-	 * @param max
-	 * @return
-	 */
-	private int randInt(int min, int max) {
 
-		// Usually this can be a field rather than a method variable
-		Random rand = new Random();
-
-		// nextInt is normally exclusive of the top value,
-		// so add 1 to make it inclusive
-		int randomNum = rand.nextInt((max - min) + 1) + min;
-
-		return randomNum;
-	}
 
 }

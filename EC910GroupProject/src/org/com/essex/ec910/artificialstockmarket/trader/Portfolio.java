@@ -9,7 +9,7 @@ public class Portfolio {
 
 
 	private int shares;   // number of shares in trader's portfolio 	
-	private int money;    // trader's capital
+	private double money;    // trader's capital
 		
 	/**
 	 * Constructor
@@ -29,11 +29,11 @@ public class Portfolio {
 		this.shares = shares;
 	}
 	
-	public int getMoney() {
+	public double getMoney() {
 		return money;
 	}
 	
-	public void setMoney(int money) {
+	public void setMoney(double money) {
 		this.money = money;
 	}
 	

@@ -1,12 +1,10 @@
 package org.com.essex.ec910.artificialstockmarket.jasmodels;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 
 import jas.engine.Sim;
 import jas.engine.SimModel;
 import jas.graphics.plot.TimeSeriesPlotter;
-import jas.stats.TimeSeries;
 
 /**
  * @author Pouyan
@@ -22,6 +20,7 @@ public class Observer extends SimModel {
 	private TimeSeriesPlotter kurtPlot;
 	private TimeSeriesPlotter skewPlot;
 	private TimeSeriesPlotter varPlot;
+	private TimeSeriesPlotter traderValuePlot;
 
 	//	private CollectionBarPlotter ordersPlot;
 
@@ -49,28 +48,33 @@ public class Observer extends SimModel {
 		kurtPlot = new TimeSeriesPlotter("Kurtosis");
 		skewPlot = new TimeSeriesPlotter("Skewness");
 		varPlot = new TimeSeriesPlotter("Variance");
+		traderValuePlot = new TimeSeriesPlotter("Strategy Portfolio Value");
 		
-		pricePlot.addSeries("PriceSeries", model.getArtificialMarket(), "getSpotPrice", true);	
-		pricePlot.addSeries("priceLife", model.getMarketMaker(), "getLastLifePrice", true);		
-		volumePlot.addSeries("Volume", model.getArtificialMarket(), "getSpotVolume", true);
-		varPlot.addSeries("Variance", model.getStatistics(), "getVariance", true);		
-		kurtPlot.addSeries("Kurtosis", model.getStatistics(), "getKurtosis", true);
-		skewPlot.addSeries("Skewness", model.getStatistics(), "getSkewness", true);
+		pricePlot.addSeries("PriceSeries", model.market, "getSpotPrice", true);	
+		pricePlot.addSeries("priceLife", model.marketMaker, "getLastLifePrice", true);		
+		volumePlot.addSeries("Volume", model.market, "getSpotVolume", true);
+		varPlot.addSeries("Variance", model.statistics, "getVariance", true);		
+		kurtPlot.addSeries("Kurtosis", model.statistics, "getKurtosis", true);
+		skewPlot.addSeries("Skewness", model.statistics, "getSkewness", true);
 				
+		traderValuePlot.addSeries("SMA", model.smaTrader, "getPortfolioValue", true);
+		traderValuePlot.addSeries("BB", model.bbTrader, "getPortfolioValue", true);
+		//smaTraderPlot.addSeries("Shares", model.simpleSMAAgent, "getShares", true);
+		
 		addSimWindow(pricePlot);
 		addSimWindow(volumePlot);
 		addSimWindow(varPlot);
 		addSimWindow(kurtPlot);
 		addSimWindow(skewPlot);
-		
+		addSimWindow(traderValuePlot);
 		
 		
 		eventList.scheduleSimple(0, 1, pricePlot, Sim.EVENT_UPDATE);		
 		eventList.scheduleSimple(0, 1, volumePlot, Sim.EVENT_UPDATE);		
 		eventList.scheduleSimple(2, 1, varPlot, Sim.EVENT_UPDATE);
-		eventList.scheduleSimple(4, 1, skewPlot, Sim.EVENT_UPDATE);
-		
-		eventList.scheduleSimple(5, model.getStepsADay(), kurtPlot, Sim.EVENT_UPDATE);
+		eventList.scheduleSimple(4, 1, skewPlot, Sim.EVENT_UPDATE);	
+		eventList.scheduleSimple(5, model.stepsADay, kurtPlot, Sim.EVENT_UPDATE);
+		eventList.scheduleSimple(0,1,traderValuePlot, Sim.EVENT_UPDATE);
 
 	}
 
