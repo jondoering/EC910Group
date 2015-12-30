@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.LifeMarket;
 import org.com.essex.ec910.artificialstockmarket.statistics.Statistics;
+import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.BollingerBandTrader;
+import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.SimpleSMATrader;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.MarketMakerJon;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
-import org.com.essex.ec910.artificialstockmarket.trader.jonathan.BollingerBandTrader;
-import org.com.essex.ec910.artificialstockmarket.trader.jonathan.RandomTraderJonathan;
-import org.com.essex.ec910.artificialstockmarket.trader.jonathan.SimpleSMATrader;
+import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
 
 /**
  * @author All
@@ -39,7 +39,7 @@ public class Model extends SimModel{
 	 * Agents
 	 */
 	MarketMakerJon marketMaker;
-	ArrayList<RandomTraderJonathan> randomTraderList;    // list of random traders
+	ArrayList<RandomTrader> randomTraderList;    // list of random traders
 	SimpleSMATrader smaTrader;    // list of simple SMA traders
 	BollingerBandTrader bbTrader; 
 
@@ -168,7 +168,7 @@ public class Model extends SimModel{
  * 
  */
      // setup random traders	
-		randomTraderList = new ArrayList<RandomTraderJonathan>(); 	
+		randomTraderList = new ArrayList<RandomTrader>(); 	
 		for(int i = 0; i < numRandomTrader; i++){
 		
 			double riskF = riskFactorAverse; // usually the agents is risk averse
@@ -180,7 +180,7 @@ public class Model extends SimModel{
 				riskF = riskFactorAffin;
 			}
 			
-			RandomTraderJonathan rt = new RandomTraderJonathan("Random"+ i, this.market, 
+			RandomTrader rt = new RandomTrader("Random"+ i, this.market, 
 					new Portfolio(this.initialSharesRandom, this.initialMoneyRandom), this.max_buy,
 					this.max_sell, riskF);
 			rt.setCommissionFee(comFee);

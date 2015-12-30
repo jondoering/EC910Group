@@ -9,16 +9,10 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.OptionalDouble;
-import java.util.function.DoubleUnaryOperator;
-import java.util.function.Function;
-import java.util.function.IntUnaryOperator;
 
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 
-import cern.colt.Arrays;
 import cern.colt.list.DoubleArrayList;
 import cern.jet.stat.Descriptive;
 

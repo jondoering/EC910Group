@@ -1,11 +1,9 @@
-package org.com.essex.ec910.artificialstockmarket.trader.jonathan;
+package org.com.essex.ec910.artificialstockmarket.trader;
 
 import java.util.Random;
 
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
-import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
-import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 
 import jas.engine.Sim;
 import jas.engine.Sim;
@@ -17,7 +15,7 @@ import jas.engine.Sim;
 // Random trader sends random order buy/sell to market and exits randomly 
 // Random trader is a source of liquidity for market
 
-public class RandomTraderJonathan extends AbstractTrader {
+public class RandomTrader extends AbstractTrader {
 
 
 	private Random rnd;
@@ -49,7 +47,7 @@ public class RandomTraderJonathan extends AbstractTrader {
 	 * @param max_sell
 	 * 
 	 */
-	public RandomTraderJonathan(String name, ArtificialMarket artificialMarket, Portfolio portfolio, int max_buy,
+	public RandomTrader(String name, ArtificialMarket artificialMarket, Portfolio portfolio, int max_buy,
 			int max_sell,  double riskFactor) {
 
 		
