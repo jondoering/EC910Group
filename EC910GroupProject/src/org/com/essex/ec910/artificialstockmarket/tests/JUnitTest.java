@@ -10,7 +10,7 @@ import org.com.essex.ec910.artificialstockmarket.market.*;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
 import org.com.essex.ec910.artificialstockmarket.statistics.Statistics;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
-import org.com.essex.ec910.artificialstockmarket.trader.MarketMakerJon;
+import org.com.essex.ec910.artificialstockmarket.trader.MarketMaker;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class JUnitTest {
 		
 		ArtificialMarket m = new ArtificialMarket( initPrices, initVolumes, false, false);
 
-		MarketMakerJon mm = new MarketMakerJon("MM", lf, m, initVolumes[2], 0.1, 10);
+		MarketMaker mm = new MarketMaker("MM", lf, m, initVolumes[2], 0.1, 10);
 		
 		
 	}

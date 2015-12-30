@@ -12,7 +12,7 @@ import org.com.essex.ec910.artificialstockmarket.statistics.Statistics;
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.BollingerBandTrader;
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.SimpleSMATrader;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
-import org.com.essex.ec910.artificialstockmarket.trader.MarketMakerJon;
+import org.com.essex.ec910.artificialstockmarket.trader.MarketMaker;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
 
@@ -38,7 +38,7 @@ public class Model extends SimModel{
 	/**
 	 * Agents
 	 */
-	MarketMakerJon marketMaker;
+	MarketMaker marketMaker;
 	ArrayList<RandomTrader> randomTraderList;    // list of random traders
 	SimpleSMATrader smaTrader;    // list of simple SMA traders
 	BollingerBandTrader bbTrader; 
@@ -160,7 +160,7 @@ public class Model extends SimModel{
 		statistics.setMarket(market);
 		
 		//load Market maker
-		marketMaker = new MarketMakerJon("MarketMaker", lifeMarket, market, dragVolume,  volumeFactor, c);
+		marketMaker = new MarketMaker("MarketMaker", lifeMarket, market, dragVolume,  volumeFactor, c);
 		
 		
 /*

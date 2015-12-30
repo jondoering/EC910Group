@@ -18,7 +18,7 @@ import jas.engine.Sim;
  * @author Jonathan
  *
  */
-public class MarketMakerJon extends AbstractTrader{
+public class MarketMaker extends AbstractTrader{
 
 	
 	/**
@@ -56,7 +56,7 @@ public class MarketMakerJon extends AbstractTrader{
 	
 	
 	
-	public MarketMakerJon(String name, LifeMarket lifeMarket, ArtificialMarket artificialMarket, int dragVolume, double volumeFactor, int lastLifePriceCounter)
+	public MarketMaker(String name, LifeMarket lifeMarket, ArtificialMarket artificialMarket, int dragVolume, double volumeFactor, int lastLifePriceCounter)
 	{
 		super(name, artificialMarket, new Portfolio(0,0), 0, 0);
 				
