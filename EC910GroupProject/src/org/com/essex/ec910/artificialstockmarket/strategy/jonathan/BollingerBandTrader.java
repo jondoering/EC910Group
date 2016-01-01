@@ -87,7 +87,11 @@ public class BollingerBandTrader extends AbstractTrader {
 					if(isClose(spotprice, lowerband[0]) && portfolio.getShares() == 0)
 					{
 						//Buy as much as possible if short crosses long bottom up 
-						int vol = (int) Math.ceil(this.getInvestableMoney()/spotprice); 
+						int vol = (int) Math.ceil(this.getInvestableMoney()/spotprice);
+						
+						if(vol > max_buy)
+						{	vol = max_buy;}
+
 						order = new Order(Order.BUY, Order.MARKET, vol, (int) spotprice, this);
 						System.out.println("Bollinger Buy:" + order.toString());
 					}

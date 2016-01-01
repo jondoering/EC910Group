@@ -57,8 +57,10 @@ public class Observer extends SimModel {
 		kurtPlot.addSeries("Kurtosis", model.statistics, "getKurtosis", true);
 		skewPlot.addSeries("Skewness", model.statistics, "getSkewness", true);
 				
-		traderValuePlot.addSeries("SMA", model.smaTrader, "getPortfolioValue", true);
-		traderValuePlot.addSeries("BB", model.bbTrader, "getPortfolioValue", true);
+		traderValuePlot.addSeries("Simple Moving Average", model.smaTrader, "getPortfolioValue", true);
+		traderValuePlot.addSeries("Bollinger Band", model.bbTrader, "getPortfolioValue", true);
+		traderValuePlot.addSeries("Highest Price", model.hpTrader, "getPortfolioValue", true);
+
 		//smaTraderPlot.addSeries("Shares", model.simpleSMAAgent, "getShares", true);
 		
 		addSimWindow(pricePlot);

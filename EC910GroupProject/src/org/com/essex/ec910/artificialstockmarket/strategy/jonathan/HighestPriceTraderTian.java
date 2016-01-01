@@ -17,31 +17,22 @@ import com.tictactec.ta.lib.MInteger;
 import com.tictactec.ta.lib.RetCode;
 
 
+/**
+ * @author Tian
+ *
+ */
 public class HighestPriceTraderTian extends AbstractTrader {
 
 
 private ArrayList<Integer> priceHistory;	
 private int period;
 
-private double historyp[] = new double[10];
-private double money;
-/**
- * Ta Lib Core Object
-/**
- * 
- */
 private double closePerc;
 	
-public HighestPriceTraderTian(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,final int max_sell,final int period, final double closePer, final double historyprice[], final double money) {
+public HighestPriceTraderTian(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,final int max_sell) {
 
 super(name, artificialMarket, portfolio, max_buy, max_sell);		
-		
-this.period = period;
 
-this.closePerc = closePer;
-for ( int s =0;s < 10;s++){
-   this.historyp[s] = historyprice[s];
-}
 }
 
 
@@ -49,10 +40,9 @@ for ( int s =0;s < 10;s++){
 @Override
 public Order runStrategy(){
 
-	Order order = new Order(Order.BUY, Order.MARKET, 0, 0, this);
+Order order = new Order(Order.BUY, Order.MARKET, 0, 0, this);
 
-//use all money to buy shares if the price is the highest in last 10 days	, 
-double[] prices = artificialMarket.getLastNPriceAsDoubles(period);
+double[] prices = artificialMarket.getLastNPriceAsDoubles(11);
 
 
 if(prices != null)
@@ -60,19 +50,30 @@ if(prices != null)
 
 double spotprice = artificialMarket.getSpotPriceAsDouble();
 
-for(int w = 0;closePerc >=historyp[w]||w>=9;w++){
 
-order = new Order(Order.BUY, Order.MARKET, max_buy, (int) spotprice, this);
-System.out.println("highrster Buy:" + order.toString());
+double maxPrice = 0;
+
+for(int w = 1; w>prices.length; w++)
+{
+	maxPrice = Math.max(prices[w], maxPrice); 
 }
 
+//use all money to buy shares if the price is the highest in last 10 steps	, 
+if(spotprice>maxPrice && this.portfolio.getShares()== 0){
+	
+	
+	int vol = (int) Math.ceil(this.getInvestableMoney()/spotprice); 
+	
+	if(vol > max_buy)
+	{	vol = max_buy;}
+	
+	order = new Order(Order.BUY, Order.MARKET, vol , (int) spotprice, this);
 
-//sell all shares if the price keep dropping for 2 days 
-
-if( spotprice>= historyp[0] && historyp[0]>= historyp[1]){
+}
+else if(( spotprice<= prices[1] && spotprice <= prices[2]) && (this.portfolio.getShares() > 0)){
+//sell all shares if the price keep dropping for 2 steps 
 
 order = new Order(Order.SELL, Order.MARKET, portfolio.getShares(), (int) spotprice, this);
-System.out.println("highester Sell:" + order.toString());
 
 }
 
@@ -81,5 +82,7 @@ System.out.println("highester Sell:" + order.toString());
 
 return order;
 }
+
+
 }
 	

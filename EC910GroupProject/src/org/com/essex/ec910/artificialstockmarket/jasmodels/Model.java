@@ -10,6 +10,7 @@ import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.LifeMarket;
 import org.com.essex.ec910.artificialstockmarket.statistics.Statistics;
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.BollingerBandTrader;
+import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.HighestPriceTraderTian;
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.SimpleSMATrader;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.MarketMaker;
@@ -42,7 +43,8 @@ public class Model extends SimModel{
 	ArrayList<RandomTrader> randomTraderList;    // list of random traders
 	SimpleSMATrader smaTrader;    // list of simple SMA traders
 	BollingerBandTrader bbTrader; 
-
+	HighestPriceTraderTian hpTrader;
+	
 	/**
 	 * Periphery 
 	 */
@@ -116,9 +118,7 @@ public class Model extends SimModel{
 	
 	// set up default values for sma traders
 		initSharesInteligent = 0;
-		initMoneyInteligent = 1000000;
-		
-
+		initMoneyInteligent = 1000000;		
 		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
@@ -196,7 +196,9 @@ public class Model extends SimModel{
 		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.max_buy, this.max_sell, 50, 15, 10, 0.002);
 		this.bbTrader.setCommissionFee(comFee);
 		
-					
+		this.hpTrader = new HighestPriceTraderTian("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.max_buy, this.max_sell);
+		this.hpTrader.setCommissionFee(comFee);
+
 				
 		scheduleEvents();
 	}
@@ -208,6 +210,8 @@ public class Model extends SimModel{
 		eventList.scheduleCollection(0, 1, this.randomTraderList, getObjectClass("org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader"), "sendFinalOrderToMarket");
 		eventList.scheduleSimple(0, 1, this.smaTrader, "sendFinalOrderToMarket");
 		eventList.scheduleSimple(0, 1, this.bbTrader, "sendFinalOrderToMarket");
+		eventList.scheduleSimple(0, 1, this.hpTrader, "sendFinalOrderToMarket");
+
 		
 		eventList.scheduleSimple(0, 1, this.marketMaker, "runMarketMakerStrategy");
 		eventList.scheduleSimple(0, 1, this.market, "clearMarket");
