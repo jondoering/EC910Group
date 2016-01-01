@@ -33,6 +33,7 @@ public class Statistics {
 	private ArtificialMarket market;
 	private String filename;
 	private PrintStream ps;
+	//private	int obv = 0;
 	
 	public Statistics()
 	{
@@ -157,6 +158,25 @@ public class Statistics {
 		
 		return Descriptive.sampleKurtosis(d, Descriptive.mean(d), this.getVariance());
 	}
+	
+	/**
+	 * calculate OBV
+	 * return
+	 * /
+//	public int obv(final int vol1,final int vol2){
+//		if(vol2> vol1){
+//			
+//			obv = obv+1;
+//			
+//		}else if(vol2 == vol1){
+//			
+//			return obv;
+//			
+//		}
+//		else{
+//			obv = obv-1;
+//		}
+//		return obv;
 	
 	
 	/**
