@@ -56,9 +56,10 @@ public class Model extends SimModel{
 	 */
 	public int numRandomTrader;                         // number of random traders
 	
-	public int initialMoneyRandom;                            // money of random traders at the beginning
-	public int initialSharesRandom;                           // shares of random traders at the beginning 
-	int max_buy, max_sell;                              // trading limits for traders	
+	public int initialMoneyRandom;                      // money of random traders at the beginning
+	public int initialSharesRandom;                     // shares of random traders at the beginning 
+	int maxBuyRandom;
+	int maxSellRandom;                           		  // trading limits for traders	
 
 	public String toDate;
 	public String tickerSymbol;
@@ -69,7 +70,7 @@ public class Model extends SimModel{
 	public boolean printOrderBook; 
 	public boolean printOrders;    
     
-	int stepsADay; //How many Steps are one day
+	int stepsADay; 					
 	private double riskFactorAverse;
 	private double riskFactorAffin;
 	private double riskDistribution;
@@ -77,7 +78,9 @@ public class Model extends SimModel{
 
 	private int initMoneyInteligent;
 	private int initSharesInteligent;
-	
+	int maxBuyIntelligent;
+	int maxSellIntelligent;                              // trading limits for traders	
+
 	private double comFee;
 	
 	
@@ -87,38 +90,39 @@ public class Model extends SimModel{
 	public void setParameters() {
 		
 	//Parameter for Model		
-		stepsADay = 500; //How many Steps define a day (end of the day, Market Maker gets new price from life market) 		
-		printOrderBook = true;	// if true, order book is printed in each step in StdOut 
-		printOrderBook = false; // if true, orders are printed in each step in StdOut
+		stepsADay = 500; 						//How many Steps define a day (end of the day, Market Maker gets new price from life market) 		
+		printOrderBook = false; 				// if true, orders gets printed in each step in StdOut
 		
 
 	//Parameter for life market data from yahoo finance
-		fromDate = "2014-02-01";   //First date of life data
-		toDate = "2015-02-01";		//Last Date of life data
-		tickerSymbol = "MSFT";		//ticker getting life data from (here Microsoft)
+		fromDate = "2014-02-01";  				//First date of life data
+		toDate = "2015-02-01";					//Last Date of life data
+		tickerSymbol = "MSFT";					//ticker getting life data from (here Microsoft)
 			
 	//Parameter for Market Maker behaviour
-		dragVolume = 10000; //Volume determine how much influence the Market Maker has to drag the artificial price to the life price
-							//if high, price follows the life price, if low price is more independend		
-		volumeFactor = 0.1; // How many of the current market volume should be placed in the market to create volume around the current price
-	    					// if low, price is more volatile and driven by randomness from trades
+		dragVolume = 10000;						//Volume determine how much influence the Market Maker has to drag the artificial price to the life price
+												//if high, price follows the life price, if low price is more independend		
+		volumeFactor = 0.1;						// How many of the current market volume should be placed in the market to create volume around the current price
+	    										// if low, price is more volatile and driven by randomness from trades
 
 	//Parameters for all Traders	
-		max_buy = 1000;      //maximum of shares a trader can buy per order
-		max_sell = 1000; 	//maximum of shares a trader can sell per order
-		comFee = 0.005;		//Commission Fee of 0.5%
+		maxBuyRandom = 1000;    				//maximum of shares a trader can buy per order
+		maxSellRandom = 1000; 					//maximum of shares a trader can sell per order
+		comFee = 0.005;							//Commission Fee of 0.5%
 		
 	// set up default values for random traders
-		numRandomTrader = 200; //number of Traders in Model
-		riskFactorAverse = 1; //Factor that represent a riskaverse trader; those set prices closer around last price
-		riskFactorAffin = 5; //Factor that represnet more agressive traders; those set prices in a bigger range about last price
-		riskDistribution = 0.7; //determines how many of the traders are risk averse (here 70%)
-		initialSharesRandom = 1000;   //1000 shares for each random trader
-		initialMoneyRandom = 10000; //10000$ for each trader		
+		numRandomTrader = 200; 					//number of Traders in Model
+		riskFactorAverse = 1; 					//Factor that represent a riskaverse trader; those set prices closer around last price
+		riskFactorAffin = 5; 					//Factor that represnet more agressive traders; those set prices in a bigger range about last price
+		riskDistribution = 0.7; 				//determines how many of the traders are risk averse (here 70%)
+		initialSharesRandom = 1000;   			//1000 shares for each random trader
+		initialMoneyRandom = 10000;			    //100000$ for each trader		
 	
-	// set up default values for sma traders
-		initSharesInteligent = 0;
-		initMoneyInteligent = 1000000;		
+	// set up default values for intelligent traders
+		initSharesInteligent = 0;				//each trader starts with no shares usually
+		initMoneyInteligent = 1000000;			//but with some money for buiing stocks
+		maxBuyIntelligent = Integer.MAX_VALUE;	//No (practical) limitation for intelligent traders in number of buying 
+		maxSellIntelligent = Integer.MAX_VALUE; //and selling
 		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
@@ -181,8 +185,8 @@ public class Model extends SimModel{
 			}
 			
 			RandomTrader rt = new RandomTrader("Random"+ i, this.market, 
-					new Portfolio(this.initialSharesRandom, this.initialMoneyRandom), this.max_buy,
-					this.max_sell, riskF);
+					new Portfolio(this.initialSharesRandom, this.initialMoneyRandom), this.maxBuyRandom,
+					this.maxSellRandom, riskF);
 			rt.setCommissionFee(comFee);
 			
 			randomTraderList.add(rt);
@@ -190,13 +194,13 @@ public class Model extends SimModel{
 		
 		
 	//set up intelligent trader
-		this.smaTrader = new SimpleSMATrader("SMA Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.max_buy, this.max_sell, 30, 15);
+		this.smaTrader = new SimpleSMATrader("SMA Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, 30, 15);
 		this.smaTrader.setCommissionFee(comFee);
 		
-		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.max_buy, this.max_sell, 50, 15, 10, 0.002);
+		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, 50, 15, 10, 0.002);
 		this.bbTrader.setCommissionFee(comFee);
 		
-		this.hpTrader = new HighestPriceTraderTian("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.max_buy, this.max_sell);
+		this.hpTrader = new HighestPriceTraderTian("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent);
 		this.hpTrader.setCommissionFee(comFee);
 
 				

@@ -19,8 +19,8 @@ public abstract class AbstractTrader {
 	public Portfolio portfolio;                 // current portfolio of trader
 	public Portfolio lastPortfolio;             // last portfolio of trader before sending the final oder to market (memory of trader)
 	public Order lastOrder;                     // last final order of trader that has been double checked and sent to market (memory of trader)  
-	public int max_buy;                         // maximum amount of shares that trader can buy      
-	public int max_sell;                        // minimum amount of shares that trader can sell
+	public long max_buy;                         // maximum amount of shares that trader can buy      
+	public long max_sell;                        // minimum amount of shares that trader can sell
 
 	//  metrics for measuring the performance of trading strategy
 	public int profit_loss;                     // P&L of trader
@@ -29,7 +29,7 @@ public abstract class AbstractTrader {
 	public int numWinTrades;                    // number of winning trades
 	public int profitFactor;                    // = numWinTrades / numTrades
 
-	
+	private int transactionCounter = 0;
 	private double comFee;
 	
 	/**
@@ -40,7 +40,7 @@ public abstract class AbstractTrader {
 	 * @param max_buy
 	 * @param max_sell
 	 */
-	public AbstractTrader(String name, ArtificialMarket artificialMarket, Portfolio portfolio, int max_buy , int max_sell) {
+	public AbstractTrader(String name, ArtificialMarket artificialMarket, Portfolio portfolio, long max_buy , long max_sell) {
 		this.name = name;
 		this.artificialMarket = artificialMarket;
 		this.portfolio = portfolio;
@@ -81,6 +81,14 @@ public abstract class AbstractTrader {
 //					(order.getType1() == Order.BUY && order.getType2() == Order.MARKET && order.getVolume() <= this.max_buy && this.portfolio.getMoney() >= order.getVolume()*spotPrice)  ||            // ??? put [0] in front spot price when using Jonathan market ???? buy market order --> (trader should have enough money to buy shares)
 //					(order.getType1() == Order.SELL && order.getVolume() <= this.max_sell && order.getVolume() <= this.portfolio.getShares())) {//  sell order --> trader wants to sell and volume < max limit for selling // also trader should have enough shares in his portfolio in order to be able to sell the desired volume 
 
+			
+				if(order.getType1() == Order.SELL)
+				{
+					this.transactionCounter++;
+				}
+
+				
+				
 				this.artificialMarket.reciveOrder(order);
 				this.lastOrder = order; // save final order sent to market
 				this.lastPortfolio = this.portfolio;// save the last portfolio of trader when final order sent to market
@@ -94,7 +102,7 @@ public abstract class AbstractTrader {
 
 	//  reduce shares from portfolio of trader and increase the money 
 	//  to be used by artificial market, not by trader  
-	public void buyShareFromTrader(int money, int shares){
+	public void buyShareFromTrader(long money, long shares){
 		
 		//adjustment by commission fee
 		double m = this.portfolio.getMoney() + money*(1-comFee);
@@ -106,7 +114,7 @@ public abstract class AbstractTrader {
 
 	//  reduce money from portfolio of trader and increase the shares
 	//  to be used by artificial market, not by trader 
-	public void sellShareToTrader(int money, int shares){
+	public void sellShareToTrader(long money, long shares){
 		
 		//adjustment by commission fee
 		double m = this.portfolio.getMoney() - money*(1+comFee);
@@ -148,7 +156,14 @@ public abstract class AbstractTrader {
 		return portfolio.getMoney() * (1-comFee);
 	}
 	
-
+	/**
+	 * A transaction is defined as buy and sell and is counted after the sell order (even if the sell order isn't executed) 
+	 * @return - number of transactions done by the trader
+	 */
+	public int getTransactions()
+	{
+		return transactionCounter;
+	}
 	
 }
 

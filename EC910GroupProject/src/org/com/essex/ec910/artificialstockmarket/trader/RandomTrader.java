@@ -62,11 +62,10 @@ public class RandomTrader extends AbstractTrader {
 	public Order runStrategy(){
 
 		Order order;   //random market order to be sent to market 
-		int volume;    //random volume
+		long volume;    //random volume
 		int price;
 		int buyOrSell; //0= buy/ 1= sell
 		int type2;
-		int initialPrice = 30;
 
 		Integer lastPrice =artificialMarket.getSpotPrice();
 
@@ -78,7 +77,7 @@ public class RandomTrader extends AbstractTrader {
 				buyOrSell = Order.BUY;
 				double factor;
 				
-				volume = (int) (Sim.getRnd().getIntFromTo(1, this.max_buy)*volFactorBuy); 
+				volume = (long) (Sim.getRnd().getLongFromTo(1, this.max_buy)*volFactorBuy); 
 				
 				if(Math.random()>0.2)
 				{
@@ -95,7 +94,7 @@ public class RandomTrader extends AbstractTrader {
 		}
 		else
 		{
-				volume = (int) (Sim.getRnd().getIntFromTo(1, this.max_sell)*volFactorSell); 
+				volume = (long) (Sim.getRnd().getLongFromTo(1, this.max_sell)*volFactorSell); 
 
 				buyOrSell = Order.SELL;
 				double factor;

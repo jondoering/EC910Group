@@ -62,7 +62,7 @@ for(int w = 1; w>prices.length; w++)
 if(spotprice>maxPrice && this.portfolio.getShares()== 0){
 	
 	
-	int vol = (int) Math.ceil(this.getInvestableMoney()/spotprice); 
+	long vol = (long) Math.ceil(this.getInvestableMoney()/spotprice); 
 	
 	if(vol > max_buy)
 	{	vol = max_buy;}

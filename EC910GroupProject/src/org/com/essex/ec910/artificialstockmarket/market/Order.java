@@ -15,8 +15,8 @@ public class Order implements Comparable{
 	
 	private int type1;
 	private int type2;
-	private int volume;
-	private int limitprice;
+	private long volume;
+	private long limitprice;
 	private AbstractTrader owner;
 	
 	
@@ -27,10 +27,10 @@ public class Order implements Comparable{
 	 * @param limitprice
 	 * @param owner
 	 */
-	public Order(int type1, int type2, int volume, int limitprice, AbstractTrader owner) {
+	public Order(int type1, int type2, long volume, long limitprice, AbstractTrader owner) {
 		
-		this.type1 = type1;
-		this.type2 = type2;
+		this.type1 = type1; //Sell or Buy
+		this.type2 = type2; // Limit or Market
 		this.volume = volume;
 		this.limitprice = limitprice;
 		this.owner = owner;
@@ -47,12 +47,12 @@ public class Order implements Comparable{
 	}
 
 
-	public int getVolume() {
+	public long getVolume() {
 		return volume;
 	}
 
 
-	public int getLimitprice() {
+	public long getLimitprice() {
 		return limitprice;
 	}
 

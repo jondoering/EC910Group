@@ -1,5 +1,6 @@
 package org.com.essex.ec910.artificialstockmarket.trader;
 
+import org.com.essex.ec910.artificialstockmarket.jasmodels.Observer;
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.LifeMarket;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
@@ -37,13 +38,7 @@ public class MarketMaker extends AbstractTrader{
 	 * probability that a life price order in morning period gets placed
 	 */
 	private double lifeOrderProbability = 0.7;
-	
-	private int lifePriceSellVolume;
-	private int lifePriceBuyVolume;
-	private int artificialPriceSellVolume;
-	private int artificialPriceBuyVolume;
-
-	
+		
 	/**
 	 * number of shares the market maker uses in its drag orders (based on life prices)   
 	 */

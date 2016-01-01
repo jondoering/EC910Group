@@ -8,7 +8,7 @@ package org.com.essex.ec910.artificialstockmarket.trader;
 public class Portfolio {
 
 
-	private int shares;   // number of shares in trader's portfolio 	
+	private long shares;   // number of shares in trader's portfolio 	
 	private double money;    // trader's capital
 		
 	/**
@@ -21,11 +21,11 @@ public class Portfolio {
 		this.money = money;
 	}
 	
-	public int getShares() {
+	public long getShares() {
 		return shares;
 	}
 	
-	public void setShares(int shares) {
+	public void setShares(long shares) {
 		this.shares = shares;
 	}
 	

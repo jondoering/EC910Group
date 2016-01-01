@@ -201,9 +201,9 @@ public class ArtificialMarket {
 					}
 					// add new Price Level
 					if (minbuyLimitPrice > 0) {
-						minbuyLimitPrice = Math.min(minbuyLimitPrice, curOrder.getLimitprice());
+						minbuyLimitPrice = Math.min(minbuyLimitPrice, (int) curOrder.getLimitprice());
 					} else {
-						minbuyLimitPrice = curOrder.getLimitprice();
+						minbuyLimitPrice = (int) curOrder.getLimitprice();
 					}
 
 					// Create new Market Level first Time
@@ -456,7 +456,7 @@ public class ArtificialMarket {
 		// Execute Sell Orders (buy from seller)
 		for (int i = 0; i < sellOrderBook.size(); i++) {
 
-			int shares = 0;
+			long shares = 0;
 			if (sellOrderBook.get(i).getVolume() < leftShares) {
 				shares = sellOrderBook.get(i).getVolume();
 			} else {
@@ -464,7 +464,7 @@ public class ArtificialMarket {
 				shares = leftShares;
 			}
 
-			int money = shares * newPrice;
+			long money = shares * newPrice;
 			sellOrderBook.get(i).getOwner().buyShareFromTrader(money, shares);
 			leftShares -= shares;
 
@@ -481,8 +481,8 @@ public class ArtificialMarket {
 				// Execute Order
 				Order o = orders.next();
 
-				int shares = o.getVolume();
-				int money = shares * newPrice;
+				long shares = o.getVolume();
+				long money = shares * newPrice;
 
 				o.getOwner().sellShareToTrader(money, shares);
 			}
@@ -495,8 +495,8 @@ public class ArtificialMarket {
 				// Execute Order
 				Order o = orders.next();
 
-				int shares = o.getVolume();
-				int money = shares * newPrice;
+				long shares = o.getVolume();
+				long money = shares * newPrice;
 
 				o.getOwner().sellShareToTrader(money, shares);
 			}

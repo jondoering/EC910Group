@@ -4,6 +4,8 @@ package org.com.essex.ec910.artificialstockmarket.jasmodels;
 
 import jas.engine.Sim;
 import jas.engine.SimModel;
+import jas.graphics.plot.CollectionBarPlotter;
+import jas.graphics.plot.IndividualBarPlotter;
 import jas.graphics.plot.TimeSeriesPlotter;
 
 /**
@@ -21,6 +23,7 @@ public class Observer extends SimModel {
 	private TimeSeriesPlotter skewPlot;
 	private TimeSeriesPlotter varPlot;
 	private TimeSeriesPlotter traderValuePlot;
+	//private IndividualBarPlotter transCounterPlot;
 
 	//	private CollectionBarPlotter ordersPlot;
 
@@ -37,8 +40,6 @@ public class Observer extends SimModel {
 	}
 
 
-	
-	
 	@Override
 	public void buildModel() {
 
@@ -49,6 +50,7 @@ public class Observer extends SimModel {
 		skewPlot = new TimeSeriesPlotter("Skewness");
 		varPlot = new TimeSeriesPlotter("Variance");
 		traderValuePlot = new TimeSeriesPlotter("Strategy Portfolio Value");
+		//transCounterPlot = new IndividualBarPlotter("Transaction of Traders");
 		
 		pricePlot.addSeries("PriceSeries", model.market, "getSpotPrice", true);	
 		pricePlot.addSeries("priceLife", model.marketMaker, "getLastLifePrice", true);		
@@ -61,7 +63,8 @@ public class Observer extends SimModel {
 		traderValuePlot.addSeries("Bollinger Band", model.bbTrader, "getPortfolioValue", true);
 		traderValuePlot.addSeries("Highest Price", model.hpTrader, "getPortfolioValue", true);
 
-		//smaTraderPlot.addSeries("Shares", model.simpleSMAAgent, "getShares", true);
+		
+		//transCounterPlot.addSeries
 		
 		addSimWindow(pricePlot);
 		addSimWindow(volumePlot);
