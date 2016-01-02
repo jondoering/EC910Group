@@ -62,6 +62,7 @@ public class Observer extends SimModel {
 		traderValuePlot.addSeries("Simple Moving Average", model.smaTrader, "getPortfolioValue", true);
 		traderValuePlot.addSeries("Bollinger Band", model.bbTrader, "getPortfolioValue", true);
 		traderValuePlot.addSeries("Highest Price", model.hpTrader, "getPortfolioValue", true);
+		traderValuePlot.addSeries("Pouyan Trader", model.pouyanTrader, "getPortfolioValue", true);
 
 		
 		//transCounterPlot.addSeries
