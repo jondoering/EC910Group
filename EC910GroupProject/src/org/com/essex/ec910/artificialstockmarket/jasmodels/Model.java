@@ -13,6 +13,7 @@ import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.BollingerBand
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.HighestPriceTraderTian;
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.PouyanTradingStrategy;
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.HighFrequenceSMATrader;
+import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.WilliamTradingStrategy;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.MarketMaker;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
