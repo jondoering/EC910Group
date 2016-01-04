@@ -64,13 +64,14 @@ public class Observer extends SimModel {
 		traderValuePlot.addSeries("Bollinger Band", model.bbTrader, "getPortfolioValue", true);
 		traderValuePlot.addSeries("Highest Price", model.hpTrader, "getPortfolioValue", true);
 		traderValuePlot.addSeries("Pouyan Trader", model.pouyanTrader, "getPortfolioValue", true);
+		traderValuePlot.addSeries("william Trader", model.williamTrader, "getPortfolioValue", true);
 
 		//Barplot showing transaction of trader
 		transCounterPlot.addSource("Simple Moving Average", model.smaTrader, "getTransactionCount", true);		
 		transCounterPlot.addSource("Bollinger Band", model.bbTrader, "getTransactionCount", true);
 		transCounterPlot.addSource("Highest Price", model.hpTrader, "getTransactionCount", true);		
 		transCounterPlot.addSource("Pouyan Trader", model.pouyanTrader, "getTransactionCount", true);
-		traderValuePlot.addSeries("william Trader", model.williamTrader, "getPortfolioValue", true);
+		transCounterPlot.addSource("william Trader", model.pouyanTrader, "getTransactionCount", true);
 		
 		addSimWindow(pricePlot);
 		addSimWindow(volumePlot);
