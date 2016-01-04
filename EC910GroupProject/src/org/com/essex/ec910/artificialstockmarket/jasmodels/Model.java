@@ -50,7 +50,7 @@ public class Model extends SimModel{
 	PouyanTradingStrategy pouyanTrader;           // trading model of pouyan
 	double pouyanRisk;                      // eg: 0.01 value of portfolio is target profit or stop loss for pouyan trading strategy
 
-
+	
 	/**
 	 * Periphery 
 	 */
@@ -90,6 +90,15 @@ public class Model extends SimModel{
 	private double comFee;
 
 
+	private int smaLongPeriod;
+	private int smaShortPeriod;
+
+
+	private int bollingerPeriod;
+	private int bollingerUp;
+	private int bollingerDown;
+
+
 
 
 	@Override
@@ -126,13 +135,22 @@ public class Model extends SimModel{
 
 		// set up default values for intelligent traders
 		initSharesInteligent = 0;				//each trader starts with no shares usually
-		initMoneyInteligent = 1000000;			//but with some money for buiing stocks
+		initMoneyInteligent = 1000000;			//but with some money for buying stocks
 		maxBuyIntelligent = Integer.MAX_VALUE;	//No (practical) limitation for intelligent traders in number of buying 
 		maxSellIntelligent = Integer.MAX_VALUE; //and selling
 
 		//pouyan trading model parameter
 		pouyanRisk = 0.2;                     // max risk for pouyan trading model
 
+		//SMA trader variables
+		smaLongPeriod = 300;
+		smaShortPeriod = 200;
+			
+		//Bollinger Band trader variables
+		bollingerPeriod = 50;
+		bollingerUp = 15;
+		bollingerDown = 10;
+		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
 	}
@@ -203,10 +221,10 @@ public class Model extends SimModel{
 
 
 		//set up intelligent trader
-		this.smaTrader = new HighFrequenceSMATrader("SMA Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, 30, 15);
+		this.smaTrader = new HighFrequenceSMATrader("SMA Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, smaLongPeriod, smaShortPeriod);
 		this.smaTrader.setCommissionFee(comFee);
 
-		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, 50, 15, 10, 0.002);
+		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, bollingerPeriod, bollingerUp, bollingerDown);
 		this.bbTrader.setCommissionFee(comFee);
 
 		this.hpTrader = new HighestPriceTraderTian("HP Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent);

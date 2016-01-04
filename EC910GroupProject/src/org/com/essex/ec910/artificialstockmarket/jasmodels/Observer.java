@@ -23,7 +23,7 @@ public class Observer extends SimModel {
 	private TimeSeriesPlotter skewPlot;
 	private TimeSeriesPlotter varPlot;
 	private TimeSeriesPlotter traderValuePlot;
-	//private IndividualBarPlotter transCounterPlot;
+	private IndividualBarPlotter transCounterPlot;
 
 	//	private CollectionBarPlotter ordersPlot;
 
@@ -50,7 +50,7 @@ public class Observer extends SimModel {
 		skewPlot = new TimeSeriesPlotter("Skewness");
 		varPlot = new TimeSeriesPlotter("Variance");
 		traderValuePlot = new TimeSeriesPlotter("Strategy Portfolio Value");
-		//transCounterPlot = new IndividualBarPlotter("Transaction of Traders");
+		transCounterPlot = new IndividualBarPlotter("Transactions of Traders");
 		
 		pricePlot.addSeries("PriceSeries", model.market, "getSpotPrice", true);	
 		pricePlot.addSeries("priceLife", model.marketMaker, "getLastLifePrice", true);		
@@ -59,13 +59,18 @@ public class Observer extends SimModel {
 		kurtPlot.addSeries("Kurtosis", model.statistics, "getKurtosis", true);
 		skewPlot.addSeries("Skewness", model.statistics, "getSkewness", true);
 				
+		//timeseries showing portfolio value of trader
 		traderValuePlot.addSeries("Simple Moving Average", model.smaTrader, "getPortfolioValue", true);
 		traderValuePlot.addSeries("Bollinger Band", model.bbTrader, "getPortfolioValue", true);
 		traderValuePlot.addSeries("Highest Price", model.hpTrader, "getPortfolioValue", true);
 		traderValuePlot.addSeries("Pouyan Trader", model.pouyanTrader, "getPortfolioValue", true);
 
+		//Barplot showing transaction of trader
+		transCounterPlot.addSource("Simple Moving Average", model.smaTrader, "getTransactionCount", true);		
+		transCounterPlot.addSource("Bollinger Band", model.bbTrader, "getTransactionCount", true);
+		transCounterPlot.addSource("Highest Price", model.hpTrader, "getTransactionCount", true);		
+		transCounterPlot.addSource("Pouyan Trader", model.pouyanTrader, "getTransactionCount", true);
 		
-		//transCounterPlot.addSeries
 		
 		addSimWindow(pricePlot);
 		addSimWindow(volumePlot);
@@ -73,13 +78,15 @@ public class Observer extends SimModel {
 		addSimWindow(kurtPlot);
 		addSimWindow(skewPlot);
 		addSimWindow(traderValuePlot);
+		addSimWindow(transCounterPlot);
 		
 		
 		eventList.scheduleSimple(0, 1, pricePlot, Sim.EVENT_UPDATE);		
+		eventList.scheduleSimple(0, 1, transCounterPlot, Sim.EVENT_UPDATE);		
 		eventList.scheduleSimple(0, 1, volumePlot, Sim.EVENT_UPDATE);		
-		eventList.scheduleSimple(2, 1, varPlot, Sim.EVENT_UPDATE);
-		eventList.scheduleSimple(4, 1, skewPlot, Sim.EVENT_UPDATE);	
-		eventList.scheduleSimple(5, model.stepsADay, kurtPlot, Sim.EVENT_UPDATE);
+		//eventList.scheduleSimple(2, 1, varPlot, Sim.EVENT_UPDATE);
+		//eventList.scheduleSimple(4, 1, skewPlot, Sim.EVENT_UPDATE);	
+		//eventList.scheduleSimple(5, model.stepsADay, kurtPlot, Sim.EVENT_UPDATE);
 		eventList.scheduleSimple(0,1,traderValuePlot, Sim.EVENT_UPDATE);
 
 	}

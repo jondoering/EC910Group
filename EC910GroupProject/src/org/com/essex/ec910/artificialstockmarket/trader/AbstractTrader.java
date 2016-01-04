@@ -162,7 +162,7 @@ public abstract class AbstractTrader {
 	 * A transaction is defined as buy and sell and is counted after the sell order (even if the sell order isn't executed) 
 	 * @return - number of transactions done by the trader
 	 */
-	public int getTransactions()
+	public int getTransactionCount()
 	{
 		return transactionCounter;
 	}

@@ -37,13 +37,13 @@ public class BollingerBandTrader extends AbstractTrader {
 	private Core talib;
 	
 	public BollingerBandTrader(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,
-			final int max_sell,final int period, final double nbdevup, final double nbdevdn, final double closePer) {
+			final int max_sell,final int period, final double nbdevup, final double nbdevdn) {
 		super(name, artificialMarket, portfolio, max_buy, max_sell);		
 		
 		this.period = period;
 		this.nbdevup = nbdevup;
 		this.nbdevdn = nbdevdn;
-		this.closePerc = closePer;
+		this.closePerc = 0.002;
 		
 		talib = new Core();
 	}
