@@ -68,7 +68,7 @@ if(lastClose>maxPrice && this.portfolio.getShares()== 0 && lastClose!=lastBuyPri
 	order = new Order(Order.BUY, Order.MARKET, vol , (int) lastClose, this);
 	
 }
-else if(( lastClose<= prices[1] && lastClose <= prices[2]) && (this.portfolio.getShares() > 0)){
+else if(( lastClose<= prices[1] && lastClose <= prices[2]) && (this.portfolio.getShares() > 1000)){
 //sell all shares if the price keep dropping for 2 days 
 
 	order = new Order(Order.SELL, Order.MARKET, portfolio.getShares(), (int) lastClose, this);
