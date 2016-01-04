@@ -45,7 +45,7 @@ public class Model extends SimModel{
 	HighFrequenceSMATrader smaTrader;    // list of simple SMA traders
 	BollingerBandTrader bbTrader; 
 	HighestPriceTraderTian hpTrader;
-
+        WilliamTradingStrategy williamTrader;
 	//Pouyan Strategy
 	PouyanTradingStrategy pouyanTrader;           // trading model of pouyan
 	double pouyanRisk;                      // eg: 0.01 value of portfolio is target profit or stop loss for pouyan trading strategy
@@ -233,7 +233,8 @@ public class Model extends SimModel{
 		//set up pouyan trading model
 		this.pouyanTrader = new PouyanTradingStrategy("Pouyan Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.pouyanRisk);
 		this.pouyanTrader.setCommissionFee(comFee);
-
+                this.williamTrader = new WilliamTradingStrategy("William Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent);
+		this.williamTrader.setCommissionFee(comFee);
 		scheduleEvents();
 	}
 
@@ -246,6 +247,7 @@ public class Model extends SimModel{
 		eventList.scheduleSimple(0, 1, this.bbTrader, "sendFinalOrderToMarket");
 		eventList.scheduleSimple(0, 1, this.hpTrader, "sendFinalOrderToMarket");
 		eventList.scheduleSimple(0, 1, this.pouyanTrader, "sendFinalOrderToMarket");
+		eventList.scheduleSimple(0, 1, this.williamTrader, "sendFinalOrderToMarket");
 
 
 		eventList.scheduleSimple(0, 1, this.marketMaker, "runMarketMakerStrategy");
