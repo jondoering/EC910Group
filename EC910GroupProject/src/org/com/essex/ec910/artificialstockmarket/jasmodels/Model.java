@@ -12,7 +12,7 @@ import org.com.essex.ec910.artificialstockmarket.statistics.Statistics;
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.BollingerBandTrader;
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.HighestPriceTraderTian;
 import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.PouyanTradingStrategy;
-import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.SimpleSMATrader;
+import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.HighFrequenceSMATrader;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.MarketMaker;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
@@ -42,7 +42,7 @@ public class Model extends SimModel{
 	 */
 	MarketMaker marketMaker;
 	ArrayList<RandomTrader> randomTraderList;    // list of random traders
-	SimpleSMATrader smaTrader;    // list of simple SMA traders
+	HighFrequenceSMATrader smaTrader;    // list of simple SMA traders
 	BollingerBandTrader bbTrader; 
 	HighestPriceTraderTian hpTrader;
 
@@ -203,7 +203,7 @@ public class Model extends SimModel{
 
 
 		//set up intelligent trader
-		this.smaTrader = new SimpleSMATrader("SMA Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, 30, 15);
+		this.smaTrader = new HighFrequenceSMATrader("SMA Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, 30, 15);
 		this.smaTrader.setCommissionFee(comFee);
 
 		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, 50, 15, 10, 0.002);
@@ -214,7 +214,7 @@ public class Model extends SimModel{
         
 		//set up pouyan trading model
 		this.pouyanTrader = new PouyanTradingStrategy("Pouyan Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.pouyanRisk);
-		
+		this.pouyanTrader.setCommissionFee(comFee);
 
 		scheduleEvents();
 	}
@@ -236,6 +236,8 @@ public class Model extends SimModel{
 
 		//Just end of day
 		eventList.scheduleSimple(0, stepsADay, this.marketMaker, "nextDay");
+		eventList.scheduleSimple(0, stepsADay, this.market, "saveClosePrice");
+		
 
 	}
 

@@ -50,7 +50,17 @@ public class PouyanTradingStrategy extends AbstractTrader {
 		
 		else{ // no shares --> enter long
 			this.lastPortfolioValue = this.getPortfolioValue();
+			
+			//TODO change money to com Fee variant
+			//this.volume =(long) ((this.this.getInvestableMoney()*this.pouyanRisk)/this.artificialMarket.getSpotPrice());
+			
+			
 			this.volume =(long) ((this.getPortfolioValue()*this.pouyanRisk)/this.artificialMarket.getSpotPrice());
+			
+			//TODO check for max_buy volume
+			//if(this.volume > max_buy)
+			//{	this.volume = max_buy;}
+			
 			order = new Order(Order.BUY, Order.MARKET,this.volume, this.artificialMarket.getSpotPrice(), this);
 		}
 

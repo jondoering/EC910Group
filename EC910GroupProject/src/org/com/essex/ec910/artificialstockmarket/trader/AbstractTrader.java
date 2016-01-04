@@ -71,7 +71,6 @@ public abstract class AbstractTrader {
 	public void sendFinalOrderToMarket(){
 		
 		Order order = runStrategy();
-//		int[] spotPrice = this.artificialMarket.getLastNPrice(1); for artificial market
 		Integer[] spotPrice = this.artificialMarket.getLastNPrice(1);
 		
 		//check that Volume > 0, otherwise, it means that trader does not want to send order to market
@@ -82,12 +81,15 @@ public abstract class AbstractTrader {
 //					(order.getType1() == Order.SELL && order.getVolume() <= this.max_sell && order.getVolume() <= this.portfolio.getShares())) {//  sell order --> trader wants to sell and volume < max limit for selling // also trader should have enough shares in his portfolio in order to be able to sell the desired volume 
 
 			
+				if(!(this instanceof RandomTrader))
+				{
+					System.out.println(this.name + ": " + order.toString());
+				}
+			
 				if(order.getType1() == Order.SELL)
 				{
 					this.transactionCounter++;
-				}
-
-				
+				}				
 				
 				this.artificialMarket.reciveOrder(order);
 				this.lastOrder = order; // save final order sent to market

@@ -22,7 +22,7 @@ import com.tictactec.ta.lib.RetCode;
  * @author Jonathan
  *
  */
-public class SimpleSMATrader extends AbstractTrader {
+public class HighFrequenceSMATrader extends AbstractTrader {
 
 	
 	private int longPeriod;
@@ -33,7 +33,7 @@ public class SimpleSMATrader extends AbstractTrader {
 	 */
 	private Core talib;
 	
-	public SimpleSMATrader(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,
+	public HighFrequenceSMATrader(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,
 			final int max_sell,final int longPeriod, final int shortPeriod) {
 		super(name, artificialMarket, portfolio, max_buy, max_sell);		
 		
@@ -91,14 +91,14 @@ public class SimpleSMATrader extends AbstractTrader {
 						{	vol = max_buy;}
 
 						order = new Order(Order.BUY, Order.MARKET, vol, (int) spotprice, this);
-						System.out.println("SMA Buy:" + order.toString());
+						//System.out.println("SMA Buy:" + order.toString());
 					}
 					
 					if((outShort[0] < outLong[0]) && portfolio.getShares() > 0)
 					{
 						//Sell all shares if short crosses long top down and agent owns shares 
 						order = new Order(Order.SELL, Order.MARKET, portfolio.getShares(), (int) spotprice, this);
-						System.out.println("SMA Sell:" + order.toString());
+						//System.out.println("SMA Sell:" + order.toString());
 						
 					}
 					

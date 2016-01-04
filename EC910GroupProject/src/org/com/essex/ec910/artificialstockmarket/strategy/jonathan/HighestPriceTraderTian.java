@@ -23,15 +23,11 @@ import com.tictactec.ta.lib.RetCode;
  */
 public class HighestPriceTraderTian extends AbstractTrader {
 
-
-private ArrayList<Integer> priceHistory;	
-private int period;
-
-private double closePerc;
+private double lastBuyPrice = 0; 
 	
 public HighestPriceTraderTian(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,final int max_sell) {
 
-super(name, artificialMarket, portfolio, max_buy, max_sell);		
+super(name, artificialMarket, portfolio, max_buy, max_sell);
 
 }
 
@@ -42,13 +38,13 @@ public Order runStrategy(){
 
 Order order = new Order(Order.BUY, Order.MARKET, 0, 0, this);
 
-double[] prices = artificialMarket.getLastNPriceAsDoubles(11);
+double[] prices = artificialMarket.getLastNCloseAsDoubles(11);
 
 
-if(prices != null)
+if(prices != null && prices.length==11)
 {
 
-double spotprice = artificialMarket.getSpotPriceAsDouble();
+double lastClose = prices[0];
 
 
 double maxPrice = 0;
@@ -59,21 +55,23 @@ for(int w = 1; w>prices.length; w++)
 }
 
 //use all money to buy shares if the price is the highest in last 10 steps	, 
-if(spotprice>maxPrice && this.portfolio.getShares()== 0){
+if(lastClose>maxPrice && this.portfolio.getShares()== 0 && lastClose!=lastBuyPrice){
 	
+	lastBuyPrice = lastClose;
 	
-	long vol = (long) Math.ceil(this.getInvestableMoney()/spotprice); 
+	long vol = (long) Math.ceil(this.getInvestableMoney()/lastClose); 
 	
 	if(vol > max_buy)
 	{	vol = max_buy;}
 	
-	order = new Order(Order.BUY, Order.MARKET, vol , (int) spotprice, this);
-
+	
+	order = new Order(Order.BUY, Order.MARKET, vol , (int) lastClose, this);
+	
 }
-else if(( spotprice<= prices[1] && spotprice <= prices[2]) && (this.portfolio.getShares() > 0)){
-//sell all shares if the price keep dropping for 2 steps 
+else if(( lastClose<= prices[1] && lastClose <= prices[2]) && (this.portfolio.getShares() > 0)){
+//sell all shares if the price keep dropping for 2 days 
 
-order = new Order(Order.SELL, Order.MARKET, portfolio.getShares(), (int) spotprice, this);
+	order = new Order(Order.SELL, Order.MARKET, portfolio.getShares(), (int) lastClose, this);
 
 }
 

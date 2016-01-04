@@ -93,14 +93,14 @@ public class BollingerBandTrader extends AbstractTrader {
 						{	vol = max_buy;}
 
 						order = new Order(Order.BUY, Order.MARKET, vol, (int) spotprice, this);
-						System.out.println("Bollinger Buy:" + order.toString());
+						//System.out.println("Bollinger Buy:" + order.toString());
 					}
 					
 					if(isClose(spotprice, upperband[0]) && portfolio.getShares() > 0)
 					{
 						//Sell all shares if short crosses long top down and agent owns shares 
 						order = new Order(Order.SELL, Order.MARKET, portfolio.getShares(), (int) spotprice, this);
-						System.out.println("Bollinger Sell:" + order.toString());
+						//System.out.println("Bollinger Sell:" + order.toString());
 						
 					}
 					

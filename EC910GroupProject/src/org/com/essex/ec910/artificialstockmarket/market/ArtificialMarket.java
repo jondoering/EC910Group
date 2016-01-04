@@ -22,6 +22,8 @@ public class ArtificialMarket {
 	private ArrayList<Integer> priceHistory;
 	private ArrayList<Integer> volumeHistory;
 
+	private ArrayList<Integer> closePriceHistory;
+	
 	/**
 	 * if true, orderbook is printed every step
 	 */
@@ -49,6 +51,7 @@ public class ArtificialMarket {
 		buyOrderBook = new ArrayList<Order>();
 		priceHistory = new ArrayList<Integer>();
 		volumeHistory = new ArrayList<Integer>();
+		closePriceHistory = new ArrayList<Integer>();
 
 		try {
 			fw = new FileWriter(new File("output.txt"));
@@ -406,28 +409,19 @@ public class ArtificialMarket {
 				if (showOrderBook)
 				// Print Orderbook
 				{
-					// if(sellVol != 0 || buyVol != 0)
-					// {
-					// try {
-					//
-					// fw.write(String.format("%d \t\t %d \t\t %d \t\t %d \t\t
-					// %d \t\t %d \n ", i, sellVol, buyVol, sellLevelCumVol,
-					// buyLevelCumVol, h));
-					// fw.write(System.lineSeparator());
-					// fw.flush();
-					//
-					// } catch (IOException e) {
-					// // TODO Auto-generated catch block
-					// e.printStackTrace();
-					// }
+					
 					System.out.printf("%d \t\t %d \t\t %d \t\t %d \t\t %d \t\t %d \n  ", i, sellVol, buyVol,
 							sellLevelCumVol, buyLevelCumVol, h);
 				}
 				// }
 
 			}
-			System.out.println();
-			System.out.println("Match: Price: " + newPrice + " with Volume " + nShares);
+			if (showOrderBook)
+			// Print Orderbook
+			{			
+				System.out.println();
+				System.out.println("Match: Price: " + newPrice + " with Volume " + nShares);
+			}
 
 		} 
 		else 
@@ -678,6 +672,39 @@ public class ArtificialMarket {
 		return (double) getSpotVolume();
 	}
 
+	/**
+	 *  saves current spot price in close price history 
+	 */
+	public void saveClosePrice()
+	{
+		this.closePriceHistory.add(this.getSpotPrice());
+	}
 
+	/**
+	 * Returns the last n close prices as an Array of Doubles in order [t, t-1,
+	 * t-2, .. , t-n]. If n is greater then actual price list, the whole price list
+	 * will be returned.
+	 * 
+	 * @param n - number of prices
+	 * @return array of Doubles with last n prices or null if list is empty
+	 */
+	public double[] getLastNCloseAsDoubles(int n) {
+		if (closePriceHistory.isEmpty()) {
+			return null;
+		}
+
+		if (n > closePriceHistory.size()) {
+			n = closePriceHistory.size();
+		}
+
+		double[] lastPrices = new double[n];
+
+		for (int i = 0; i < n; i++) {
+			lastPrices[i] = (double) closePriceHistory.get(closePriceHistory.size() - (i + 1));
+		}
+
+		return lastPrices;
+
+	}
 
 }
