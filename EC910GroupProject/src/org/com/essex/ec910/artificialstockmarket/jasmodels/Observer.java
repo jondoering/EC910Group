@@ -70,7 +70,7 @@ public class Observer extends SimModel {
 		transCounterPlot.addSource("Bollinger Band", model.bbTrader, "getTransactionCount", true);
 		transCounterPlot.addSource("Highest Price", model.hpTrader, "getTransactionCount", true);		
 		transCounterPlot.addSource("Pouyan Trader", model.pouyanTrader, "getTransactionCount", true);
-		
+		traderValuePlot.addSeries("william Trader", model.williamTrader, "getPortfolioValue", true);
 		
 		addSimWindow(pricePlot);
 		addSimWindow(volumePlot);
