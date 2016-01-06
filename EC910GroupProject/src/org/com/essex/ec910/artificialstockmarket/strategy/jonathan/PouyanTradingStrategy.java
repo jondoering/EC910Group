@@ -2,15 +2,14 @@ package org.com.essex.ec910.artificialstockmarket.strategy.jonathan;
 
 /**
  * @author Pouyan
- * 
- * This is a buy and hold long term strategy
- * enter (long) position when there is no open position, 
- * exit (sell) when total value of portfolio (money+shares) is greater or less than 
- * a percentage (eg: %1 = risk = 0.01) of last value of portfolio (at the time of openning the position)
- * 
- * 
+ *  
  */
 
+// This is a buy and hold long term strategy
+// enter (long) position when there is no open position, 
+// exit (sell) when total value of portfolio (money+shares) is greater or less than 
+// a percentage (eg: %1 = risk = 0.01) of last value of portfolio (at the time of openning the position)
+ 
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
@@ -51,16 +50,8 @@ public class PouyanTradingStrategy extends AbstractTrader {
 		else{ // no shares --> enter long
 			this.lastPortfolioValue = this.getPortfolioValue();
 			
-			//TODO change money to com Fee variant
-			//this.volume =(long) ((this.this.getInvestableMoney()*this.pouyanRisk)/this.artificialMarket.getSpotPrice());
-			
-			
 			this.volume =(long) ((this.getPortfolioValue()*this.pouyanRisk)/this.artificialMarket.getSpotPrice());
-			
-			//TODO check for max_buy volume
-			//if(this.volume > max_buy)
-			//{	this.volume = max_buy;}
-			
+	
 			order = new Order(Order.BUY, Order.MARKET,this.volume, this.artificialMarket.getSpotPrice(), this);
 		}
 
