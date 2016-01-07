@@ -19,16 +19,17 @@ public abstract class AbstractTrader {
 	public Portfolio portfolio;                 // current portfolio of trader
 	public Portfolio lastPortfolio;             // last portfolio of trader before sending the final oder to market (memory of trader)
 	public Order lastOrder;                     // last final order of trader that has been double checked and sent to market (memory of trader)  
-	public long max_buy;                         // maximum amount of shares that trader can buy      
-	public long max_sell;                        // minimum amount of shares that trader can sell
+	public long max_buy;                        // maximum amount of shares that trader can buy      
+	public long max_sell;                       // minimum amount of shares that trader can sell
 
 	//  metrics for measuring the performance of trading strategy
 	public int profit_loss;                     // P&L of trader
 	public int ROI;                             // return of investment 
 	public int numTrades;                       // number of total trades
 	public int numWinTrades;                    // number of winning trades
-	public int profitFactor;                    // = numWinTrades / numTrades
-
+	public int winningRate;                     // = numWinTrades / numTrades
+    public double profitFactor;                 // = total profit / total loss
+    
 	private int transactionCounter = 0;
 	private double comFee;
 	
@@ -53,8 +54,6 @@ public abstract class AbstractTrader {
 	//  because it should be double checked by sendFinalOrderToMarket() 
 	//  if you do not want to send order to market, make sure your order volume is 0    
 	public Order runStrategy(){
-	
-	
 
 		Order order; 
 
@@ -73,14 +72,20 @@ public abstract class AbstractTrader {
 		Order order = runStrategy();
 		Integer[] spotPrice = this.artificialMarket.getLastNPrice(1);
 		
-		//check that Volume > 0, otherwise, it means that trader does not want to send order to market
-		if (order.getVolume() > 0){
-//			checking to be completed in future
+		//check volume of order
+		if (order.getVolume() > 0   		                                           // check that Volume > 0, otherwise, it means that trader does not want to send order to market
+			&&((order.getType1() == Order.BUY && order.getVolume()<= this.max_buy )   // check that if trader wants to buy assets, the volume of his order <= limit to buy
+			||(order.getType1() == Order.SELL && order.getVolume()<= this.max_sell))){    // check that if trader wants to buy assets, the volume of his order <= limit to sell 
+			
+			//check order before sending it to artificial market in order to make sure it is a valid order
 //			if((order.getType1() == Order.BUY && order.getType2() == Order.LIMIT && order.getVolume() <= this.max_buy && this.portfolio.getMoney() >= order.getVolume()*order.getLimitprice()) ||     //  buy limit order --> (trader should have enough money to buy shares) trader wants to buy and volume should be < max limit for buying
 //					(order.getType1() == Order.BUY && order.getType2() == Order.MARKET && order.getVolume() <= this.max_buy && this.portfolio.getMoney() >= order.getVolume()*spotPrice)  ||            // ??? put [0] in front spot price when using Jonathan market ???? buy market order --> (trader should have enough money to buy shares)
 //					(order.getType1() == Order.SELL && order.getVolume() <= this.max_sell && order.getVolume() <= this.portfolio.getShares())) {//  sell order --> trader wants to sell and volume < max limit for selling // also trader should have enough shares in his portfolio in order to be able to sell the desired volume 
-
-			
+            
+			//final verification of order
+//			if((order.getType1() == Order.BUY && this.getInvestableMoney() >= order.getVolume()*this.artificialMarket.getSpotPrice())  // check that if trader wants to buy an asset, he should have enough money in his portfolio
+//			    ||(order.getType1() == Order.SELL && order.getVolume() <= this.portfolio.getShares())){                                // check that if trader wants to sell assets,  he can not sell more than the number of shares in his portfolio
+				
 				if(!(this instanceof RandomTrader))
 				{
 					System.out.println(this.name + ": " + order.toString());
@@ -91,15 +96,15 @@ public abstract class AbstractTrader {
 					this.transactionCounter++;
 				}				
 				
-				this.artificialMarket.reciveOrder(order);
-				this.lastOrder = order; // save final order sent to market
-				this.lastPortfolio = this.portfolio;// save the last portfolio of trader when final order sent to market
-//			}
+				this.artificialMarket.reciveOrder(order); // send a valid order to artificial market
+				this.lastOrder = order;                   // save final order sent to market
+				this.lastPortfolio = this.portfolio;      // save the last portfolio of trader when final order sent to market
+//			}//if check
 		}
 
-		//   	 ????????????????????????????????????????????????
-		//    	 to be completed: update the performance results of trader
-		//    	 ????????????????????????????????????????????????
+		  	 
+		// update the performance results of trader
+		// ???   	 
 	}
 
 	//  reduce shares from portfolio of trader and increase the money 
