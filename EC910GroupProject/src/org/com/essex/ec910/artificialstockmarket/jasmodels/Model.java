@@ -11,7 +11,7 @@ import org.com.essex.ec910.artificialstockmarket.market.LifeMarket;
 import org.com.essex.ec910.artificialstockmarket.statistics.Statistics;
 import org.com.essex.ec910.artificialstockmarket.strategy.BollingerBandTrader;
 import org.com.essex.ec910.artificialstockmarket.strategy.HighFrequenceSMATrader;
-import org.com.essex.ec910.artificialstockmarket.strategy.HighestPriceTraderTian;
+import org.com.essex.ec910.artificialstockmarket.strategy.MNHighestPriceTraderTian;
 import org.com.essex.ec910.artificialstockmarket.strategy.PouyanTradingStrategy;
 import org.com.essex.ec910.artificialstockmarket.strategy.WilliamTradingStrategy;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
@@ -45,8 +45,8 @@ public class Model extends SimModel{
 	ArrayList<RandomTrader> randomTraderList;    // list of random traders
 	HighFrequenceSMATrader smaTrader;    // list of simple SMA traders
 	BollingerBandTrader bbTrader; 
-	HighestPriceTraderTian hpTrader;
-        WilliamTradingStrategy williamTrader;
+	MNHighestPriceTraderTian hpTrader;
+    WilliamTradingStrategy williamTrader;
 	//Pouyan Strategy
 	PouyanTradingStrategy pouyanTrader;           // trading model of pouyan
 	double pouyanRisk;                      // eg: 0.01 value of portfolio is target profit or stop loss for pouyan trading strategy
@@ -97,7 +97,13 @@ public class Model extends SimModel{
 
 	private int bollingerPeriod;
 	private int bollingerUp;
-	private int bollingerDown;
+	private int bollingerLow;
+
+
+	private int tianM;
+
+
+	private int tianN;
 
 
 
@@ -144,13 +150,17 @@ public class Model extends SimModel{
 		pouyanRisk = 0.2;                     // max risk for pouyan trading model
 
 		//SMA trader variables
-		smaLongPeriod = 300;
-		smaShortPeriod = 200;
+		smaLongPeriod = 200;
+		smaShortPeriod = 15;
 			
 		//Bollinger Band trader variables
-		bollingerPeriod = 50;
-		bollingerUp = 15;
-		bollingerDown = 10;
+		bollingerPeriod = 20;
+		bollingerUp = 2;
+		bollingerLow = 2;
+		
+		//Tian M-N high price strategy
+		tianM = 10;
+		tianN = 2;
 		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
@@ -225,10 +235,10 @@ public class Model extends SimModel{
 		this.smaTrader = new HighFrequenceSMATrader("SMA Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, smaLongPeriod, smaShortPeriod);
 		this.smaTrader.setCommissionFee(comFee);
 
-		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, bollingerPeriod, bollingerUp, bollingerDown);
+		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, bollingerPeriod, bollingerUp, bollingerLow);
 		this.bbTrader.setCommissionFee(comFee);
 
-		this.hpTrader = new HighestPriceTraderTian("HP Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent);
+		this.hpTrader = new MNHighestPriceTraderTian("HP Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.tianM, this.tianM);
 		this.hpTrader.setCommissionFee(comFee);
         
 		//set up pouyan trading model
