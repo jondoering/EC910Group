@@ -49,8 +49,9 @@ public class Model extends SimModel{
     WilliamTradingStrategy williamTrader;
 	//Pouyan Strategy
 	PouyanTradingStrategy pouyanTrader;           // trading model of pouyan
-	double pouyanRisk;                      // eg: 0.01 value of portfolio is target profit or stop loss for pouyan trading strategy
-
+	long pouyanVolume;                            // volume (size) of trading
+	long pouyanTargetProfit;                      // target profit for pouyan trading strategy
+	long pouyanStopLoss;                          // stop loss for pouyan trading strategy
 	
 	/**
 	 * Periphery 
@@ -147,7 +148,9 @@ public class Model extends SimModel{
 		maxSellIntelligent = Integer.MAX_VALUE; //and selling
 
 		//pouyan trading model parameter
-		pouyanRisk = 0.2;                     // max risk for pouyan trading model
+		pouyanVolume = 100;                            // volume (size) of trading
+		pouyanTargetProfit = 100;                      // target profit for pouyan trading strategy
+		pouyanStopLoss = 100 ;                          // stop loss for pouyan trading strategy
 
 		//SMA trader variables
 		smaLongPeriod = 200;
@@ -242,7 +245,7 @@ public class Model extends SimModel{
 		this.hpTrader.setCommissionFee(comFee);
         
 		//set up pouyan trading model
-		this.pouyanTrader = new PouyanTradingStrategy("Pouyan Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.pouyanRisk);
+		this.pouyanTrader = new PouyanTradingStrategy("Pouyan Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.pouyanVolume, this.pouyanTargetProfit,this.pouyanStopLoss);
 		this.pouyanTrader.setCommissionFee(comFee);
          
 		this.williamTrader = new WilliamTradingStrategy("William Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent);

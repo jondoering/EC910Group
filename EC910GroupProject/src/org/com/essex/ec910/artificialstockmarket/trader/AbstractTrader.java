@@ -80,7 +80,7 @@ public abstract class AbstractTrader {
 		Integer[] spotPrice = this.artificialMarket.getLastNPrice(1);
 		
 		//check volume of order
-		if (order.getVolume() > 0   		                                           // check that Volume > 0, otherwise, it means that trader does not want to send order to market
+		if ((order.getVolume() > 0 && this.getPortfolioValue() > 0)  		                                           // check that Volume > 0, otherwise, it means that trader does not want to send order to market
 			&&((order.getType1() == Order.BUY && order.getVolume()<= this.max_buy )   // check that if trader wants to buy assets, the volume of his order <= limit to buy
 			||(order.getType1() == Order.SELL && order.getVolume()<= this.max_sell))){    // check that if trader wants to buy assets, the volume of his order <= limit to sell 
 			

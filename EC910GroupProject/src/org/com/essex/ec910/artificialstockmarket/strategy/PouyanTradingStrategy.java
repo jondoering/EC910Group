@@ -6,10 +6,9 @@ package org.com.essex.ec910.artificialstockmarket.strategy;
  */
 
 // This is a buy and hold long term strategy
-// enter (long) position when there is no open position, 
-// exit (sell) when total value of portfolio (money+shares) is greater or less than 
-// a percentage (eg: %1 = risk = 0.01) of last value of portfolio (at the time of openning the position)
- 
+// enter (long) position when there is no open position
+// exit (sell) At target profit or  stop loss
+
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
@@ -19,18 +18,21 @@ import jas.engine.Sim;
 
 public class PouyanTradingStrategy extends AbstractTrader {
 
-	private long volume;                   // volume (size) of trading
-	private double pouyanRisk;             // eg: 0.1 value of portfolio is target profit or stop loss
-	private double lastPortfolioValue ;    // value of porfolio before opening a position    
+	private long pouyanVolume;                 // volume (size) of trading
+	private long pouyanTargetProfit;           // target profit for pouyan trading strategy
+	private long pouyanStopLoss;               // stop loss for pouyan trading strategy
+	private long buyPrice;                     // price when buy order is send to market (entering price)
 	
 	public PouyanTradingStrategy(String name, ArtificialMarket artificialMarket, 
 			                     Portfolio portfolio, long max_buy, long max_sell,
-			                     double pouyanRisk) {
+			                     long pouyanVolume, long pouyanTargetProfit,long pouyanStopLoss) {
 		
 		super(name, artificialMarket, portfolio, max_buy, max_sell);
 		
-		// TODO Auto-generated constructor stub
-		this.pouyanRisk = pouyanRisk;
+		//first setting
+		this.pouyanVolume = pouyanVolume;
+		this.pouyanTargetProfit = pouyanTargetProfit; 
+		this.pouyanStopLoss = pouyanStopLoss;
 	}
 	
 	
@@ -39,20 +41,19 @@ public class PouyanTradingStrategy extends AbstractTrader {
 	public Order runStrategy(){		 
 		Order order = new Order(Order.BUY, Order.MARKET, 0, 0, this);// default order which will not be sent to the market (because volume = 0)
 
-		if(this.portfolio.getShares() > 0){ //trader has shares in his portfolio
+		if(this.portfolio.getShares() > 0  //trader has shares in his portfolio 
+				&& ( this.artificialMarket.getSpotPrice() - this.buyPrice >= this.pouyanTargetProfit    // we have reached target profit
+				||  this.buyPrice - this.artificialMarket.getSpotPrice() >= this.pouyanStopLoss)){  // we have reached stop loss                                      
 		
-			if(Math.abs((this.getPortfolioValue()- this.lastPortfolioValue)/this.lastPortfolioValue) >= this.pouyanRisk){
 			   order = new Order(Order.SELL, Order.MARKET, this.portfolio.getShares(), this.artificialMarket.getSpotPrice(), this); //sell all the shares	
-			}
-	
+
 		}
 		
-		else{ // no shares --> enter long
-			this.lastPortfolioValue = this.getPortfolioValue();
-			
-			this.volume =(long) ((this.getPortfolioValue()*this.pouyanRisk)/this.artificialMarket.getSpotPrice());
-	
-			order = new Order(Order.BUY, Order.MARKET,this.volume, this.artificialMarket.getSpotPrice(), this);
+		if(this.portfolio.getShares() == 0 ) { // no shares --> enter long 
+	         
+				this.buyPrice = this.artificialMarket.getSpotPrice(); //remember the price of buying stocks
+				order = new Order(Order.BUY, Order.MARKET,this.pouyanVolume, this.buyPrice, this);	    
+
 		}
 
 		return order;
