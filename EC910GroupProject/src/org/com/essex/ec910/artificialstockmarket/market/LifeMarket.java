@@ -22,6 +22,8 @@ public class LifeMarket {
 	private SimpleDateFormat dformat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private ArrayList<HistoricalPrice> histPrices;
+
+	private boolean testModus;
  
 	
 	/**
@@ -34,12 +36,24 @@ public class LifeMarket {
 		//Calulate days between dates
 		//int days = (int) TimeUnit.DAYS.convert(dformat.parse(to).getTime() - dformat.parse(from).getTime(), TimeUnit.MILLISECONDS);
 		
-		System.out.println("Load data from Yahoo Finance ...");
-		fetchPricesFromTo(from, to);
-		System.out.println("Loaded " + ydb.getAllPrices().size() + " data points.");
+		if((yahoo_ticker.equals("NONE")))
+		{
+			//startet in testmode without real price
+			System.out.println("Startet in test mode - load no data from Yahoo Finance ...");
+			this.testModus = true;				
+		}
+		else			
+		{			
+			this.testModus = false;
+			System.out.println("Load data from Yahoo Finance for " + yahoo_ticker + " ...");
+		
+			fetchPricesFromTo(from, to);
+			System.out.println("Loaded " + ydb.getAllPrices().size() + " data points.");
+			histPrices = ydb.getAllPrices(); 	
+								
+		}
 		
 		
-		histPrices = ydb.getAllPrices(); 
 				
 	}
 	
@@ -96,7 +110,23 @@ public class LifeMarket {
 	 */
 	public HistoricalPrice getPrice(int n)
 	{
-		return histPrices.get(n);
+		if(!testModus)
+		{	return histPrices.get(n);}
+		else
+		{	return new HistoricalPrice("2015-01-01", 0, 0);}
+	
+	}
+
+
+
+	/**
+	 * indicates if the Life Market is in test modus that means that now prices got loaded
+	 * from yahoo finance
+	 * @return
+	 */
+	public boolean testModus() {
+		// TODO Auto-generated method stub
+		return testModus;
 	}
 	
 	
