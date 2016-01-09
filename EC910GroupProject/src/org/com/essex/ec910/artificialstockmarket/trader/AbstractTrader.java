@@ -24,7 +24,7 @@ public abstract class AbstractTrader {
 	public long max_sell;                       // minimum amount of shares that trader can sell
 
 	//  metrics for measuring the performance of trading strategy
-	public int profit_loss;                     // P&L of trader
+	public double profit_loss;                     // P&L of trader
 	public int ROI;                             // return of investment 
 	public int numTrades;                       // number of total trades
 	public int numWinTrades;                    // number of winning trades
@@ -48,6 +48,8 @@ public abstract class AbstractTrader {
 		this.portfolio = portfolio;
 		this.max_buy = max_buy;
 		this.max_sell = max_sell;
+		this.numWinTrades = 0;
+		this.numTrades=0;
 	}
 
 	/**
@@ -101,6 +103,15 @@ public abstract class AbstractTrader {
 				if(order.getType1() == Order.SELL)
 				{
 					this.transactionCounter++;
+					this.numTrades = this.transactionCounter; 
+					this.profit_loss = this.portfolio.getMoney() - this.lastPortfolio.getMoney(); // update P&L
+					if(this.profit_loss > 0){//profit
+					   this.numWinTrades++;	
+					}
+					this.winningRate = this.numWinTrades / this.numTrades;
+					
+		
+					
 				}				
 				
 				this.artificialMarket.reciveOrder(order); // send a valid order to artificial market
@@ -187,6 +198,16 @@ public abstract class AbstractTrader {
 	{
 		return transactionCounter;
 	}
+
+	public double getProfit_loss() {
+		return profit_loss;
+	}
+
+	public int getWinningRate() {
+		return winningRate;
+	}
+	
+	
 	
 }
 

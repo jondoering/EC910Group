@@ -24,6 +24,9 @@ public class Observer extends SimModel {
 	private TimeSeriesPlotter varPlot;
 	private TimeSeriesPlotter traderValuePlot;
 	private IndividualBarPlotter transCounterPlot;
+	private IndividualBarPlotter profitLossPlot;
+	private IndividualBarPlotter winningRatePlot;
+
 
 	//	private CollectionBarPlotter ordersPlot;
 
@@ -51,7 +54,9 @@ public class Observer extends SimModel {
 		varPlot = new TimeSeriesPlotter("Variance");
 		traderValuePlot = new TimeSeriesPlotter("Strategy Portfolio Value");
 		transCounterPlot = new IndividualBarPlotter("Transactions of Traders");
-		
+		profitLossPlot = new IndividualBarPlotter(" P & L");
+		winningRatePlot = new IndividualBarPlotter("Winning Rates of Traders");
+			
 		pricePlot.addSeries("PriceSeries", model.market, "getSpotPrice", true);	
 		pricePlot.addSeries("priceLife", model.marketMaker, "getLastLifePrice", true);		
 		volumePlot.addSeries("Volume", model.market, "getSpotVolume", true);
@@ -71,15 +76,34 @@ public class Observer extends SimModel {
 		transCounterPlot.addSource("Bollinger Band", model.bbTrader, "getTransactionCount", true);
 		transCounterPlot.addSource("Highest Price", model.hpTrader, "getTransactionCount", true);		
 		transCounterPlot.addSource("Pouyan Trader", model.pouyanTrader, "getTransactionCount", true);
-		transCounterPlot.addSource("william Trader", model.pouyanTrader, "getTransactionCount", true);
+		transCounterPlot.addSource("william Trader", model.williamTrader, "getTransactionCount", true);
 		
+		//P&L
+		profitLossPlot.addSource("Simple Moving Average", model.smaTrader, "getProfit_loss", true);		
+		profitLossPlot.addSource("Bollinger Band", model.bbTrader, "getProfit_loss", true);
+		profitLossPlot.addSource("Highest Price", model.hpTrader, "getProfit_loss", true);		
+		profitLossPlot.addSource("Pouyan Trader", model.pouyanTrader, "getProfit_loss", true);
+		profitLossPlot.addSource("william Trader", model.williamTrader, "getProfit_loss", true);
+		
+		//winningRatePlot
+		winningRatePlot.addSource("Simple Moving Average", model.smaTrader, "getWinningRate", true);		
+		winningRatePlot.addSource("Bollinger Band", model.bbTrader, "getWinningRate", true);
+		winningRatePlot.addSource("Highest Price", model.hpTrader, "getWinningRate", true);		
+		winningRatePlot.addSource("Pouyan Trader", model.pouyanTrader, "getWinningRate", true);
+		winningRatePlot.addSource("william Trader", model.williamTrader, "getWinningRate", true);
+
+
+
 		addSimWindow(pricePlot);
 		addSimWindow(volumePlot);
-		addSimWindow(varPlot);
-		addSimWindow(kurtPlot);
-		addSimWindow(skewPlot);
+		//addSimWindow(varPlot);
+		//addSimWindow(kurtPlot);
+		//addSimWindow(skewPlot);
 		addSimWindow(traderValuePlot);
 		addSimWindow(transCounterPlot);
+		addSimWindow(profitLossPlot);
+		addSimWindow(winningRatePlot);
+
 		
 		
 		eventList.scheduleSimple(0, 1, pricePlot, Sim.EVENT_UPDATE);		
@@ -89,6 +113,9 @@ public class Observer extends SimModel {
 		//eventList.scheduleSimple(4, 1, skewPlot, Sim.EVENT_UPDATE);	
 		//eventList.scheduleSimple(5, model.stepsADay, kurtPlot, Sim.EVENT_UPDATE);
 		eventList.scheduleSimple(0,1,traderValuePlot, Sim.EVENT_UPDATE);
+		eventList.scheduleSimple(0,1,profitLossPlot, Sim.EVENT_UPDATE);
+		eventList.scheduleSimple(0,1,winningRatePlot, Sim.EVENT_UPDATE);
+
 
 	}
 
