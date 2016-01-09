@@ -8,6 +8,7 @@ import org.com.essex.ec910.artificialstockmarket.market.Order;
 
 /**
  * 
+ * 
  * @author Pouyan
  *
  */
@@ -28,8 +29,9 @@ public abstract class AbstractTrader {
 	public int ROI;                             // return of investment 
 	public int numTrades;                       // number of total trades
 	public int numWinTrades;                    // number of winning trades
-	public int winningRate;                     // = numWinTrades / numTrades
-    public double profitFactor;                 // = total profit / total loss
+	
+	private int winningRate;                     // = numWinTrades / numTrades
+    private double profitFactor;                 // = total profit / total loss
     
 	private int transactionCounter = 0;
 	private double comFee;
@@ -50,6 +52,9 @@ public abstract class AbstractTrader {
 		this.max_sell = max_sell;
 		this.numWinTrades = 0;
 		this.numTrades=0;
+		
+		this.lastPortfolio = new Portfolio(0,0);
+		this.lastPortfolio.setMoney(this.portfolio.getMoney());
 	}
 
 	/**
@@ -100,23 +105,10 @@ public abstract class AbstractTrader {
 					System.out.println(this.name + ": " + order.toString());
 				}
 			
-				if(order.getType1() == Order.SELL)
-				{
-					this.transactionCounter++;
-					this.numTrades = this.transactionCounter; 
-					this.profit_loss = this.portfolio.getMoney() - this.lastPortfolio.getMoney(); // update P&L
-					if(this.profit_loss > 0){//profit
-					   this.numWinTrades++;	
-					}
-					this.winningRate = this.numWinTrades / this.numTrades;
 					
-		
-					
-				}				
 				
 				this.artificialMarket.reciveOrder(order); // send a valid order to artificial market
-				this.lastOrder = order;                   // save final order sent to market
-				this.lastPortfolio = this.portfolio;      // save the last portfolio of trader when final order sent to market
+			
 //			}//if check
 		}
 
@@ -138,6 +130,23 @@ public abstract class AbstractTrader {
 		
 		this.portfolio.setMoney(m);
 		this.portfolio.setShares(this.portfolio.getShares() - shares);
+		
+		if(true)
+		{
+			this.transactionCounter++;
+			
+			this.numTrades++; 
+			
+			this.profit_loss = this.portfolio.getMoney() - this.lastPortfolio.getMoney(); // update P&L
+			
+			if(this.profit_loss > 0){//profit
+			   this.numWinTrades++;	
+			   this.winningRate = this.numWinTrades/this.numTrades;
+			}
+			
+			this.lastPortfolio.setMoney(this.portfolio.getMoney());;      // save the last portfolio of trader when final order sent to market
+			
+		}		
 		
 	}
 
@@ -199,10 +208,16 @@ public abstract class AbstractTrader {
 		return transactionCounter;
 	}
 
+	/**
+	 * @return
+	 */
 	public double getProfit_loss() {
 		return profit_loss;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getWinningRate() {
 		return winningRate;
 	}

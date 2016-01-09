@@ -41,6 +41,7 @@ public class Model extends SimModel{
 	/**
 	 * Agents
 	 */
+	
 	MarketMaker marketMaker;
 	ArrayList<RandomTrader> randomTraderList;    // list of random traders
 	HighFrequenceSMATrader smaTrader;    // list of simple SMA traders
@@ -107,6 +108,12 @@ public class Model extends SimModel{
 	private int tianN;
 
 
+	private int williamPeriod;
+
+
+	private double williamPercentage;
+
+
 
 
 	@Override
@@ -164,6 +171,10 @@ public class Model extends SimModel{
 		//Tian M-N high price strategy
 		tianM = 10;
 		tianN = 2;
+		
+		//William
+		williamPeriod = 200;
+		williamPercentage = 0.02;
 		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
@@ -248,7 +259,7 @@ public class Model extends SimModel{
 		this.pouyanTrader = new PouyanTradingStrategy("Pouyan Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.pouyanVolume, this.pouyanTargetProfit,this.pouyanStopLoss);
 		this.pouyanTrader.setCommissionFee(comFee);
          
-		this.williamTrader = new WilliamTradingStrategy("William Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent);
+		this.williamTrader = new WilliamTradingStrategy("William Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.williamPercentage, this.williamPeriod);
 		this.williamTrader.setCommissionFee(comFee);
 		scheduleEvents();
 	}

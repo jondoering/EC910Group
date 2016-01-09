@@ -1,18 +1,18 @@
 package org.com.essex.ec910.artificialstockmarket.strategy;
 
-/**
- * @author Pouyan
- *  
- */
-
-// This is a buy and hold long term strategy
-// enter (long) position when there is no open position
-// exit (sell) At target profit or  stop loss
 
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
+
+/**
+ * @author Pouyan
+ *  
+ *  This is a buy and hold long term strategy
+ * enter (long) position when there is no open position
+ * exit (sell) At target profit or  stop loss
+ */
 
 import jas.engine.Sim;
 

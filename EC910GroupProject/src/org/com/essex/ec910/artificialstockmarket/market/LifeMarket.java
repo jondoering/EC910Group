@@ -12,6 +12,7 @@ import org.com.essex.ec910.artificialstockmarket.datasource.YQLConnector;
 /**
  * @author Jonathan
  *
+ *
  */
 public class LifeMarket {
 
@@ -94,8 +95,7 @@ public class LifeMarket {
 							t = dformat.parse(to);
 							runFlag = false;					
 						}
-						
-						
+											
 						ydb.addData(dformat.format(f), dformat.format(t));
 						 
 						offset += year_size;

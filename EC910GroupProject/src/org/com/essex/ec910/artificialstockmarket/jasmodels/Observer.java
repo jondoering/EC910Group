@@ -85,12 +85,13 @@ public class Observer extends SimModel {
 		profitLossPlot.addSource("Pouyan Trader", model.pouyanTrader, "getProfit_loss", true);
 		profitLossPlot.addSource("william Trader", model.williamTrader, "getProfit_loss", true);
 		
+		
 		//winningRatePlot
 		winningRatePlot.addSource("Simple Moving Average", model.smaTrader, "getWinningRate", true);		
 		winningRatePlot.addSource("Bollinger Band", model.bbTrader, "getWinningRate", true);
 		winningRatePlot.addSource("Highest Price", model.hpTrader, "getWinningRate", true);		
 		winningRatePlot.addSource("Pouyan Trader", model.pouyanTrader, "getWinningRate", true);
-		winningRatePlot.addSource("william Trader", model.williamTrader, "getWinningRate", true);
+		//winningRatePlot.addSource("william Trader", model.williamTrader, "getWinningRate", true);
 
 
 
@@ -112,9 +113,9 @@ public class Observer extends SimModel {
 		//eventList.scheduleSimple(2, 1, varPlot, Sim.EVENT_UPDATE);
 		//eventList.scheduleSimple(4, 1, skewPlot, Sim.EVENT_UPDATE);	
 		//eventList.scheduleSimple(5, model.stepsADay, kurtPlot, Sim.EVENT_UPDATE);
-		eventList.scheduleSimple(0,1,traderValuePlot, Sim.EVENT_UPDATE);
-		eventList.scheduleSimple(0,1,profitLossPlot, Sim.EVENT_UPDATE);
-		eventList.scheduleSimple(0,1,winningRatePlot, Sim.EVENT_UPDATE);
+		eventList.scheduleSimple(1,1,traderValuePlot, Sim.EVENT_UPDATE);
+		eventList.scheduleSimple(1,1,profitLossPlot, Sim.EVENT_UPDATE);
+		eventList.scheduleSimple(1,1,winningRatePlot, Sim.EVENT_UPDATE);
 
 
 	}
