@@ -1,4 +1,4 @@
-package org.com.essex.ec910.artificialstockmarket.strategy.jonathan;
+package org.com.essex.ec910.artificialstockmarket.strategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +18,8 @@ import com.tictactec.ta.lib.RetCode;
  *
  */
 public class WilliamTradingStrategy extends AbstractTrader  {
-    private double RiskWeight;
+    
+	private double RiskWeight;
     private long number;
 	
 	public WilliamTradingStrategy(String name, ArtificialMarket artificialMarket, Portfolio portfolio, long max_buy,
@@ -28,8 +29,10 @@ public class WilliamTradingStrategy extends AbstractTrader  {
 		//this.RiskWeight= RiskWeight;
 		
 	}	
+	
 	@Override
 	public Order runStrategy(){
+		
 		Order order = new Order(Order.BUY, Order.MARKET, 0, 0, this);
 	
 		if(this.lastPortfolio.getShares() > 0 ){
@@ -37,7 +40,6 @@ public class WilliamTradingStrategy extends AbstractTrader  {
 			if(this.profitFactor>1){
 			   order = new Order(Order.BUY, Order.MARKET, portfolio.getShares(), artificialMarket.getSpotPrice(), this); 	
 			}
-	
 		}
 		
 		else{ // no shares --> enter long

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.com.essex.ec910.artificialstockmarket.strategy.jonathan;
+package org.com.essex.ec910.artificialstockmarket.strategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +13,6 @@ import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 
 import com.tictactec.ta.lib.Core;
-import com.tictactec.ta.lib.MAType;
 import com.tictactec.ta.lib.MInteger;
 import com.tictactec.ta.lib.RetCode;
 
@@ -23,27 +22,23 @@ import com.tictactec.ta.lib.RetCode;
  * @author Jonathan
  *
  */
-public class BollingerBandTrader extends AbstractTrader {
+public class HighFrequenceSMATrader extends AbstractTrader {
 
 	
-	private int period;
-	private double nbdevup;
-	private double nbdevdn;
-	private double closePerc;
+	private int longPeriod;
+	private int shortPeriod;
 	
 	/**
 	 * Ta Lib Core Object
 	 */
 	private Core talib;
 	
-	public BollingerBandTrader(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,
-			final int max_sell,final int period, final double nbdevup, final double nbdevdn) {
+	public HighFrequenceSMATrader(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,
+			final int max_sell,final int longPeriod, final int shortPeriod) {
 		super(name, artificialMarket, portfolio, max_buy, max_sell);		
 		
-		this.period = period;
-		this.nbdevup = nbdevup;
-		this.nbdevdn = nbdevdn;
-		this.closePerc = 0.002;
+		this.longPeriod = longPeriod;
+		this.shortPeriod = shortPeriod;
 		
 		talib = new Core();
 	}
@@ -61,7 +56,7 @@ public class BollingerBandTrader extends AbstractTrader {
 
 		// get Prices	
 		
-		double[] prices = artificialMarket.getLastNPriceAsDoubles(period);
+		double[] prices = artificialMarket.getLastNPriceAsDoubles(longPeriod);
 		
 		
 		if(prices != null)
@@ -69,38 +64,41 @@ public class BollingerBandTrader extends AbstractTrader {
 			
 			double spotprice = artificialMarket.getSpotPriceAsDouble();
 			
-			if(prices.length >= period)
+			if(prices.length >= longPeriod)
 			{
-				double[] upperband = new double[prices.length];
-				double[] middleband = new double[prices.length];
-				double[] lowerband = new double[prices.length];
+				double[] outLong = new double[prices.length];
+				double[] outShort = new double[prices.length];
 				
-				MInteger begin = new MInteger();
-				MInteger end = new MInteger();
+				MInteger beginLong = new MInteger();
+				MInteger beginShort = new MInteger();
 				
+				MInteger lengthLong = new MInteger();
+				MInteger lengthShort = new MInteger();
 				
 				//Calculate SMAs
-				RetCode retCode = talib.bbands(0, prices.length-1, prices, period, nbdevup, nbdevdn, MAType.Sma, begin, end, upperband, middleband, lowerband);				
+				RetCode retCodeLong = talib.sma(0, prices.length-1, prices, longPeriod, beginLong, lengthLong, outLong);				
+				//Calculate SMAs
+				RetCode retCodeShort = talib.sma(0, prices.length-1, prices, shortPeriod, beginShort, lengthShort, outShort);
 				
-				if(retCode == RetCode.Success)
+				if(retCodeLong == RetCode.Success && retCodeShort == RetCode.Success)
 				{
-					if(isClose(spotprice, lowerband[0]) && portfolio.getShares() == 0)
+					if((outShort[0] > outLong[0]) && portfolio.getShares() == 0)
 					{
 						//Buy as much as possible if short crosses long bottom up 
 						long vol = (long) Math.ceil(this.getInvestableMoney()/spotprice);
-						
+
 						if(vol > max_buy)
 						{	vol = max_buy;}
 
 						order = new Order(Order.BUY, Order.MARKET, vol, (int) spotprice, this);
-						//System.out.println("Bollinger Buy:" + order.toString());
+						//System.out.println("SMA Buy:" + order.toString());
 					}
 					
-					if(isClose(spotprice, upperband[0]) && portfolio.getShares() > 0)
+					if((outShort[0] < outLong[0]) && portfolio.getShares() > 0)
 					{
 						//Sell all shares if short crosses long top down and agent owns shares 
 						order = new Order(Order.SELL, Order.MARKET, portfolio.getShares(), (int) spotprice, this);
-						//System.out.println("Bollinger Sell:" + order.toString());
+						//System.out.println("SMA Sell:" + order.toString());
 						
 					}
 					
@@ -112,16 +110,6 @@ public class BollingerBandTrader extends AbstractTrader {
 		return order;
 	}
 	
-	/**
-	 * decider if two prices are close by a percentage value 
-	 * @param a - price a
-	 * @param b - price b
-	 * @return true, if a and b close, false otherwise
-	 */
-	private boolean isClose(double a, double b)
-	{
-		return ((a>(1-closePerc)*b) && (a<(1+closePerc)*b)) ? true : false;
-	}
 	
 
 

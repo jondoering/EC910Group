@@ -1,4 +1,4 @@
-package org.com.essex.ec910.artificialstockmarket.strategy.jonathan;
+package org.com.essex.ec910.artificialstockmarket.strategy;
 
 // buy at new highest price
 // Tian

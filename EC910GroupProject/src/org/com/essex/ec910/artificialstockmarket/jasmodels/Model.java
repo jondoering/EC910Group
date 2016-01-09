@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.LifeMarket;
 import org.com.essex.ec910.artificialstockmarket.statistics.Statistics;
-import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.BollingerBandTrader;
-import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.HighestPriceTraderTian;
-import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.PouyanTradingStrategy;
-import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.HighFrequenceSMATrader;
-import org.com.essex.ec910.artificialstockmarket.strategy.jonathan.WilliamTradingStrategy;
+import org.com.essex.ec910.artificialstockmarket.strategy.BollingerBandTrader;
+import org.com.essex.ec910.artificialstockmarket.strategy.HighFrequenceSMATrader;
+import org.com.essex.ec910.artificialstockmarket.strategy.HighestPriceTraderTian;
+import org.com.essex.ec910.artificialstockmarket.strategy.PouyanTradingStrategy;
+import org.com.essex.ec910.artificialstockmarket.strategy.WilliamTradingStrategy;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.MarketMaker;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
@@ -63,8 +63,8 @@ public class Model extends SimModel{
 	 */
 	public int numRandomTrader;                         // number of random traders
 
-	public int initialMoneyRandom;                      // money of random traders at the beginning
-	public int initialSharesRandom;                     // shares of random traders at the beginning 
+	public int initMoneyRandom;                      // money of random traders at the beginning
+	public int initSharesRandom;                     // shares of random traders at the beginning 
 	int maxBuyRandom;
 	int maxSellRandom;                           		  // trading limits for traders	
 
@@ -122,8 +122,6 @@ public class Model extends SimModel{
 		// if low, price is more volatile and driven by randomness from trades
 
 		//Parameters for all Traders	
-		maxBuyRandom = 1000;    				//maximum of shares a trader can buy per order
-		maxSellRandom = 1000; 					//maximum of shares a trader can sell per order
 		comFee = 0.005;							//Commission Fee of 0.5%
 
 		// set up default values for random traders
@@ -131,9 +129,11 @@ public class Model extends SimModel{
 		riskFactorAverse = 1; 					//Factor that represent a riskaverse trader; those set prices closer around last price
 		riskFactorAffin = 5; 					//Factor that represnet more agressive traders; those set prices in a bigger range about last price
 		riskDistribution = 0.7; 				//determines how many of the traders are risk averse (here 70%)
-		initialSharesRandom = 1000;   			//1000 shares for each random trader
-		initialMoneyRandom = 10000;			    //100000$ for each trader		
-
+		initSharesRandom = 1000;   			//1000 shares for each random trader
+		initMoneyRandom = 10000;			    //100000$ for each trader		
+		maxBuyRandom = 1000;    				//maximum of shares a trader can buy per order
+		maxSellRandom = 1000; 					//maximum of shares a trader can sell per order
+	
 		// set up default values for intelligent traders
 		initSharesInteligent = 0;				//each trader starts with no shares usually
 		initMoneyInteligent = 1000000;			//but with some money for buying stocks
@@ -213,7 +213,7 @@ public class Model extends SimModel{
 			}
 
 			RandomTrader rt = new RandomTrader("Random"+ i, this.market, 
-					new Portfolio(this.initialSharesRandom, this.initialMoneyRandom), this.maxBuyRandom,
+					new Portfolio(this.initSharesRandom, this.initMoneyRandom), this.maxBuyRandom,
 					this.maxSellRandom, riskF);
 			rt.setCommissionFee(comFee);
 
@@ -234,7 +234,8 @@ public class Model extends SimModel{
 		//set up pouyan trading model
 		this.pouyanTrader = new PouyanTradingStrategy("Pouyan Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.pouyanRisk);
 		this.pouyanTrader.setCommissionFee(comFee);
-                this.williamTrader = new WilliamTradingStrategy("William Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent);
+         
+		this.williamTrader = new WilliamTradingStrategy("William Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent);
 		this.williamTrader.setCommissionFee(comFee);
 		scheduleEvents();
 	}

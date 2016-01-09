@@ -7,6 +7,7 @@ import org.com.essex.ec910.artificialstockmarket.market.Order;
 
 
 /**
+ * 
  * @author Pouyan
  *
  */
@@ -35,11 +36,11 @@ public abstract class AbstractTrader {
 	
 	/**
 	 * Constructor
-	 * @param name 
-	 * @param artificialMarket  
-	 * @param portfolio  
-	 * @param max_buy
-	 * @param max_sell
+	 * @param name - trader name
+	 * @param artificialMarket  - reference to market
+	 * @param portfolio  - portfolio object 
+	 * @param max_buy - maximum number of shares that can be bought by one order
+	 * @param max_sell - maximum number of shares that can be sold by one order
 	 */
 	public AbstractTrader(String name, ArtificialMarket artificialMarket, Portfolio portfolio, long max_buy , long max_sell) {
 		this.name = name;
@@ -49,10 +50,14 @@ public abstract class AbstractTrader {
 		this.max_sell = max_sell;
 	}
 
-	//	run your trading strategy (Override this function)
-	//  if you want to send order to market, you should not directly send your order, 
-	//  because it should be double checked by sendFinalOrderToMarket() 
-	//  if you do not want to send order to market, make sure your order volume is 0    
+	/**
+	 * run your trading strategy (Override this function)
+	 * if you want to send order to market, you should not directly send your order, 
+	 * because it should be double checked by sendFinalOrderToMarket() 
+	 * if you do not want to send order to market, make sure your order volume is 0
+	 *     
+	 * @return order that should be send to market
+	 */
 	public Order runStrategy(){
 
 		Order order; 
@@ -64,9 +69,11 @@ public abstract class AbstractTrader {
 	}
 	
 	
-	//  Final check to make sure that trader sends correct order to market 
-	//	also this function, updates the performance results of trader (???) 
-	//	please do not change this function
+	/**
+	 * Final check to make sure that trader sends correct order to market 
+	 * also this function, updates the performance results of trader (???) 
+	 * please do not change this function 
+	 */
 	public void sendFinalOrderToMarket(){
 		
 		Order order = runStrategy();
@@ -106,11 +113,15 @@ public abstract class AbstractTrader {
 		// update the performance results of trader
 		// ???   	 
 	}
-
-	//  reduce shares from portfolio of trader and increase the money 
-	//  to be used by artificial market, not by trader  
+  
+	/**
+	 * reduce shares from portfolio of trader and increase the money
+	 * to be used by artificial market, not by trader  
+	 * @param money - amount of money to add to portfolio
+	 * @param shares - amount of shares to substract from portfolio
+	 */
 	public void buyShareFromTrader(long money, long shares){
-		
+				
 		//adjustment by commission fee
 		double m = this.portfolio.getMoney() + money*(1-comFee);
 		
@@ -119,8 +130,12 @@ public abstract class AbstractTrader {
 		
 	}
 
-	//  reduce money from portfolio of trader and increase the shares
-	//  to be used by artificial market, not by trader 
+	/**
+	 * reduce money from portfolio of trader and increase the shares
+	 * to be used by artificial market, not by trader  
+	 * @param money - amount of money to substract from portfolio
+	 * @param shares - amount of shares to add to portfolio
+	 */
 	public void sellShareToTrader(long money, long shares){
 		
 		//adjustment by commission fee
@@ -146,8 +161,8 @@ public abstract class AbstractTrader {
 	}
 	
 	/**
-	 * 
-	 * @param comFee
+	 * sets comission fee
+	 * @param comFee - comission fee as value between 0 and 1
 	 */
 	public void setCommissionFee(final double comFee)
 	{
@@ -155,8 +170,8 @@ public abstract class AbstractTrader {
 	}
 	
 	/**
-	 * calculates money available for investment with respect to commission fee
-	 * @return
+	 * calculates money that is available for investment with respect to commission fee
+	 * @return - investable amount of money
 	 */
 	protected double getInvestableMoney()
 	{
@@ -164,7 +179,8 @@ public abstract class AbstractTrader {
 	}
 	
 	/**
-	 * A transaction is defined as buy and sell and is counted after the sell order (even if the sell order isn't executed) 
+	 * A transaction is defined as buy and sell and is counted after the sell order 
+	 * (even if the sell order isn't executed) 
 	 * @return - number of transactions done by the trader
 	 */
 	public int getTransactionCount()
