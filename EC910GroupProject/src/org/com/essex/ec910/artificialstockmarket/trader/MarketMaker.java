@@ -37,7 +37,7 @@ public class MarketMaker extends AbstractTrader{
 	/**
 	 * probability that a life price order in morning period gets placed
 	 */
-	private double lifeOrderProbability = 0.7;
+	private double lifeOrderProbability;
 		
 	/**
 	 * number of shares the market maker uses in its drag orders (based on life prices)   
@@ -59,6 +59,14 @@ public class MarketMaker extends AbstractTrader{
 		this.dragVolume = dragVolume;
 		this.artVolumeFactor = volumeFactor;
 		this.lastLifePriceCounter = lastLifePriceCounter;
+	
+		
+		if(lifeMarket.testModus())
+		{	this.lifeOrderProbability =0; }
+		else
+		{
+			this.lifeOrderProbability = 0.7;
+		}
 		
 	}
 
