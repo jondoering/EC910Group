@@ -1,4 +1,7 @@
 org.com.essex.ec910.artificialstockmarket.datasource
 org.com.essex.ec910.artificialstockmarket.jasmodels
 org.com.essex.ec910.artificialstockmarket.market
+org.com.essex.ec910.artificialstockmarket.statistics
+org.com.essex.ec910.artificialstockmarket.strategy
+org.com.essex.ec910.artificialstockmarket.tests
 org.com.essex.ec910.artificialstockmarket.trader

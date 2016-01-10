@@ -14,7 +14,6 @@ import org.com.essex.ec910.artificialstockmarket.strategy.HighFrequenceSMATrader
 import org.com.essex.ec910.artificialstockmarket.strategy.MNHighestPriceTraderTian;
 import org.com.essex.ec910.artificialstockmarket.strategy.PouyanTradingStrategy;
 import org.com.essex.ec910.artificialstockmarket.strategy.WilliamTradingStrategy;
-import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.MarketMaker;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
@@ -75,7 +74,8 @@ public class Model extends SimModel{
 	public double volumeFactor;
 
 	public boolean printOrderBook; 
-	public boolean printOrders;    
+	public boolean printOrders; 
+	public boolean showStatistics;
 
 	int stepsADay; 					
 	private double riskFactorAverse;
@@ -91,16 +91,16 @@ public class Model extends SimModel{
 	private double comFee;
 
 	private long pouyanVolume;                           
-	private long pouyanTargetProfit;                      // target profit for pouyan trading strategy
-	private long pouyanStopLoss;                          // stop loss for pouyan trading strategy
+	private long pouyanTargetProfit;                  
+	private long pouyanStopLoss;                         
 
 	private int smaLongPeriod;
 	private int smaShortPeriod;
 
 
 	private int bollingerPeriod;
-	private int bollingerUp;
-	private int bollingerLow;
+	private double bollingerUp;
+	private double bollingerLow;
 
 
 	private int tianM;
@@ -118,8 +118,11 @@ public class Model extends SimModel{
 
 		//Parameter for Model		
 		stepsADay = 500; 						//How many Steps define a day (end of the day, Market Maker gets new price from life market) 		
-		printOrderBook = false; 				// if true, orders gets printed in each step in StdOut
-
+		printOrderBook = false; 				// if true, ordthe whole order book (in a cumulated way) gets gets printed in each step in StdOut
+		printOrders    = false;					//if true,  orders gets printed in each step in StdOut
+		showStatistics = false;					//if true, extra market statistic gets plotted in JAS
+		
+			
 
 		//Parameter for life market data from yahoo finance
 		fromDate = "2014-02-01";  				//First date of life data
@@ -128,9 +131,9 @@ public class Model extends SimModel{
 
 		//Parameter for Market Maker behaviour
 		dragVolume = 10000;						//Volume determine how much influence the Market Maker has to drag the artificial price to the life price
-		//if high, price follows the life price, if low price is more independend		
+												//if high, price follows the life price, if low price is more independend		
 		volumeFactor = 0.1;						// How many of the current market volume should be placed in the market to create volume around the current price
-		// if low, price is more volatile and driven by randomness from trades
+												// if low, price is more volatile and driven by randomness from trades
 
 		//Parameters for all Traders	
 		comFee = 0.005;							//Commission Fee of 0.5%
@@ -140,7 +143,7 @@ public class Model extends SimModel{
 		riskFactorAverse = 1; 					//Factor that represent a riskaverse trader; those set prices closer around last price
 		riskFactorAffin = 5; 					//Factor that represnet more agressive traders; those set prices in a bigger range about last price
 		riskDistribution = 0.7; 				//determines how many of the traders are risk averse (here 70%)
-		initSharesRandom = 1000;   			//1000 shares for each random trader
+		initSharesRandom = 1000;   				//1000 shares for each random trader
 		initMoneyRandom = 10000;			    //100000$ for each trader		
 		maxBuyRandom = 1000;    				//maximum of shares a trader can buy per order
 		maxSellRandom = 1000; 					//maximum of shares a trader can sell per order
@@ -152,9 +155,9 @@ public class Model extends SimModel{
 		maxSellIntelligent = Integer.MAX_VALUE; //and selling
 
 		//pouyan trading model parameter
-		pouyanVolume = 100;                            // volume (size) of trading
-		pouyanTargetProfit = 100;                      // target profit for pouyan trading strategy
-		pouyanStopLoss = 100 ;                          // stop loss for pouyan trading strategy
+		pouyanVolume = 100;                     // volume (size) of trading
+		pouyanTargetProfit = 100;               // target profit for pouyan trading strategy
+		pouyanStopLoss = 100; 					// stop loss for pouyan trading strategy
 
 		//SMA trader variables
 		smaLongPeriod = 200;					//sma long period
@@ -178,6 +181,9 @@ public class Model extends SimModel{
 		Sim.openProbe(this, "Parameters model");
 	}
 
+	/* (non-Javadoc)
+	 * @see jas.engine.SimModel#buildModel()
+	 */
 	@Override
 	public void buildModel() {
 
@@ -250,7 +256,7 @@ public class Model extends SimModel{
 		this.bbTrader = new BollingerBandTrader("BB Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, bollingerPeriod, bollingerUp, bollingerLow);
 		this.bbTrader.setCommissionFee(comFee);
 
-		this.hpTrader = new MNHighestPriceTraderTian("HP Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.tianM, this.tianM);
+		this.hpTrader = new MNHighestPriceTraderTian("HP Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.tianM, this.tianN);
 		this.hpTrader.setCommissionFee(comFee);
         
 		//set up pouyan trading model
@@ -264,6 +270,9 @@ public class Model extends SimModel{
 		scheduleEvents();
 	}
 
+	/**
+	 * schedule all events for JAS model
+	 */
 	public void scheduleEvents() {
 
 		//Add Events
@@ -286,7 +295,12 @@ public class Model extends SimModel{
 		
 
 	}
-
+	
+	
+	/**
+	 * Starts whole model
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{
 
@@ -304,6 +318,7 @@ public class Model extends SimModel{
 		observer.setParameters();
 
 	}
+
 
 
 

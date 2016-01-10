@@ -3,10 +3,15 @@ package org.com.essex.ec910.artificialstockmarket.market;
 import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 
 /**
+ * 
+ * This class implements the order of the model. 
+ * Two order types (market and limit) are support as well
+ * as an complex compare mechanism.
+ * 
  * @author Jonathan
  *
  */
-public class Order implements Comparable{
+public class Order implements Comparable<Order>{
 
 	public static int BUY = 0;
 	public static int SELL = 1;
@@ -21,11 +26,13 @@ public class Order implements Comparable{
 	
 	
 	/**
-	 * @param type1
-	 * @param type2
-	 * @param volume
-	 * @param limitprice
-	 * @param owner
+	 * Constructor
+	 * 
+	 * @param type1 - sell or buy
+	 * @param type2 - limit or market
+	 * @param volume - order volume
+	 * @param limitprice - if limit order the specified price
+	 * @param owner - issuer of the order
 	 */
 	public Order(int type1, int type2, long volume, long limitprice, AbstractTrader owner) {
 		
@@ -80,7 +87,7 @@ public class Order implements Comparable{
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(Order o) {
 		
 		
 			if(this.getType2() == Order.MARKET && (((Order) o).getType2() == Order.MARKET))

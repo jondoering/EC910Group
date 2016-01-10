@@ -21,7 +21,7 @@ import cern.jet.stat.Descriptive;
  * This includes mu and standard deviation (of Gausian normal distribution), skewness and kurtosis.
  * Statistical methdos coming form cern.colt.list @see https://dst.lbl.gov/ACSSoftware/colt/api/cern/colt/list/package-use.html
  *   
- * @author Jonathan
+ * @author Jonathan Doering
  *
  */
 public class Statistics {
@@ -158,30 +158,11 @@ public class Statistics {
 		
 		return Descriptive.sampleKurtosis(d, Descriptive.mean(d), this.getVariance());
 	}
-	
-	/**
-	 * calculate OBV
-	 * return
-	 * /
-//	public int obv(final int vol1,final int vol2){
-//		if(vol2> vol1){
-//			
-//			obv = obv+1;
-//			
-//		}else if(vol2 == vol1){
-//			
-//			return obv;
-//			
-//		}
-//		else{
-//			obv = obv-1;
-//		}
-//		return obv;
-	
+
 	
 	/**
 	 *opens Stream for file writing; filthy solution due to the fact, that stream never gots closed;
-	 *but only way, because of a realy weird behaviour of JAS using modelEnd() method.
+	 *but is the only way, because of a realy weird behaviour of JAS using modelEnd() method.
 	 */
 	private void openStream() 
 	{

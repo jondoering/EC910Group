@@ -6,7 +6,8 @@ import jas.statistics.db.Table;
 
 /**
  * @author MAO WEIGUANG
- *
+ * Mock class. Due to the fact that there is no static database to connect to, 
+ * this class is not used.
  * Using SQL Query Language to  store all outcomes of the simulation data
  */
 public class DataExport {

@@ -5,18 +5,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 import org.com.essex.ec910.artificialstockmarket.datasource.HistoricalPrice;
 import org.com.essex.ec910.artificialstockmarket.datasource.YQLConnector;
 
 /**
- * @author Jonathan
- *
- *
+ * 
+ * Class representing the life market. Only MarketMaker has access to it. 
+ * This wrapper class only provides real price data if required.
+ * 
+ * @author Jonathan Doering
  */
 public class LifeMarket {
 
-	private int lastPrice;
 	
 	private YQLConnector ydb;
 	
@@ -26,9 +26,13 @@ public class LifeMarket {
 
 	private boolean testModus;
  
-	
+
 	/**
-	 * @param db
+	 * Constructor
+	 * @param yahoo_ticker - known yahoo ticker
+	 * @param from -start day as string
+	 * @param to - end date as string
+	 * @throws Exception
 	 */
 	public LifeMarket(String yahoo_ticker, String from, String to) throws Exception
 	{

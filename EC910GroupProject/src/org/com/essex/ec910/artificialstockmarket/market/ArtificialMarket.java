@@ -1,16 +1,17 @@
 package org.com.essex.ec910.artificialstockmarket.market;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Random;
 
 /**
- * 
- * @author Jonathan
+ * Main Class of the model. Describes and implements an artificial stock market where
+ * agents can trade on. Therefore a version of the auction based trading system used by XETRA
+ * and SETS was implemented. The price finding mechanism is execution volume maximizing. 
+ * Overall two different Order types (market and limit order) are supported. 
+ * For further information please see related course work.
+ *  
+ * @author Jonathan Doering
  *
  */
 public class ArtificialMarket {
@@ -24,24 +25,16 @@ public class ArtificialMarket {
 
 	private ArrayList<Integer> closePriceHistory;
 	
-	/**
-	 * if true, orderbook is printed every step
-	 */
-	private boolean showOrderBook;
-
-	// For debuging onlu
-	private FileWriter fw;
-
-
-	/**
-	 * if true, orders are printed every step
-	 */
-	private boolean printOrders;
+	private boolean showOrderBook; //if true, orderbook is printed every step
+	private boolean printOrders; //if true, orders are printed every step
 
 	/**
 	 * Constructor
-	 * 
-	 * @param initialPrice
+	 *
+	 * @param initPrices - array of int as initial prices
+	 * @param initVolumes - array of int as initial volume values
+	 * @param printOrderBook - boolean indicates if order book for evaluation purposes should be printed
+	 * @param printOrders - boolean indicates if order book for evaluation purposes should be printed
 	 */
 	public ArtificialMarket(int[] initPrices, int[] initVolumes, boolean printOrderBook, boolean printOrders) {
 		this.showOrderBook = printOrderBook;
@@ -52,14 +45,7 @@ public class ArtificialMarket {
 		priceHistory = new ArrayList<Integer>();
 		volumeHistory = new ArrayList<Integer>();
 		closePriceHistory = new ArrayList<Integer>();
-
-		try {
-			fw = new FileWriter(new File("output.txt"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		
 		// Copy initial values in list
 		for (int i = 0; i < initPrices.length; i++) {
 			priceHistory.add(initPrices[i]);
@@ -69,11 +55,11 @@ public class ArtificialMarket {
 	}
 
 	/**
-	 * order driven clearing mechanism new price is found by
-	 * "largest best execution" principal Compare ...
+	 * Order driven clearing mechanism. The new price is found by
+	 * "largest best execution" principal Compare XETRA[X] and SETS[S}
 	 */
-	public void clearMarket() {
-
+	public void clearMarket()
+	{
 		// if orderbooks empty, do nothing
 		if (sellOrderBook.isEmpty() && buyOrderBook.isEmpty()) {
 			return;
@@ -231,8 +217,6 @@ public class ArtificialMarket {
 
 		maxbuyLimitPrice = lastLevel;
 
-		// Orderbook Statistics
-
 		// Step 2: Find new Price
 
 		int newPrice = getSpotPrice();
@@ -266,17 +250,7 @@ public class ArtificialMarket {
 					buyCumVolPerLevelList[i] = vol;					
 				}
 
-				/*
-				 * //Cumulate over all volume int oabuyVolume =0; for(int
-				 * i=0;i<buyVolumePerLevelList.size();i++) { oabuyVolume +=
-				 * buyVolumePerLevelList.get(i);}
-				 * 
-				 * vol = oabuyVolume; buyCumVolPerLevelList[0] = vol;
-				 * 
-				 * for(int i=1;i<buyVolumePerLevelList.size();i++) { vol -=
-				 * buyVolumePerLevelList.get(i-1); buyCumVolPerLevelList[i] =
-				 * vol; }
-				 */
+			
 			}
 
 			else
@@ -287,18 +261,7 @@ public class ArtificialMarket {
 					vol += buyVolumePerLevelList.get(i);
 					buyCumVolPerLevelList[i] = vol;
 				}
-				/*
-				 * //there are not Market Orders
-				 * 
-				 * //Cumulate over all int oabuyVolume =0; for(int
-				 * i=0;i<buyVolumePerLevelList.size();i++) { oabuyVolume +=
-				 * buyVolumePerLevelList.get(i);}
-				 * 
-				 * //Descending Order vol = oabuyVolume; for(int
-				 * i=1;i<buyVolumePerLevelList.size();i++) { vol -=
-				 * buyVolumePerLevelList.get(i-1); buyCumVolPerLevelList[i] =
-				 * vol; }
-				 */
+				
 			}
 
 			// Matching price Vectors and find new Price
@@ -328,19 +291,7 @@ public class ArtificialMarket {
 			int maxVolume = buyLevelCumVol;
 
 			if (showOrderBook) {
-				//
-				// try {
-				// fw.write(String.format("Price \t sellVol \t buyVol \t sellCum
-				// \t buyCum \t
-				// Transition\n---------------------------------------------------------------\n"));
-				// fw.write(System.lineSeparator());
-				// fw.flush();
-				//
-				// } catch (IOException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-
+			
 				System.out.printf(
 						"Price \t sellVol \t buyVol \t sellCum \t buyCum \t Transition\n---------------------------------------------------------------\n");
 			}
@@ -427,26 +378,21 @@ public class ArtificialMarket {
 		else 
 		{
 
-			// Market Orders Only
-			// old price is new price
-			// can never happen because of market maker
+		// Market Orders Only
+		// old price is new price
+		// can never happen because of market maker
 
 			newPrice = getSpotPrice();
-			// nShares = sellVolumePerLevelList
+		// nShares = sellVolumePerLevelList
 		}
 
 // Step 3. Execute all Orders that fits price by
 		// first: buy all needed shares from seller
 		// second: sell all needed shares to buyer
 		
-		
 		// List of all Orders for price p
 		int leftShares = nShares;
-
-		int sellIndex = 0;
-		ArrayList<Order> sellOrders = new ArrayList<Order>();
-		ArrayList<Integer> orderSize = new ArrayList<Integer>();
-
+	
 		// Execute Sell Orders (buy from seller)
 		for (int i = 0; i < sellOrderBook.size(); i++) {
 
@@ -517,15 +463,6 @@ public class ArtificialMarket {
 
 		if (printOrders) {
 			System.out.println(order.toString());
-		}
-
-		try {
-			fw.write(order.toString());
-			fw.write(System.lineSeparator());
-			fw.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 		if (order.getType1() == Order.BUY) {

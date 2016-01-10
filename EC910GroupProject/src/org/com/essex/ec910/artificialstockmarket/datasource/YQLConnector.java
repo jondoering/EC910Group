@@ -1,8 +1,5 @@
 package org.com.essex.ec910.artificialstockmarket.datasource;
 
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,10 +11,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 /**
- * @author Jonathan
- *
- *Using Yahoo Query Language to get historical price data from Yahoo finance database
- *Further information see: https://developer.yahoo.com/java/, https://developer.yahoo.com/yql/guide/yql-builder.html
+ *Class used to fetch financial data from an Internet data base (yahoo finance). It used
+ *Yahoo Query Language to get historical price data.
+ *For Further information see: https://developer.yahoo.com/java/, https://developer.yahoo.com/yql/guide/yql-builder.html
+ * 
+ * @author Jonathan Doering
  */
 public class YQLConnector {
 
@@ -67,21 +65,28 @@ public class YQLConnector {
 			return histPrices.get(n);}
 		
 	}
+	/**
+	 * Fetchs data between specific dates and adds them to the queue.
+	 * Mainly an adapted and tailored version of tutorial form yahoo finance. 
+	 * See: https://developer.yahoo.com/java/howto-parseRestJava.html
+	 * @param startDate  - start date of data
+	 * @param endDate    - end date of data
+	 * @throws Exception
+	 */
 	public void addData( String startDate, String endDate) throws Exception
 	{
-
+		
 		 String querry = "http://query.yahooapis.com/v1/public/yql?"
 		 			   + "q=select%20" + fields + "%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20"
 		 			   + "(%22"+symbol+"%22)%20and%20startDate%3D%22"+ startDate + "%22%20and%20endDate%3D%22" + endDate
 		 			   + "%22%0A%09%09&diagnostics=true&env=http%3A%2F%2Fdatatables.org%2Falltables.env";
 		 
 		//get data as XML
+		 
 		//Example taken and adjusted from: https://developer.yahoo.com/java/howto-parseRestJava.html
-		
 		Document response = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(querry);				
 		
 		XPath xPath =  XPathFactory.newInstance().newXPath();
-		//Get all search Result nodes
 		NodeList nodes = (NodeList)xPath.evaluate("/query/results/quote", response, XPathConstants.NODESET);
 
 		//iterate over search Result nodes, Results in descending order
@@ -95,7 +100,6 @@ public class YQLConnector {
 		  //Add price to list
 		  histPrices.add(new HistoricalPrice(date, price, volume));
 		  
-		  //System.out.println(new HistoricalPrice(date, price, volume));
 		}
 		
 	}

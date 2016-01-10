@@ -4,11 +4,12 @@ package org.com.essex.ec910.artificialstockmarket.jasmodels;
 
 import jas.engine.Sim;
 import jas.engine.SimModel;
-import jas.graphics.plot.CollectionBarPlotter;
 import jas.graphics.plot.IndividualBarPlotter;
 import jas.graphics.plot.TimeSeriesPlotter;
 
 /**
+ * 
+ * 
  * @author Pouyan
  *
  */
@@ -91,28 +92,29 @@ public class Observer extends SimModel {
 		winningRatePlot.addSource("Bollinger Band", model.bbTrader, "getWinningRate", true);
 		winningRatePlot.addSource("Highest Price", model.hpTrader, "getWinningRate", true);		
 		winningRatePlot.addSource("Pouyan Trader", model.pouyanTrader, "getWinningRate", true);
-		//winningRatePlot.addSource("william Trader", model.williamTrader, "getWinningRate", true);
+		winningRatePlot.addSource("william Trader", model.williamTrader, "getWinningRate", true);
 
 
 
 		addSimWindow(pricePlot);
 		addSimWindow(volumePlot);
-		//addSimWindow(varPlot);
-		//addSimWindow(kurtPlot);
-		//addSimWindow(skewPlot);
 		addSimWindow(traderValuePlot);
 		addSimWindow(transCounterPlot);
 		addSimWindow(profitLossPlot);
 		addSimWindow(winningRatePlot);
 
-		
-		
+		if(model.showStatistics)
+		{
+			addSimWindow(varPlot);
+		addSimWindow(kurtPlot);
+		addSimWindow(skewPlot);
+		eventList.scheduleSimple(2, 1, varPlot, Sim.EVENT_UPDATE);
+	    eventList.scheduleSimple(4, 1, skewPlot, Sim.EVENT_UPDATE);	
+	    eventList.scheduleSimple(5, model.stepsADay, kurtPlot, Sim.EVENT_UPDATE);}
+					
 		eventList.scheduleSimple(0, 1, pricePlot, Sim.EVENT_UPDATE);		
 		eventList.scheduleSimple(0, 1, transCounterPlot, Sim.EVENT_UPDATE);		
 		eventList.scheduleSimple(0, 1, volumePlot, Sim.EVENT_UPDATE);		
-		//eventList.scheduleSimple(2, 1, varPlot, Sim.EVENT_UPDATE);
-		//eventList.scheduleSimple(4, 1, skewPlot, Sim.EVENT_UPDATE);	
-		//eventList.scheduleSimple(5, model.stepsADay, kurtPlot, Sim.EVENT_UPDATE);
 		eventList.scheduleSimple(1,1,traderValuePlot, Sim.EVENT_UPDATE);
 		eventList.scheduleSimple(1,1,profitLossPlot, Sim.EVENT_UPDATE);
 		eventList.scheduleSimple(1,1,winningRatePlot, Sim.EVENT_UPDATE);

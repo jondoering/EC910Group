@@ -43,7 +43,7 @@ public abstract class AbstractTrader {
 	 * @param max_buy - maximum number of shares that can be bought by one order
 	 * @param max_sell - maximum number of shares that can be sold by one order
 	 */
-	public AbstractTrader(String name, ArtificialMarket artificialMarket, Portfolio portfolio, long max_buy , long max_sell) {
+	public  AbstractTrader(String name, ArtificialMarket artificialMarket, Portfolio portfolio, long max_buy , long max_sell) {
 		this.name = name;
 		this.artificialMarket = artificialMarket;
 		this.portfolio = portfolio;
@@ -137,11 +137,11 @@ public abstract class AbstractTrader {
 		if(this.profit_loss > 0)
 		{//profit
 		   this.numWinTrades++;		   
-		   this.winningRate = this.numWinTrades/this.transactionCounter;
-		   System.out.println(this.winningRate);
-			}
-			
-			this.lastPortfolio.setMoney(this.portfolio.getMoney());;      // save the last portfolio of trader when final order sent to market
+		}
+		
+		   this.winningRate = ((double) this.numWinTrades)/((double) this.transactionCounter);
+
+			this.lastPortfolio.setMoney(this.portfolio.getMoney());;     
 				
 		
 	}

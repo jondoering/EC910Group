@@ -5,10 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * @author Jonathan
- *Object for wrapping a historical price
- *inlcuding volume and date
- *price gets casted to an integer
+ *Object for wrapping a historical price inlcuding volume and date.
+ *Usually used to wrap a life price from yahoo finance to provide it to the MarketMaker.
+ *Price gets casted to an integer.
+ * 
+ * @author Jonathan Doering
  */
 public class HistoricalPrice {
 
