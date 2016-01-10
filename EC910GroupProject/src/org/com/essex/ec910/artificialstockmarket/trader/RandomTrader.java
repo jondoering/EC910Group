@@ -79,7 +79,8 @@ public class RandomTrader extends AbstractTrader {
 				
 				volume = (long) (Sim.getRnd().getLongFromTo(1, this.max_buy)*volFactorBuy); 
 				
-				if(Math.random()>0.2)
+				//plus or minus the last price?
+				if(Math.random()>0.5)
 				{
 					factor = -1;
 				}
@@ -94,12 +95,14 @@ public class RandomTrader extends AbstractTrader {
 		}
 		else
 		{
+			//sell order
 				volume = (long) (Sim.getRnd().getLongFromTo(1, this.max_sell)*volFactorSell); 
 
 				buyOrSell = Order.SELL;
 				double factor;
 				
-				if(Math.random()>0.2)
+				//plus or minus the last price?
+				if(Math.random()>0.5)
 				{
 					factor = 1;
 				}
@@ -117,7 +120,6 @@ public class RandomTrader extends AbstractTrader {
 		{	type2 = Order.LIMIT;}
 		else
 		{	type2 = Order.MARKET;}
-		
 		
 		order = new Order(buyOrSell, type2, volume, price, this);// default order which will not be sent to the market (because volume = 0)
 

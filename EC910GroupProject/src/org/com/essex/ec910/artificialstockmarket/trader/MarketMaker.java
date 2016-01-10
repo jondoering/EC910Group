@@ -62,7 +62,7 @@ public class MarketMaker extends AbstractTrader{
 	
 		
 		if(lifeMarket.testModus())
-		{	this.lifeOrderProbability =0; }
+		{	this.lifeOrderProbability = 0.7; }
 		else
 		{
 			this.lifeOrderProbability = 0.7;

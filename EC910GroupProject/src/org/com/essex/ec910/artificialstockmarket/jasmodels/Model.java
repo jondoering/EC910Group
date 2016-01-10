@@ -48,11 +48,8 @@ public class Model extends SimModel{
 	BollingerBandTrader bbTrader; 
 	MNHighestPriceTraderTian hpTrader;
     WilliamTradingStrategy williamTrader;
-	//Pouyan Strategy
 	PouyanTradingStrategy pouyanTrader;           // trading model of pouyan
-	long pouyanVolume;                            // volume (size) of trading
-	long pouyanTargetProfit;                      // target profit for pouyan trading strategy
-	long pouyanStopLoss;                          // stop loss for pouyan trading strategy
+
 	
 	/**
 	 * Periphery 
@@ -62,13 +59,14 @@ public class Model extends SimModel{
 
 	/**
 	 * Model Variables
+	 * for a detailed description look at method setParameters;
 	 */
-	public int numRandomTrader;                         // number of random traders
+	public int numRandomTrader;                         
 
-	public int initMoneyRandom;                      // money of random traders at the beginning
-	public int initSharesRandom;                     // shares of random traders at the beginning 
+	public int initMoneyRandom;                      
+	public int initSharesRandom;                      
 	int maxBuyRandom;
-	int maxSellRandom;                           		  // trading limits for traders	
+	int maxSellRandom;                           		 	
 
 	public String toDate;
 	public String tickerSymbol;
@@ -88,10 +86,13 @@ public class Model extends SimModel{
 	private int initMoneyInteligent;
 	private int initSharesInteligent;
 	int maxBuyIntelligent;
-	int maxSellIntelligent;                              // trading limits for traders	
-
+	int maxSellIntelligent;                             
+	
 	private double comFee;
 
+	private long pouyanVolume;                           
+	private long pouyanTargetProfit;                      // target profit for pouyan trading strategy
+	private long pouyanStopLoss;                          // stop loss for pouyan trading strategy
 
 	private int smaLongPeriod;
 	private int smaShortPeriod;
@@ -103,14 +104,10 @@ public class Model extends SimModel{
 
 
 	private int tianM;
-
-
 	private int tianN;
 
 
 	private int williamPeriod;
-
-
 	private double williamPercentage;
 
 
@@ -160,21 +157,22 @@ public class Model extends SimModel{
 		pouyanStopLoss = 100 ;                          // stop loss for pouyan trading strategy
 
 		//SMA trader variables
-		smaLongPeriod = 200;
-		smaShortPeriod = 15;
+		smaLongPeriod = 200;					//sma long period
+		smaShortPeriod = 15;					//sma short period
 			
 		//Bollinger Band trader variables
-		bollingerPeriod = 20;
-		bollingerUp = 2;
-		bollingerLow = 2;
+		bollingerPeriod = 20;					//bollinger band period
+		bollingerUp = 2;						//upper bollinger band multiple
+		bollingerLow = 2;						//lower bollinger band multiple
 		
 		//Tian M-N high price strategy
-		tianM = 10;
-		tianN = 2;
-		
+		tianM = 10;								//number of days indicates a buy
+		tianN = 2;								//number od days indicates a sell
+			
 		//William
-		williamPeriod = 200;
-		williamPercentage = 0.02;
+		williamPeriod = 200;				    //period for counter strategy
+		williamPercentage = 0.02;				//percentage for counter strategy 
+		
 		
 		// open a probe to allow the user to modify default values
 		Sim.openProbe(this, "Parameters model");
@@ -261,6 +259,8 @@ public class Model extends SimModel{
          
 		this.williamTrader = new WilliamTradingStrategy("William Trader", this.market, new Portfolio(this.initSharesInteligent,this.initMoneyInteligent), this.maxBuyIntelligent, this.maxSellIntelligent, this.williamPercentage, this.williamPeriod);
 		this.williamTrader.setCommissionFee(comFee);
+		
+		
 		scheduleEvents();
 	}
 

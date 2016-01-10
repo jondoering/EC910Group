@@ -30,8 +30,7 @@ public abstract class AbstractTrader {
 	public int numTrades;                       // number of total trades
 	public int numWinTrades;                    // number of winning trades
 	
-	private int winningRate;                     // = numWinTrades / numTrades
-    private double profitFactor;                 // = total profit / total loss
+	private double winningRate;                     // = numWinTrades / numTrades
     
 	private int transactionCounter = 0;
 	private double comFee;
@@ -86,10 +85,12 @@ public abstract class AbstractTrader {
 		Order order = runStrategy();
 		Integer[] spotPrice = this.artificialMarket.getLastNPrice(1);
 		
-		//check volume of order
-		if ((order.getVolume() > 0 && this.getPortfolioValue() > 0)  		                                           // check that Volume > 0, otherwise, it means that trader does not want to send order to market
-			&&((order.getType1() == Order.BUY && order.getVolume()<= this.max_buy )   // check that if trader wants to buy assets, the volume of his order <= limit to buy
-			||(order.getType1() == Order.SELL && order.getVolume()<= this.max_sell))){    // check that if trader wants to buy assets, the volume of his order <= limit to sell 
+		//check volume of order for intelligent trader only
+		//Market maker and RandomTrader send there orders every time / have no constrains
+		if ((this instanceof MarketMaker || this instanceof RandomTrader) ||
+			(order.getVolume() > 0 && this.getPortfolioValue() > 0)  		                                           // check that Volume > 0, otherwise, it means that trader does not want to send order to market
+			&& ((order.getType1() == Order.BUY && order.getVolume()<= this.max_buy )   // check that if trader wants to buy assets, the volume of his order <= limit to buy
+			    || (order.getType1() == Order.SELL && order.getVolume()<= this.max_sell))){    // check that if trader wants to buy assets, the volume of his order <= limit to sell 
 			
 			//check order before sending it to artificial market in order to make sure it is a valid order
 //			if((order.getType1() == Order.BUY && order.getType2() == Order.LIMIT && order.getVolume() <= this.max_buy && this.portfolio.getMoney() >= order.getVolume()*order.getLimitprice()) ||     //  buy limit order --> (trader should have enough money to buy shares) trader wants to buy and volume should be < max limit for buying
@@ -104,9 +105,7 @@ public abstract class AbstractTrader {
 				{
 					System.out.println(this.name + ": " + order.toString());
 				}
-			
-					
-				
+												
 				this.artificialMarket.reciveOrder(order); // send a valid order to artificial market
 			
 //			}//if check
@@ -130,23 +129,20 @@ public abstract class AbstractTrader {
 		
 		this.portfolio.setMoney(m);
 		this.portfolio.setShares(this.portfolio.getShares() - shares);
+			
 		
-		if(true)
-		{
-			this.transactionCounter++;
+		this.transactionCounter++;
+		this.profit_loss = this.portfolio.getMoney() - this.lastPortfolio.getMoney(); // update P&L
 			
-			this.numTrades++; 
-			
-			this.profit_loss = this.portfolio.getMoney() - this.lastPortfolio.getMoney(); // update P&L
-			
-			if(this.profit_loss > 0){//profit
-			   this.numWinTrades++;	
-			   this.winningRate = this.numWinTrades/this.numTrades;
+		if(this.profit_loss > 0)
+		{//profit
+		   this.numWinTrades++;		   
+		   this.winningRate = this.numWinTrades/this.transactionCounter;
+		   System.out.println(this.winningRate);
 			}
 			
 			this.lastPortfolio.setMoney(this.portfolio.getMoney());;      // save the last portfolio of trader when final order sent to market
-			
-		}		
+				
 		
 	}
 
@@ -218,7 +214,7 @@ public abstract class AbstractTrader {
 	/**
 	 * @return
 	 */
-	public int getWinningRate() {
+	public double getWinningRate() {
 		return winningRate;
 	}
 	
