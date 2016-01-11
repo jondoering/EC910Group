@@ -4,11 +4,11 @@ import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 
 /**
  * 
- * This class implements the order of the model. 
+ * This class implements a model of an order. 
  * Two order types (market and limit) are support as well
- * as an complex compare mechanism.
+ * as a mechanism for sorting.
  * 
- * @author Jonathan
+ * @author Jonathan Doering
  *
  */
 public class Order implements Comparable<Order>{
@@ -124,8 +124,7 @@ public class Order implements Comparable<Order>{
 				{
 					return 1;
 				}
-			}
-				
+			}				
 		
 	}
 

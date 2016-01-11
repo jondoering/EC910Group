@@ -1,23 +1,20 @@
 package org.com.essex.ec910.artificialstockmarket.trader;
 
-import org.com.essex.ec910.artificialstockmarket.jasmodels.Observer;
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
 import org.com.essex.ec910.artificialstockmarket.market.LifeMarket;
 import org.com.essex.ec910.artificialstockmarket.market.Order;
 
 import jas.engine.Sim;
 
+
 /**
- * @author Jonathan
- *
- */
-/**
- * @author Jonathan
- *
- */
-/**
- * @author Jonathan
- *
+ * Implementation of the market maker.
+ * Main aim in this model for the market maker is to stabilize the price as well as
+ * to connect artificial price to real price.
+ * For further information see connected course work. 
+ *  
+ * @author Jonathan DOering
+ * 
  */
 public class MarketMaker extends AbstractTrader{
 
@@ -25,7 +22,7 @@ public class MarketMaker extends AbstractTrader{
 	/**
 	 * Number of minutes defining a morning period
 	 */
-	private static int MORNINGTIME = 50; 
+	private int morningtime = 50; 
 
 	
 	private int minuteCounter;
@@ -51,15 +48,25 @@ public class MarketMaker extends AbstractTrader{
 	
 	
 	
-	public MarketMaker(String name, LifeMarket lifeMarket, ArtificialMarket artificialMarket, int dragVolume, double volumeFactor, int lastLifePriceCounter)
+	/**
+	 * Constructor
+	 * @param name	- traders name
+	 * @param lifeMarket - reference to life market
+	 * @param artificialMarket - reference to artificial market
+	 * @param dragVolume - volume used in the morning period to drag artificial price into direction of life price
+	 * @param volumeFactor - factor used to place orders in the 'normal' order phase
+	 * @param lastLifePriceCounter - counter that shows, how many life prices was used to initialize the artificial market
+	 */
+	public MarketMaker(String name, LifeMarket lifeMarket, ArtificialMarket artificialMarket, int dragVolume,
+						double volumeFactor, int lastLifePriceCounter, int stepsAday)
 	{
 		super(name, artificialMarket, new Portfolio(0,0), 0, 0);
 				
+		this.morningtime = (int) Math.round(stepsAday*0.9);
 		this.lifeMarket = lifeMarket;
 		this.dragVolume = dragVolume;
 		this.artVolumeFactor = volumeFactor;
 		this.lastLifePriceCounter = lastLifePriceCounter;
-	
 		
 		if(lifeMarket.testModus())
 		{	this.lifeOrderProbability = 0.0; }
@@ -72,13 +79,14 @@ public class MarketMaker extends AbstractTrader{
 
 	
 	/**
-	 * 
+	 * implementation of the strategy of the market maker
+	 * including decision of trading phase and related order 
 	 */
 	public void runMarketMakerStrategy(){
 	
 		minuteCounter++;
 		
-		if(minuteCounter < MORNINGTIME)
+		if(minuteCounter < morningtime)
 		{
 			//still in morning period
 			//Set Orders around the new life price with Probabilty X
@@ -91,8 +99,7 @@ public class MarketMaker extends AbstractTrader{
 			{
 				//places orders around last real price
 				placesArtficialPriceOrders();
-			}
-			
+			}		
 			
 		}
 		else

@@ -1,6 +1,9 @@
 package org.com.essex.ec910.artificialstockmarket.trader;
 
 /**
+ * Implementation of a simple portfolio representation
+ * containing money and shares.
+ *  
  * @author Pouyan Dinarvand
  *
  */
@@ -13,8 +16,8 @@ public class Portfolio {
 		
 	/**
 	 * Constructor
-	 * @param shares 
-	 * @param money  
+	 * @param shares - initial shares
+	 * @param money  - initial money
 	 */
 	public Portfolio(int shares, int money) {
 		this.shares = shares;

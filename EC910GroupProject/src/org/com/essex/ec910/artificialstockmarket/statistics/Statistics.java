@@ -19,7 +19,9 @@ import cern.jet.stat.Descriptive;
 /**
  * Statistics calculates and provides main statistical moments of stock prices.
  * This includes mu and standard deviation (of Gausian normal distribution), skewness and kurtosis.
- * Statistical methdos coming form cern.colt.list @see https://dst.lbl.gov/ACSSoftware/colt/api/cern/colt/list/package-use.html
+ * It also writes some output (price and volume of the model) as an csv file. 
+ * 
+ * Statistical methdos used from cern.colt.list @see https://dst.lbl.gov/ACSSoftware/colt/api/cern/colt/list/package-use.html
  *   
  * @author Jonathan Doering
  *
@@ -35,6 +37,10 @@ public class Statistics {
 	private PrintStream ps;
 	//private	int obv = 0;
 	
+	/**
+	 * Constructor
+	 * @param runningPath - path where the output file should be written in
+	 */
 	public Statistics(String runningPath)
 	{
 		filename = runningPath +"dataSeries_" + new SimpleDateFormat("ddMMyy_hh_mm_ss").format(new Date()) + ".csv";

@@ -10,8 +10,8 @@ import org.com.essex.ec910.artificialstockmarket.datasource.YQLConnector;
 
 /**
  * 
- * Class representing the life market. Only MarketMaker has access to it. 
- * This wrapper class only provides real price data if required.
+ * Class representing the life market. MarketMaker should have access to it only. 
+ * This wrapper class provides real price data if requested to the Market Maker.
  * 
  * @author Jonathan Doering
  */
@@ -65,7 +65,7 @@ public class LifeMarket {
 	
 	
 	/**
-	 *  fetchs prices from Yahoo Database in 250day steps
+	 *  Fetches prices from Yahoo Database in 250day steps
 	 * @param from -start day as string
 	 * @param to - end date as string
 	 * @throws Exception

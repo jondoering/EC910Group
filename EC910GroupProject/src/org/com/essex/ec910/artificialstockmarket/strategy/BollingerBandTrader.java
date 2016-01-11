@@ -18,9 +18,12 @@ import com.tictactec.ta.lib.MInteger;
 import com.tictactec.ta.lib.RetCode;
 
 /**
- * simple moving average strategy compare  
- * without explicit money management
- * @author Jonathan
+ * Simple Strategy based on Bollinger Bands. 
+ * The algorithm buys if the lower band is hit and sells if the upper band is hit.
+ * No risk and money management is implemented. 
+ * Using ta lib for calculating technical indicator @see http://ta-lib.org/ 
+ * 
+ * @author Jonathan Doering
  *
  */
 public class BollingerBandTrader extends AbstractTrader {
@@ -36,6 +39,17 @@ public class BollingerBandTrader extends AbstractTrader {
 	 */
 	private Core talib;
 	
+	/**
+	 * Consturctor
+	 * @param name - Traders name
+	 * @param artificialMarket - reference to market
+	 * @param portfolio - initial portfolio
+	 * @param max_buy - restrictions for byuing shares
+	 * @param max_sell- restrictions for selling shares
+	 * @param period - period to calculate bollinger bands
+	 * @param nbdevup - factor for upper band
+	 * @param nbdevdn - factor for lower band
+	 */
 	public BollingerBandTrader(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,
 			final int max_sell,final int period, final double nbdevup, final double nbdevdn) {
 		super(name, artificialMarket, portfolio, max_buy, max_sell);		
@@ -50,7 +64,7 @@ public class BollingerBandTrader extends AbstractTrader {
 
 	
 	/* 
-	 * Simple SMA Strategy
+	 * implementation of strategy
 	 * (non-Javadoc)
 	 * @see org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader#runStrategy()
 	 */
@@ -113,7 +127,7 @@ public class BollingerBandTrader extends AbstractTrader {
 	}
 	
 	/**
-	 * decider if two prices are close by a percentage value 
+	 * decides if two prices are close by a percentage value 
 	 * @param a - price a
 	 * @param b - price b
 	 * @return true, if a and b close, false otherwise

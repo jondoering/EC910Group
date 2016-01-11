@@ -17,8 +17,11 @@ import com.tictactec.ta.lib.MInteger;
 import com.tictactec.ta.lib.RetCode;
 
 /**
- * simple moving average strategy compare  
- * without explicit money management
+ * Implementation of a simple moving average strategy. 
+ * The algorithm buys if the lower sma crosses the longer sma top down and sells vice versa.
+ * No risk and money management is implemented. 
+ * Using ta lib for calculating technical indicator @see http://ta-lib.org/ 
+ * 
  * @author Jonathan
  *
  */
@@ -33,6 +36,17 @@ public class HighFrequenceSMATrader extends AbstractTrader {
 	 */
 	private Core talib;
 	
+
+/**
+	 * Constructor
+	 * @param name - Traders name
+	 * @param artificialMarket - reference to market
+	 * @param portfolio - initial portfolio
+	 * @param max_buy - restrictions for buying shares
+	 * @param max_sell- restrictions for selling shares	
+	 * @param longPeriod - long period for sma 
+	 * @param shortPeriod - short period for sma
+	 */
 	public HighFrequenceSMATrader(final String name,final ArtificialMarket artificialMarket, final Portfolio portfolio, final int max_buy,
 			final int max_sell,final int longPeriod, final int shortPeriod) {
 		super(name, artificialMarket, portfolio, max_buy, max_sell);		
@@ -110,10 +124,6 @@ public class HighFrequenceSMATrader extends AbstractTrader {
 		return order;
 	}
 	
-	
-
-
-
 	
 	
 }

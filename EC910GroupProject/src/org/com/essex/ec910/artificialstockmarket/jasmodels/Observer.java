@@ -31,9 +31,9 @@ public class Observer extends SimModel {
 	private IndividualBarPlotter winningRatePlot;
 
 
-	//	private CollectionBarPlotter ordersPlot;
-
-
+	/* (non-Javadoc)
+	 * @see jas.engine.SimModel#setParameters()
+	 */
 	@Override
 	public void setParameters() {
 		// TODO Auto-generated method stub
@@ -46,6 +46,9 @@ public class Observer extends SimModel {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see jas.engine.SimModel#buildModel()
+	 */
 	@Override
 	public void buildModel() {
 

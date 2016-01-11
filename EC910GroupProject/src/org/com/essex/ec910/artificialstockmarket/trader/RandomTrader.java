@@ -9,12 +9,14 @@ import jas.engine.Sim;
 import jas.engine.Sim;
 
 /**
- * @author Pouyan
+ * Implementation of the random trader mainly used to 
+ * stimulate the artificial market and bring volume into it. 
+ * It is based on randomness defined by normal distribution. 
+ * 
+ * @author  Pouyan Dinarvand
+ * @author Jonathan Doering
  *
  */
-// Random trader sends random order buy/sell to market and exits randomly 
-// Random trader is a source of liquidity for market
-
 public class RandomTrader extends AbstractTrader {
 
 
@@ -40,12 +42,12 @@ public class RandomTrader extends AbstractTrader {
 	private double riskFactor;
 	/**
 	 * Constructor
-	 * @param name 
-	 * @param artificialMarket  
-	 * @param portfolio  
-	 * @param max_buy
-	 * @param max_sell
-	 * 
+	 * @param name - Traders name
+	 * @param artificialMarket - reference to market
+	 * @param portfolio - initial portfolio
+	 * @param max_buy - restrictions for buying shares
+	 * @param max_sell- restrictions for selling shares
+	 * @param riskFactor - determines if the risk affinity of the trader
 	 */
 	public RandomTrader(String name, ArtificialMarket artificialMarket, Portfolio portfolio, int max_buy,
 			int max_sell,  double riskFactor) {
@@ -58,6 +60,9 @@ public class RandomTrader extends AbstractTrader {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader#runStrategy()
+	 */
 	@Override
 	public Order runStrategy(){
 
@@ -127,6 +132,12 @@ public class RandomTrader extends AbstractTrader {
 	}
 	
 	
+	/**
+	 * wrapper for geIntFrom method JAS
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public static int randInt(int min, int max) {
 	    return Sim.getRnd().getIntFromTo(min, max);
 	}

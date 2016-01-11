@@ -242,7 +242,7 @@ public class Model extends SimModel{
 		statistics.setMarket(market);
 
 		//load Market maker
-		marketMaker = new MarketMaker("MarketMaker", lifeMarket, market, dragVolume,  volumeFactor, c);
+		marketMaker = new MarketMaker("MarketMaker", lifeMarket, market, dragVolume,  volumeFactor, c, stepsADay);
 
 
 		/*
