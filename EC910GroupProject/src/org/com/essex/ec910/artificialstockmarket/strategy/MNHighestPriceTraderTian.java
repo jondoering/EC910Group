@@ -71,7 +71,7 @@ if(lastClose>maxPrice && this.portfolio.getShares()== 0 && lastClose!=lastBuyPri
 	
 	lastBuyPrice = lastClose;
 	
-	long vol = (long) Math.ceil(this.getInvestableMoney()/lastClose); 
+	long vol = (long) Math.floor(this.getInvestableMoney()/lastClose); 
 	
 	if(vol > max_buy)
 	{	vol = max_buy;}

@@ -35,9 +35,9 @@ public class Statistics {
 	private PrintStream ps;
 	//private	int obv = 0;
 	
-	public Statistics()
+	public Statistics(String runningPath)
 	{
-		filename = "./Output/dataSeries_" + new SimpleDateFormat("ddMMyy_hh_mm_ss").format(new Date()) + ".csv";
+		filename = runningPath +"dataSeries_" + new SimpleDateFormat("ddMMyy_hh_mm_ss").format(new Date()) + ".csv";
 		
 		openStream();
 		
@@ -47,7 +47,7 @@ public class Statistics {
 	}
 	
 	/**
-	 * Destructor closes Stream
+	 * Finalizer closes output stream
 	 */
 	public void finalize()
 	{
@@ -62,6 +62,7 @@ public class Statistics {
 	{
 		this.market = market;
 	}
+	
 	/**
 	 * adds last market spot price and volume to statistics object
 	 */
@@ -104,7 +105,7 @@ public class Statistics {
 	}
 	
 	/**
-	 * @return
+	 * @return - mu of current price curve
 	 */
 	public double getMu()
 	{
@@ -161,13 +162,13 @@ public class Statistics {
 
 	
 	/**
-	 *opens Stream for file writing; filthy solution due to the fact, that stream never gots closed;
-	 *but is the only way, because of a realy weird behaviour of JAS using modelEnd() method.
+	 *Oopens Stream for file writing in current directory; filthy solution due to the fact, that stream never gets closed;
+	 *but it is the only way, because of a really weird behavior of JAS using modelEnd() method.
 	 */
 	private void openStream() 
 	{
 		
-
+		ps = null;
 		FileOutputStream fop;
 		try {
 			fop = new FileOutputStream(new File(filename));
@@ -175,28 +176,33 @@ public class Statistics {
 			ps.println	("time, price, volume");		
 			ps.flush();
 			
+			System.out.println("Writing output to " + filename);
+			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Failure to load output stream  - no output will be written.");
 		}		
 		
 		
 	}
 	
 	/**
-	 * writes a line in statistical output file
+	 * writes a line in statistical output file in current running directory
 	 */
 	private void writeLine()
 	{
-		int i = prices.size()-1;
-		StringBuilder sb = new StringBuilder();
-		sb.append(i);
-		sb.append(", ");
-		sb.append(prices.get(i));
-		sb.append(", ");
-		sb.append(volume.get(i));	
-		
-		ps.println(sb.toString());
-		ps.flush();
+		if(ps != null)
+		{
+			int i = prices.size()-1;
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append(i);
+			sb.append(", ");
+			sb.append(prices.get(i));
+			sb.append(", ");
+			sb.append(volume.get(i));	
+			
+			ps.println(sb.toString());
+			ps.flush();
+		}
 	}
 }

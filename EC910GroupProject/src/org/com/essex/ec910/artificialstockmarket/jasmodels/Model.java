@@ -4,6 +4,10 @@ import jas.engine.Sim;
 import jas.engine.SimEngine;
 import jas.engine.SimModel;
 import jas.engine.gui.JAS;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import org.com.essex.ec910.artificialstockmarket.market.ArtificialMarket;
@@ -216,7 +220,19 @@ public class Model extends SimModel{
 		 */
 		//Load artificial marker
 		market = new ArtificialMarket( initPrices, initVolumes, printOrderBook, printOrders);
-		statistics = new Statistics() ;
+		
+		//load statistic class; set path of running locatio as output path
+		String path = Model.class.getProtectionDomain().getCodeSource().getLocation().getPath()
+					.replace(new File(Model.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName(), "");
+				
+		String decodedPath = "";
+		try {
+			decodedPath = URLDecoder.decode(path, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			System.out.println("Failure to load output path  - no output will be written.");
+		}
+
+		statistics = new Statistics(decodedPath);
 		statistics.setMarket(market);
 
 		//load Market maker

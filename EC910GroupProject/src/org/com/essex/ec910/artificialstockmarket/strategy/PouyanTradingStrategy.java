@@ -44,7 +44,7 @@ public class PouyanTradingStrategy extends AbstractTrader {
 		if(this.portfolio.getShares() > 0  //trader has shares in his portfolio 
 				&& ( this.artificialMarket.getSpotPrice() - this.buyPrice >= this.pouyanTargetProfit    // we have reached target profit
 				||  this.buyPrice - this.artificialMarket.getSpotPrice() >= this.pouyanStopLoss)){  // we have reached stop loss                                      
-		
+			
 			   order = new Order(Order.SELL, Order.MARKET, this.portfolio.getShares(), this.artificialMarket.getSpotPrice(), this); //sell all the shares	
 
 		}

@@ -18,8 +18,8 @@ import com.tictactec.ta.lib.RetCode;
 
 /**
  * simple moving average strategy compare  
- * without explicit money management
- * @author MAO WEIGUANG
+ * without explicit money management 
+ * @author WEIGUANG MAO
  *
  */
 public class WilliamTradingStrategy extends AbstractTrader {
@@ -82,7 +82,7 @@ public class WilliamTradingStrategy extends AbstractTrader {
 					if(spotprice <= outLong[0]  && this.portfolio.getShares() == 0 ) 
 					{
 						//Buy as much as possible if price is close to moving averagh
-						long vol = (long) Math.ceil(this.getInvestableMoney()/spotprice);
+						long vol = (long) Math.floor(this.getInvestableMoney()/spotprice);
 
 						if(vol > max_buy)
 						{	vol = max_buy;}

@@ -56,7 +56,7 @@ public class ArtificialMarket {
 
 	/**
 	 * Order driven clearing mechanism. The new price is found by
-	 * "largest best execution" principal Compare XETRA[X] and SETS[S}
+	 * "largest best execution" principal Compare XETRA[X] and SETS[S]
 	 */
 	public void clearMarket()
 	{
@@ -446,7 +446,8 @@ public class ArtificialMarket {
 			}
 		}
 
-		// Store Price and clear order books
+		
+		//Store Price and clear order books
 		priceHistory.add(newPrice);
 		volumeHistory.add(nShares);
 		buyOrderBook.clear();

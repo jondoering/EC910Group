@@ -1,7 +1,7 @@
 package org.com.essex.ec910.artificialstockmarket.trader;
 
 /**
- * @author Pouyan
+ * @author Pouyan Dinarvand
  *
  */
 
@@ -29,12 +29,12 @@ public class Portfolio {
 		this.shares = shares;
 	}
 	
-	public double getMoney() {
-		return money;
-	}
-	
 	public void setMoney(double money) {
 		this.money = money;
+	}
+
+	public double getMoney() {
+		return money;
 	}
 	
 	
