@@ -9,8 +9,10 @@ import jas.graphics.plot.TimeSeriesPlotter;
 
 /**
  * 
+ * Graphical JAS observer class. 
+ * Manages all of the graphical output. 
  * 
- * @author Pouyan
+ * @author Pouyan Dinarvand
  *
  */
 

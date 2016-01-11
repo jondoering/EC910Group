@@ -11,7 +11,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 /**
- *Class used to fetch financial data from an Internet data base (yahoo finance). It used
+ *Class used to fetch financial data from an Internet data base (Yahoo finance). It used
  *Yahoo Query Language to get historical price data.
  *For Further information see: https://developer.yahoo.com/java/, https://developer.yahoo.com/yql/guide/yql-builder.html
  * 
@@ -22,9 +22,12 @@ public class YQLConnector {
 
 	private String symbol;
 	private String fields  = "Date,Volume,Adj_Close ";
-	
 	private ArrayList<HistoricalPrice> histPrices;
 
+	/**
+	 * Constructor
+	 * @param yahoo_ticker - stock ticker used for fetching data
+	 */
 	public YQLConnector(String yahoo_ticker) {
 				
 		this.symbol = yahoo_ticker;	
@@ -80,9 +83,7 @@ public class YQLConnector {
 		 			   + "q=select%20" + fields + "%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20"
 		 			   + "(%22"+symbol+"%22)%20and%20startDate%3D%22"+ startDate + "%22%20and%20endDate%3D%22" + endDate
 		 			   + "%22%0A%09%09&diagnostics=true&env=http%3A%2F%2Fdatatables.org%2Falltables.env";
-		 
-		//get data as XML
-		 
+		 		 
 		//Example taken and adjusted from: https://developer.yahoo.com/java/howto-parseRestJava.html
 		Document response = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(querry);				
 		

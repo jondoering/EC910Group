@@ -7,15 +7,12 @@ import org.com.essex.ec910.artificialstockmarket.trader.AbstractTrader;
 import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 
 /**
- * @author Pouyan
+ * @author Pouyan Dinarvand
  *  
  *  This is a buy and hold long term strategy
  * enter (long) position when there is no open position
  * exit (sell) At target profit or  stop loss
  */
-
-import jas.engine.Sim;
-
 public class PouyanTradingStrategy extends AbstractTrader {
 
 	private long pouyanVolume;                 // volume (size) of trading
@@ -46,7 +43,6 @@ public class PouyanTradingStrategy extends AbstractTrader {
 				||  this.buyPrice - this.artificialMarket.getSpotPrice() >= this.pouyanStopLoss)){  // we have reached stop loss                                      
 			
 			   order = new Order(Order.SELL, Order.MARKET, this.portfolio.getShares(), this.artificialMarket.getSpotPrice(), this); //sell all the shares	
-
 		}
 		
 		if(this.portfolio.getShares() == 0 ) { // no shares --> enter long 

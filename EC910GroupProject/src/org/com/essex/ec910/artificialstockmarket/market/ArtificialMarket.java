@@ -56,7 +56,7 @@ public class ArtificialMarket {
 
 	/**
 	 * Order driven clearing mechanism. The new price is found by
-	 * "largest best execution" principal Compare XETRA[X] and SETS[S]
+	 * largest best execution" principal Compare XETRA[X] and SETS[S]
 	 */
 	public void clearMarket()
 	{
@@ -82,17 +82,16 @@ public class ArtificialMarket {
 		int sellVolumePerLevel = 0;
 
 		Order curOrder = null;
-		ArrayList<Order> curLevelList = new ArrayList<Order>(); // temporary
-																// list on each
-																// level
-
+		ArrayList<Order> curLevelList = new ArrayList<Order>(); // temporary list on eachlevel
+		
 		double minsellLimitPrice = 0;
 		double maxsellLimitPrice = 0;
 
+		//cumulate sell orders 
 		for (int i = 0; i < sellOrderBook.size(); i++) {
 			curOrder = sellOrderBook.get(i);
-			// System.out.println(curOrder.toString());
-			// If Market Order, by definition at the beginning of the list
+
+			// If Market Order; by definition at the beginning of the list
 			if (curOrder.getType2() == Order.MARKET) {
 				if (lastLevel < 0) {
 					// Create new Market Level first Time
@@ -160,6 +159,7 @@ public class ArtificialMarket {
 		double maxbuyLimitPrice = 0;
 		int minbuyLimitPrice = 0;
 
+		//same for buy orderbook again
 		for (int i = 0; i < buyOrderBook.size(); i++) {
 			curOrder = buyOrderBook.get(i);
 			
@@ -349,7 +349,7 @@ public class ArtificialMarket {
 
 				int h = Math.abs(sellLevelCumVol - buyLevelCumVol);
 
-				// Maximise execution volume (-> minimize transition)
+				// Maximize execution volume (-> minimize transition)
 				if (maxVolume > h && h != 0) {
 					maxVolume = h;
 					transition = h;
@@ -358,7 +358,7 @@ public class ArtificialMarket {
 				}
 
 				if (showOrderBook)
-				// Print Orderbook
+				// print order book
 				{
 					
 					System.out.printf("%d \t\t %d \t\t %d \t\t %d \t\t %d \t\t %d \n  ", i, sellVol, buyVol,
@@ -368,7 +368,7 @@ public class ArtificialMarket {
 
 			}
 			if (showOrderBook)
-			// Print Orderbook
+			// print order book
 			{			
 				System.out.println();
 				System.out.println("Match: Price: " + newPrice + " with Volume " + nShares);
@@ -413,12 +413,12 @@ public class ArtificialMarket {
 			}
 		}
 
-		// Execute Buy Orders (sell to buyer)
+		// Execute buy orders (sell to buyer)
 		// if there are market orders, execute first
 		if (buyPriceLevels.get(0) == 0.0) {
 			Iterator<Order> orders = samebuyOrders.get(0).iterator();
 			while (orders.hasNext()) {
-				// Execute Order
+				// Execute order
 				Order o = orders.next();
 
 				long shares = o.getVolume();
@@ -428,11 +428,11 @@ public class ArtificialMarket {
 			}
 		}
 
-		// Execute Buy Orders Level by Level
+		// Execute buy orders level by level
 		for (int i = buyPriceLevels.size() - 1; i > 0; i--) {
 			Iterator<Order> orders = samebuyOrders.get(i).iterator();
 			while (orders.hasNext()) {
-				// Execute Order
+				// Execute order
 				Order o = orders.next();
 
 				long shares = o.getVolume();
@@ -447,7 +447,7 @@ public class ArtificialMarket {
 		}
 
 		
-		//Store Price and clear order books
+		//save price and clear order books
 		priceHistory.add(newPrice);
 		volumeHistory.add(nShares);
 		buyOrderBook.clear();
@@ -475,7 +475,7 @@ public class ArtificialMarket {
 		}
 
 		else {
-		} // do nothing, Order isn't allowed
+		} // do nothing, order isn't allowed
 	}
 
 	/**

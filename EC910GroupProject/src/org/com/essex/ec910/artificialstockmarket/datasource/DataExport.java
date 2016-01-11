@@ -12,15 +12,11 @@ import jas.statistics.db.Table;
  */
 public class DataExport {
 	
-	//public int order;
-	//public int price;
 
-
-	public DataExport()  {
-		
-		
-	}
 	
+	/**
+	 * stores data into an static data base
+	 */
 	public void storeData()
 	{
 	
@@ -42,7 +38,6 @@ public class DataExport {
 			String sql ="insert into user "   // insert value in the database
 					+ "value('234', '123')";
 			int m =stmt.executeUpdate(sql);
-
 
 		}
 		

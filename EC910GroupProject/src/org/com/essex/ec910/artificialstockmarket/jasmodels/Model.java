@@ -23,14 +23,20 @@ import org.com.essex.ec910.artificialstockmarket.trader.Portfolio;
 import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
 
 /**
- * @author All
+ * Main Class. Controlls the whole model usign JAS framework. 
+ * Sets up the JAS model, set ups all prameters and Objects. 
+ * 
+ * @author Pouyan Dinarvand
+ * @author WEIGUANG MAO
+ * @author Tiang
+ * @author Jonathan Doering 
  *
  */
 public class Model extends SimModel{
 
 
 	/**
-	 * Model?Observer 
+	 * Model  
 	 */
 	private static Observer observer;
 
