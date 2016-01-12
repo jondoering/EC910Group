@@ -56,7 +56,7 @@ public class ArtificialMarket {
 
 	/**
 	 * Order driven clearing mechanism. The new price is found by
-	 * largest best execution" principal Compare XETRA[X] and SETS[S]
+	 * largest best execution principal.
 	 */
 	public void clearMarket()
 	{

@@ -156,7 +156,7 @@ public abstract class AbstractTrader {
 	
 	/**
 	 * calculates actual value of portfolio by money and shares value
-	 * @return
+	 * @return porfolio value
 	 */
 	public double getPortfolioValue()
 	{
@@ -196,16 +196,11 @@ public abstract class AbstractTrader {
 		return transactionCounter;
 	}
 
-	/**
-	 * @return
-	 */
+
 	public double getProfit_loss() {
 		return profit_loss;
 	}
 
-	/**
-	 * @return
-	 */
 	public double getWinningRate() {
 		return winningRate;
 	}

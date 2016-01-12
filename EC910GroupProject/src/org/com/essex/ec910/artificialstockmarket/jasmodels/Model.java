@@ -28,7 +28,7 @@ import org.com.essex.ec910.artificialstockmarket.trader.RandomTrader;
  * 
  * @author Pouyan Dinarvand
  * @author WEIGUANG MAO
- * @author Tiang
+ * @author Tian
  * @author Jonathan Doering 
  *
  */
@@ -320,10 +320,9 @@ public class Model extends SimModel{
 	
 	
 	/**
-	 * Starts whole model
-	 * @param args
+	 * Starts JAS model.
 	 */
-	public static void main(String[] args)
+	public static void main()
 	{
 
 		//Load Sim Model

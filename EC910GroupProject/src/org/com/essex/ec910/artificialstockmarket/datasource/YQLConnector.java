@@ -54,7 +54,7 @@ public class YQLConnector {
 	/**
 	 * 
 	 * @param n the  n-th historical price from ArrayList
-	 * @return
+	 * @return - Historical Price Object
 	 */
 	public HistoricalPrice getPrice(int n)
 	{

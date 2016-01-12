@@ -19,9 +19,10 @@ public class HistoricalPrice {
 		
 	
 	/**
-	 * @param date
-	 * @param price
-	 * @param volume
+	 * 
+	 * @param date - Date of the price in format "yyyy-MM-dd"
+	 * @param price - price as double
+	 * @param volume - volume as double
 	 */
 	public HistoricalPrice(String date, double price, double volume) {
 		
