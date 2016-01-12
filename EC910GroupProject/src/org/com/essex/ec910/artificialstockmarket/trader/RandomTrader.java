@@ -23,19 +23,6 @@ public class RandomTrader extends AbstractTrader {
 	private Random rnd;
 	
 	/**
-	 * Factor that determines how big the volume should be, if agent is gonna buy
-	 * actually useless
-	 */
-	private double volFactorBuy = 1; 
-	
-	
-	/**
-	 * Factor that determines how big the volume should be, if agents is gonna sell buy
-	 * actually useless
-	 */
-	private double volFactorSell = 1;
-	
-	/**
 	 * Factor that determines how much the random price is aside from the last price
 	 * as higher as much risk is the trader willing to take 
 	 */
@@ -82,7 +69,7 @@ public class RandomTrader extends AbstractTrader {
 				buyOrSell = Order.BUY;
 				double factor;
 				
-				volume = (long) (Sim.getRnd().getLongFromTo(1, this.max_buy)*volFactorBuy); 
+				volume = (long) (Sim.getRnd().getLongFromTo(1, this.max_buy)); 
 				
 				//plus or minus the last price?
 				if(Math.random()>0.5)
@@ -101,7 +88,7 @@ public class RandomTrader extends AbstractTrader {
 		else
 		{
 			//sell order
-				volume = (long) (Sim.getRnd().getLongFromTo(1, this.max_sell)*volFactorSell); 
+				volume = (long) (Sim.getRnd().getLongFromTo(1, this.max_sell)); 
 
 				buyOrSell = Order.SELL;
 				double factor;
@@ -131,15 +118,5 @@ public class RandomTrader extends AbstractTrader {
 		return order;
 	}
 	
-	
-	/**
-	 * wrapper for geIntFrom method JAS
-	 * @param min
-	 * @param max
-	 * @return
-	 */
-	public static int randInt(int min, int max) {
-	    return Sim.getRnd().getIntFromTo(min, max);
-	}
 
 }

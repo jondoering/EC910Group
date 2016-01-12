@@ -153,14 +153,14 @@ public class Model extends SimModel{
 		riskFactorAverse = 1; 					//Factor that represent a riskaverse trader; those set prices closer around last price
 		riskFactorAffin = 5; 					//Factor that represnet more agressive traders; those set prices in a bigger range about last price
 		riskDistribution = 0.7; 				//determines how many of the traders are risk averse (here 70%)
-		initSharesRandom = 1000;   				//1000 shares for each random trader
-		initMoneyRandom = 10000;			    //100000$ for each trader		
+		
 		maxBuyRandom = 1000;    				//maximum of shares a trader can buy per order
 		maxSellRandom = 1000; 					//maximum of shares a trader can sell per order
 	
 		// set up default values for intelligent traders
 		initSharesInteligent = 0;				//each trader starts with no shares usually
 		initMoneyInteligent = 1000000;			//but with some money for buying stocks
+		initMoneyInteligent = 0;			//but with some money for buying stocks
 		maxBuyIntelligent = Integer.MAX_VALUE;	//No (practical) limitation for intelligent traders in number of buying 
 		maxSellIntelligent = Integer.MAX_VALUE; //and selling
 
@@ -262,8 +262,10 @@ public class Model extends SimModel{
 				riskF = riskFactorAffin;
 			}
 
+			//by assumption random trader are equiped with unlimited money and shares
+			//therfore its portfolio is useless and the values set to 0
 			RandomTrader rt = new RandomTrader("Random"+ i, this.market, 
-					new Portfolio(this.initSharesRandom, this.initMoneyRandom), this.maxBuyRandom,
+					new Portfolio(10000, 10000), this.maxBuyRandom,
 					this.maxSellRandom, riskF);
 			rt.setCommissionFee(comFee);
 
@@ -337,6 +339,8 @@ public class Model extends SimModel{
 		observer = new Observer();
 		eng.addModel(observer);
 		observer.setParameters();
+		
+		eng.buildModels();
 
 	}
 
