@@ -103,10 +103,10 @@ public class Observer extends SimModel {
 
 		addSimWindow(pricePlot);
 		addSimWindow(volumePlot);
-		//addSimWindow(traderValuePlot);
-		//addSimWindow(transCounterPlot);
-		//addSimWindow(profitLossPlot);
-		//addSimWindow(winningRatePlot);
+		addSimWindow(traderValuePlot);
+		addSimWindow(transCounterPlot);
+		addSimWindow(profitLossPlot);
+		addSimWindow(winningRatePlot);
 
 		if(model.showStatistics)
 		{

@@ -150,17 +150,17 @@ public class Model extends SimModel{
 
 		// set up default values for random traders
 		numRandomTrader = 200; 					//number of Traders in Model
-		riskFactorAverse = 1; 					//Factor that represent a riskaverse trader; those set prices closer around last price
-		riskFactorAffin = 5; 					//Factor that represnet more agressive traders; those set prices in a bigger range about last price
-		riskDistribution = 0.7; 				//determines how many of the traders are risk averse (here 70%)
+		riskFactorAverse = 0.5; 					//Factor that represent a riskaverse trader; those set prices closer around last price
+		riskFactorAffin = 10; 					//Factor that represnet more agressive traders; those set prices in a bigger range about last price
+		riskDistribution = 0.7; 				//determines how many of the traders are risk averse 
 		
 		maxBuyRandom = 1000;    				//maximum of shares a trader can buy per order
 		maxSellRandom = 1000; 					//maximum of shares a trader can sell per order
 	
 		// set up default values for intelligent traders
 		initSharesInteligent = 0;				//each trader starts with no shares usually
-		initMoneyInteligent = 1000000;			//but with some money for buying stocks
-		initMoneyInteligent = 0;			//but with some money for buying stocks
+		initMoneyInteligent = 100000;			//but with some money for buying stocks
+		
 		maxBuyIntelligent = Integer.MAX_VALUE;	//No (practical) limitation for intelligent traders in number of buying 
 		maxSellIntelligent = Integer.MAX_VALUE; //and selling
 
