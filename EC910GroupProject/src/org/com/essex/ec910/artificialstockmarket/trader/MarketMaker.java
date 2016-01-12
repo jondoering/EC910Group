@@ -62,7 +62,7 @@ public class MarketMaker extends AbstractTrader{
 	{
 		super(name, artificialMarket, new Portfolio(0,0), 0, 0);
 				
-		this.morningtime = (int) Math.round(stepsAday*0.9);
+		this.morningtime = (int) Math.round(stepsAday*0.1);
 		this.lifeMarket = lifeMarket;
 		this.dragVolume = dragVolume;
 		this.artVolumeFactor = volumeFactor;
