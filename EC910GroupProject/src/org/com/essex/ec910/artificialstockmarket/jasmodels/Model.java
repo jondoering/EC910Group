@@ -322,7 +322,7 @@ public class Model extends SimModel{
 	/**
 	 * Starts JAS model.
 	 */
-	public static void main()
+	public static void main(String[] args)
 	{
 
 		//Load Sim Model
