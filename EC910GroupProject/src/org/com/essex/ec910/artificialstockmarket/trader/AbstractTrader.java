@@ -96,7 +96,7 @@ public abstract class AbstractTrader {
 
 				if(!(this instanceof RandomTrader))
 				{
-					//dont print orders from random trader
+					//do not print orders from random trader
 					System.out.println(this.name + ": " + order.toString());
 				}
 												
@@ -130,7 +130,12 @@ public abstract class AbstractTrader {
 		}
 		
 		this.winningRate = ((double) this.numWinTrades)/((double) this.transactionCounter);
-	    this.lastPortfolio.setMoney(this.portfolio.getMoney());    			
+	    this.lastPortfolio.setMoney(this.portfolio.getMoney());   
+	    
+	    //print protfolio value of intelligent traders when they sell 
+	    if (!(this instanceof MarketMaker || this instanceof RandomTrader)){
+	    System.out.println("Portfolio value of "+ this.name + " = "+this.getPortfolioValue());
+	    }
 		
 	}
 
@@ -146,7 +151,7 @@ public abstract class AbstractTrader {
 
 		this.portfolio.setMoney(m);
 		this.portfolio.setShares(this.portfolio.getShares() + shares);
-		//no adjustmen
+		//no adjustment
 	}
 	
 	/**
