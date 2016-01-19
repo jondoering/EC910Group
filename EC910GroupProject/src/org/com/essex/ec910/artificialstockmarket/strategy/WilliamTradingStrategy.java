@@ -89,13 +89,14 @@ public class WilliamTradingStrategy extends AbstractTrader {
 						{	vol = max_buy;}
 
 						order = new Order(Order.BUY, Order.MARKET, vol, (int) spotprice, this);
+						//System.out.println("william Buy:" + order.toString());
 					}
 
 					if(spotprice >= outLong[0]*(1+sellPercent) && this.portfolio.getShares() > 0)
 					{
 						//Sell all shares if current price is sellPercent above the average 
 						order = new Order(Order.SELL, Order.MARKET, portfolio.getShares(), (int) spotprice, this);
-
+						//System.out.println("william Sell:" + order.toString());
 					}
 
 				}
