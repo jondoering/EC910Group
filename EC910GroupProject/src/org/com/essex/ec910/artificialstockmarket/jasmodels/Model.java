@@ -340,7 +340,7 @@ public class Model extends SimModel{
 		eng.addModel(observer);
 		observer.setParameters();
 		
-		eng.buildModels();
+		//eng.buildModels();
 
 	}
 
