@@ -30,13 +30,12 @@ public class Observer extends SimModel {
 	private IndividualBarPlotter profitLossPlot;
 	private IndividualBarPlotter winningRatePlot;
 
-
+	
 	/* (non-Javadoc)
 	 * @see jas.engine.SimModel#setParameters()
 	 */
 	@Override
 	public void setParameters() {
-		// TODO Auto-generated method stub
 
 		model = (Model) Sim.engine.getModelWithID("org.com.essex.ec910.artificialstockmarket.jasmodels.Model");
 
@@ -60,15 +59,17 @@ public class Observer extends SimModel {
 		varPlot = new TimeSeriesPlotter("Variance");
 		traderValuePlot = new TimeSeriesPlotter("Strategy Portfolio Value");
 		transCounterPlot = new IndividualBarPlotter("Transactions of Traders");
-		profitLossPlot = new IndividualBarPlotter(" P & L");
+		profitLossPlot = new IndividualBarPlotter(" P & L in current Step");
 		winningRatePlot = new IndividualBarPlotter("Winning Rates of Traders");
 			
 		pricePlot.addSeries("PriceSeries", model.market, "getSpotPrice", true);	
 		pricePlot.addSeries("priceLife", model.marketMaker, "getLastLifePrice", true);		
 		volumePlot.addSeries("Volume", model.market, "getSpotVolume", true);
-		varPlot.addSeries("Variance", model.statistics, "getVariance", true);		
+		
+		varPlot.addSeries("Variance", model.statistics, "getVariance", true);			
 		kurtPlot.addSeries("Kurtosis", model.statistics, "getKurtosis", true);
 		skewPlot.addSeries("Skewness", model.statistics, "getSkewness", true);
+		
 				
 		//timeseries showing portfolio value of trader
 		traderValuePlot.addSeries("Simple Moving Average", model.smaTrader, "getPortfolioValue", true);
@@ -110,9 +111,9 @@ public class Observer extends SimModel {
 
 		if(model.showStatistics)
 		{
-			addSimWindow(varPlot);
+		addSimWindow(varPlot);
 		addSimWindow(kurtPlot);
-		addSimWindow(skewPlot);
+		addSimWindow(skewPlot);		
 		eventList.scheduleSimple(2, 1, varPlot, Sim.EVENT_UPDATE);
 	    eventList.scheduleSimple(4, 1, skewPlot, Sim.EVENT_UPDATE);	
 	    eventList.scheduleSimple(5, model.stepsADay, kurtPlot, Sim.EVENT_UPDATE);}

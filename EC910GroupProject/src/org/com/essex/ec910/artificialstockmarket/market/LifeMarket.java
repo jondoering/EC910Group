@@ -45,7 +45,14 @@ public class LifeMarket {
 		{
 			//startet in testmode without real price
 			System.out.println("Startet in test mode - load no data from Yahoo Finance ...");
-			this.testModus = true;				
+			this.testModus = true;
+			
+			histPrices = new ArrayList<HistoricalPrice>();			
+			//initiate the first 10 prices with 200
+			for (int i=0;i<10;i++)
+			{
+				histPrices.add(new HistoricalPrice("2015-01-01", 200, 1000) );
+			}
 		}
 		else			
 		{			
@@ -129,7 +136,6 @@ public class LifeMarket {
 	 * @return
 	 */
 	public boolean testModus() {
-		// TODO Auto-generated method stub
 		return testModus;
 	}
 	

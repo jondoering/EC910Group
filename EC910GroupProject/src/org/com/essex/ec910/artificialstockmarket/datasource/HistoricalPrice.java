@@ -29,7 +29,6 @@ public class HistoricalPrice {
 		try {
 				this.date = (Date) new SimpleDateFormat("yyyy-MM-dd").parse(date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 				e.printStackTrace();
 		}
 		

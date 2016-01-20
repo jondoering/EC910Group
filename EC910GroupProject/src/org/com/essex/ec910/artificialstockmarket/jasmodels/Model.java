@@ -130,7 +130,7 @@ public class Model extends SimModel{
 		stepsADay = 500; 						//How many Steps define a day (end of the day, Market Maker gets new price from life market) 		
 		printOrderBook = false; 				// if true, the whole order book (in a cumulative way) gets gets printed in each step in StdOut
 		printOrders    = false;					//if true,  orders gets printed in each step in StdOut
-		showStatistics = false;					//if true, extra market statistic gets plotted in JAS
+		showStatistics = true;					//if true, extra market statistic gets plotted in JAS
 		
 			
 
@@ -203,7 +203,7 @@ public class Model extends SimModel{
 			lifeMarket = new LifeMarket(tickerSymbol, fromDate, toDate);
 		} catch (Exception e) {
 
-			System.out.println("Couldn load life market Data");
+			System.out.println("Could not load life market Data");
 			System.out.println(e.getMessage());
 
 		}
